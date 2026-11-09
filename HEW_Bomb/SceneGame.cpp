@@ -65,7 +65,7 @@ void SceneGame::Draw()
 	Geometory::SetProjection(m_pCamera->GetProjectionMatrix());
 
 	m_pGround->Draw();
-	m_pGoal->Draw();
+
 
 	if (m_pModel)
 	{
