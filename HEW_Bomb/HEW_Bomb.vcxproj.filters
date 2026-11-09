@@ -34,6 +34,12 @@
     <Filter Include="ソース ファイル\System\DirectX">
       <UniqueIdentifier>{36a071c1-5faa-4aab-876a-ec9bef09e703}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\System\Grid">
+      <UniqueIdentifier>{3acd22de-819a-4e3d-99d5-4900a3af8a64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\System\Grid">
+      <UniqueIdentifier>{0848f355-89b4-468f-b0f8-5ed022542fb7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Startup.cpp">
@@ -96,6 +102,18 @@
     <ClCompile Include="controller.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
+    <ClCompile Include="GridPosition.cpp">
+      <Filter>ソース ファイル\System\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="GridCell.cpp">
+      <Filter>ソース ファイル\System\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="GridManager.cpp">
+      <Filter>ソース ファイル\System\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
+      <Filter>ソース ファイル\System\Grid</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -151,6 +169,18 @@
     </ClInclude>
     <ClInclude Include="controller.h">
       <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="GridPosition.h">
+      <Filter>ヘッダー ファイル\System\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="GridCell.h">
+      <Filter>ヘッダー ファイル\System\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="GridManager.h">
+      <Filter>ヘッダー ファイル\System\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>ヘッダー ファイル\System\Grid</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

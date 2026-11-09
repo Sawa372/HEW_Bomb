@@ -1,6 +1,8 @@
 #include "SceneGame.h"
 #include "Geometory.h"
 #include "CameraDebug.h"
+
+
 #include <ShaderList.h>
 
 
@@ -20,6 +22,23 @@ SceneGame::SceneGame()
 	
 	m_pGoal->SetPos(3.0f, 1.0f, 0.0f);
 	m_pGoal->SetScale(0.5f, 0.5f, 0.5f);
+
+	// マップを初期化
+	if (!m_map.Initialize(10, 1, 10))
+	{
+		MessageBox(NULL, "マップの初期化に失敗しました", "Error", MB_OK);
+	}
+
+	// グリッドの設定
+	GridManager& grid = m_map.GetGridManager();
+
+	// 1マスのワールドサイズ
+	grid.SetCellSize(1.0f, 1.0f, 1.0f);
+
+	// グリッドの原点
+	grid.SetGridOrigin(
+		DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f)
+	);
 }
 
 SceneGame::~SceneGame()
@@ -64,53 +83,64 @@ void SceneGame::Draw()
 	Geometory::SetView(m_pCamera->GetViewMatrix());
 	Geometory::SetProjection(m_pCamera->GetProjectionMatrix());
 
-	m_pGround->Draw();
-
+	//m_pGround->Draw();
+	//m_pGoal->Draw();
 
 	if (m_pModel)
 	{
-		// モデルを表示するためのワールド行列を計算
-		DirectX::XMFLOAT4X4 fWorld;
-		DirectX::XMMATRIX world;
-
-		//// 変換行列の計算
-		//DirectX::XMMATRIX T =
-		//	DirectX::XMMatrixTranslation(
-		//		0.0f, 0.0f, 0.0f);
-		//DirectX::XMMATRIX S =
-		//	DirectX::XMMatrixScaling(
-		//		1.0f, 1.0f, 1.0f);
-
-		//world = S * T;
-
-		// 変換行列をGPUに渡すための前処理
-		world = DirectX::XMMatrixIdentity();
-		DirectX::XMStoreFloat4x4(&fWorld, world);
-
-		// シェーダーに必要なデータを設定 
-		ShaderList::SetWorld(fWorld);
 		ShaderList::SetView(m_pCamera->GetViewMatrix());
 		ShaderList::SetProjection(m_pCamera->GetProjectionMatrix());
 
-		// モデルに使用する各種シェーダーを設定 
-		m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
-		m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
+		GridManager& grid = m_map.GetGridManager();
 
-		// メッシュ別にモデルを表示 
-		for (int i = 0; i < m_pModel->GetMeshNum(); ++i)
+		std::vector<GridPosition> objectPositions =
+			grid.GetObjectPositions();
+
+		for (const GridPosition& position : objectPositions)
 		{
+			DirectX::XMFLOAT3 worldPosition;
 
-			// モデルのメッシュを取得 
-			const Model::Mesh* mesh = m_pModel->GetMesh(i);
+			// グリッド座標をワールド座標へ変換
+			if (!grid.GridToWorld(position, worldPosition))
+			{
+				continue;
+			}
 
-			// メッシュに割り当てられているマテリアルを取得 
-			Model::Material material = *m_pModel->GetMaterial(mesh->materialID);
+			// ワールド行列を作成
+			DirectX::XMMATRIX world =
+				DirectX::XMMatrixTranslation(
+					worldPosition.x,
+					worldPosition.y,
+					worldPosition.z
+				);
 
-			// シェーダーへマテリアルを設定 
-			ShaderList::SetMaterial(material);
+			DirectX::XMFLOAT4X4 fWorld;
+			DirectX::XMStoreFloat4x4(&fWorld, world);
 
-			// モデルの描画(内部的に一括で行っていた描画処理を、メッシュごとの描画処理に変更) 
-			m_pModel->Draw(i);
+			// ワールド行列を設定
+			ShaderList::SetWorld(fWorld);
+
+			// シェーダーを設定
+			m_pModel->SetVertexShader(
+				ShaderList::GetVS(ShaderList::VS_WORLD)
+			);
+
+			m_pModel->SetPixelShader(
+				ShaderList::GetPS(ShaderList::PS_LAMBERT)
+			);
+
+			// モデルを描画
+			for (int i = 0; i < m_pModel->GetMeshNum(); ++i)
+			{
+				const Model::Mesh* mesh = m_pModel->GetMesh(i);
+
+				Model::Material material =
+					*m_pModel->GetMaterial(mesh->materialID);
+
+				ShaderList::SetMaterial(material);
+
+				m_pModel->Draw(i);
+			}
 		}
 	}
 }

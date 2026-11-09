@@ -6,6 +6,7 @@
 #include "Goal.h"
 #include "Camera.h"
 #include "Model.h"
+#include "Map.h"
 
 class SceneGame : public Scene
 {
@@ -20,6 +21,8 @@ private:
 	Goal* m_pGoal; // ゴールオブジェクト
 	Camera* m_pCamera; // ゲーム中に動かすカメラ
 	Model* m_pModel; // モデル
+
+	Map m_map; // マップ
 };
 
 #endif // __SCENE_GAME_H__

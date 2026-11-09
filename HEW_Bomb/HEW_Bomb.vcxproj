@@ -155,9 +155,13 @@
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Geometory.cpp" />
     <ClCompile Include="Goal.cpp" />
+    <ClCompile Include="GridCell.cpp" />
+    <ClCompile Include="GridManager.cpp" />
+    <ClCompile Include="GridPosition.cpp" />
     <ClCompile Include="Ground.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Map.cpp" />
     <ClCompile Include="MeshBuffer.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -178,9 +182,13 @@
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="Geometory.h" />
     <ClInclude Include="Goal.h" />
+    <ClInclude Include="GridCell.h" />
+    <ClInclude Include="GridManager.h" />
+    <ClInclude Include="GridPosition.h" />
     <ClInclude Include="Ground.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Main.h" />
+    <ClInclude Include="Map.h" />
     <ClInclude Include="MeshBuffer.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Scene.h" />
