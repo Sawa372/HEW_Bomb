@@ -5,55 +5,78 @@
 #include "GridPosition.h"
 #include "GridObjectType.h"
 
-// グリッド上の1マスを表すクラス
+//==================================================
+// グリッド上の1マスの情報を管理するクラス
+// ほぼGridManager専用ヘッダー
+// 
+// マスの座標や、壁・オブジェクト・爆弾・プレイヤーの
+// 設置状態を保持する
+//==================================================
 class GridCell
 {
 public:
+    // コンストラクタ
     GridCell();
+    // デストラクタ
+    ~GridCell();
+
+    // 指定されたグリッド座標を持つセルを作成する
     GridCell(const GridPosition& position);
 
-    // マスの座標
+    // マスのグリッド座標を取得する
     const GridPosition& GetPosition() const;
 
-    // 壁かどうか
+    // マスに壁が設置されているか確認する
     bool IsWall() const;
 
-    // オブジェクトがあるか
+    // マスにオブジェクトが設置されているか確認する
     bool HasObject() const;
 
-    // オブジェクトの種類を取得
+    // 設置されているオブジェクトの種類を取得する
+    // オブジェクトがない場合はGridObjectType::Noneを返す
     GridObjectType GetObjectType() const;
 
-    // オブジェクトの種類を設定
+    // マスに設置するオブジェクトの種類を設定する
     void SetObjectType(GridObjectType type);
 
-    // 爆弾があるか
+    // マスに爆弾が設置されているか確認する
     bool HasBomb() const;
 
-    // プレイヤーがいるか
+    // マスにプレイヤーがいるか確認する
     bool HasPlayer() const;
 
-    // 壁の設定
+    // マスの壁の有無を設定する
     void SetWall(bool wall);
 
-    // オブジェクトの設定
+    // マスのオブジェクトの有無を設定する
+    // trueの場合はDefault、falseの場合はNoneに設定する
     void SetObject(bool object);
 
-    // 爆弾の設定
+    // マスの爆弾の有無を設定する
     void SetBomb(bool bomb);
 
-    // プレイヤーの設定
+    // マスのプレイヤーの有無を設定する
     void SetPlayer(bool player);
 
-    // 移動可能か
+    // マスが移動可能か確認する
+    // 壁・オブジェクト・爆弾がある場合は移動不可とする
     bool IsWalkable() const;
 
 private:
+    // このセルが存在するグリッド座標
     GridPosition m_position;
 
+    // 壁が設置されているか
     bool m_isWall;
-    GridObjectType m_objectType;    
+
+    // 設置されているオブジェクトの種類
+    // Noneの場合はオブジェクトが設置されていない
+    GridObjectType m_objectType;
+
+    // 爆弾が設置されているか
     bool m_hasBomb;
+
+    // プレイヤーがこのマスにいるか
     bool m_hasPlayer;
 };
 

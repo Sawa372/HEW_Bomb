@@ -7,152 +7,225 @@
 #include <vector>
 #include <DirectXMath.h>
 
+//==================================================
 // グリッド全体を管理するクラス
+// グリッドの作成や各マスの情報管理、
+// 壁・オブジェクト・爆弾・プレイヤーの配置や判定を行う
+// 基本的には他のクラスからグリッドを操作するときに使用する
+//==================================================
 class GridManager
 {
 public:
+    // コンストラクタ
     GridManager();
+
+    // デストラクタ
     ~GridManager();
 
-    // グリッドを作成
+
+    //==================================================
+    // グリッドの初期化・解放
+
+    // 指定した幅・高さ・奥行きでグリッドを作成する
+    // 座標の開始位置は(0, 0, 0)となる
     bool Initialize(int width, int height, int depth);
 
-    // 指定した最小座標から最大座標までグリッドを作成
+    // 指定した最小座標から最大座標までの範囲でグリッドを作成する
+    // マイナス座標を含む範囲にも対応する
     bool Initialize(
         const GridPosition& minPosition,
         const GridPosition& maxPosition
     );
 
-    // グリッドを解放
+    // グリッドの情報をすべて解放し、初期状態に戻す
     void Clear();
 
-    // グリッドのサイズ取得
+
+    //==================================================
+    // グリッドの情報取得
+
+    // グリッドのX方向のマス数を取得する
     int GetWidth() const;
+
+    // グリッドのY方向のマス数を取得する
     int GetHeight() const;
+
+    // グリッドのZ方向のマス数を取得する
     int GetDepth() const;
 
-    // グリッドの範囲を取得
+    // グリッドの最小座標と最大座標を取得する
+    // グリッドが初期化されていない場合はfalseを返す
     bool GetBounds(
         GridPosition& minPosition,
         GridPosition& maxPosition
     ) const;
 
-    // 指定した座標がグリッド内か
+    // 指定した座標がグリッドの範囲内にあるか確認する
     bool IsInside(const GridPosition& position) const;
 
-    // マスを取得
+    // 指定した座標のマスを取得する
+    // 範囲外の場合はnullptrを返す
+    // 基本は下をご利用くださいな
     GridCell* GetCell(const GridPosition& position);
+
+    // 指定した座標のマスを取得する（読み取り専用）
+    // 範囲外の場合はnullptrを返す　
+    // こっちを使ってほしいな
     const GridCell* GetCell(const GridPosition& position) const;
 
-    // 全てのマスを取得（読み取り専用）
+    // グリッド内のすべてのマスを取得する（読み取り専用）
     const std::vector<GridCell>& GetCells() const;
 
-    // 壁判定
+
+    //==================================================
+    // マスの状態確認
+
+    // 指定したマスに壁があるか確認する
+    // 範囲外への移動や配置を防ぐため範囲外は true
     bool IsWall(const GridPosition& position) const;
 
-    // オブジェクト判定
+    // 指定したマスにオブジェクトがあるか確認する
+    // 範囲外で false
     bool HasObject(const GridPosition& position) const;
 
-    // 爆弾判定
+    // 指定したマスに爆弾があるか確認する
+    // 範囲外で false
     bool HasBomb(const GridPosition& position) const;
 
-    // プレイヤー判定
+    // 指定したマスにプレイヤーがいるか確認する
+    // 範囲外で false
     bool HasPlayer(const GridPosition& position) const;
 
-    // 移動可能か
+    // 指定したマスが移動可能か確認する
+    // 範囲外で false
     bool CanMove(const GridPosition& position) const;
-   
-    // 壁を設定
+
+
+    //==================================================
+    // 壁の配置・削除
+
+    // 指定したマスに壁を設置する
     bool SetWall(const GridPosition& position);
 
-    // 壁を解除
+    // 指定したマスの壁を削除する
     bool RemoveWall(const GridPosition& position);
 
-    // オブジェクトを設定
+
+    //==================================================
+    // オブジェクトの配置・削除
+
+    // 指定したマスにDefaultオブジェクトを設置する
     bool SetObject(const GridPosition& position);
 
-    // 種類を指定してオブジェクトを設定
+    // 指定した種類のオブジェクトをマスに設置する
     bool SetObject(
         const GridPosition& position,
         GridObjectType type
     );
 
-    // オブジェクトを解除
+    // 指定したマスのオブジェクトを削除する
     bool RemoveObject(const GridPosition& position);
 
-    // オブジェクトが配置されている座標を取得
+    // オブジェクトが配置されているすべての座標を取得する
     std::vector<GridPosition> GetObjectPositions() const;
 
-    // 壁が配置されている座標を取得
+    // 壁が配置されているすべての座標を取得する
     std::vector<GridPosition> GetWallPositions() const;
 
-    // 爆弾を設定
+
+    //==================================================
+    // 爆弾の配置・削除
+
+    // 指定したマスに爆弾を設置する
     bool SetBomb(const GridPosition& position);
 
-    // 爆弾を解除
+    // 指定したマスの爆弾を削除する
     bool RemoveBomb(const GridPosition& position);
 
-    // プレイヤーを設定
+
+    //==================================================
+    // プレイヤーの配置・移動
+
+    // 指定したマスにプレイヤーを配置する
     bool SetPlayer(const GridPosition& position);
 
-    // プレイヤーを解除
+    // 指定したマスのプレイヤーを削除する
     bool RemovePlayer(const GridPosition& position);
 
-    // プレイヤーを別のマスへ移動
+    // プレイヤーを現在のマスから次のマスへ移動させる
     bool MovePlayer(
         const GridPosition& currentPosition,
         const GridPosition& nextPosition
     );
 
-    // 爆弾を設置できるか
+
+    //==================================================
+    // 配置可能判定
+
+    // 指定したマスに爆弾を設置できるか確認する
     bool CanPlaceBomb(const GridPosition& position) const;
 
-    // 壁を配置できるか
+    // 指定したマスに壁を設置できるか確認する
     bool CanPlaceWall(const GridPosition& position) const;
 
-    // オブジェクトを配置できるか
+    // 指定したマスにオブジェクトを設置できるか確認する
     bool CanPlaceObject(const GridPosition& position) const;
 
-    // プレイヤーを配置できるか
+    // 指定したマスにプレイヤーを配置できるか確認する
     bool CanPlacePlayer(const GridPosition& position) const;
 
-    // 1マスのワールドサイズを設定
+
+    //==================================================
+    // ワールド座標との変換設定
+
+    // 1マスあたりのワールド空間でのサイズを設定する
     bool SetCellSize(float x, float y, float z);
 
-    // グリッドの原点を設定
+    // グリッドの原点となるワールド座標を設定する
     void SetGridOrigin(const DirectX::XMFLOAT3& origin);
 
-    // グリッド座標をワールド座標に変換
+    // グリッド座標をワールド座標に変換する
     bool GridToWorld(
         const GridPosition& position,
         DirectX::XMFLOAT3& worldPosition
     ) const;
 
-    // ワールド座標をグリッド座標に変換
+    // ワールド座標を最も近いグリッド座標に変換する
+    // 変換先がグリッドの範囲外の場合はfalseを返す
     bool WorldToGrid(
         const DirectX::XMFLOAT3& worldPosition,
         GridPosition& gridPosition
     ) const;
-    
+
 
 private:
-    // 座標を配列のインデックスに変換
+    // 内部処理
+
+    // グリッド座標を配列のインデックスに変換する
     int GetIndex(const GridPosition& position) const;
 
+
 private:
+
     // グリッドの最小座標
     GridPosition m_minPosition;
 
+    // グリッドのX方向のマス数
     int m_width;
+
+    // グリッドのY方向のマス数
     int m_height;
+
+    // グリッドのZ方向のマス数
     int m_depth;
 
+    // グリッド内のすべてのマスの情報を保持する配列
     std::vector<GridCell> m_cells;
 
-    // 1マスのワールドサイズ
+    // 1マスあたりのワールド空間でのサイズ
     DirectX::XMFLOAT3 m_cellSize;
 
-    // グリッドの原点
+    // グリッドの原点となるワールド座標
     DirectX::XMFLOAT3 m_gridOrigin;
 };
 
