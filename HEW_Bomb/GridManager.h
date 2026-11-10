@@ -71,6 +71,12 @@ public:
     // オブジェクトを設定
     bool SetObject(const GridPosition& position);
 
+    // 種類を指定してオブジェクトを設定
+    bool SetObject(
+        const GridPosition& position,
+        GridObjectType type
+    );
+
     // オブジェクトを解除
     bool RemoveObject(const GridPosition& position);
 

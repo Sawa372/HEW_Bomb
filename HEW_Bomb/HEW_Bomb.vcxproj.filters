@@ -114,6 +114,9 @@
     <ClCompile Include="Map.cpp">
       <Filter>ソース ファイル\System\Grid</Filter>
     </ClCompile>
+    <ClCompile Include="MapRenderer.cpp">
+      <Filter>ソース ファイル\System\Grid</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -180,6 +183,12 @@
       <Filter>ヘッダー ファイル\System\Grid</Filter>
     </ClInclude>
     <ClInclude Include="Map.h">
+      <Filter>ヘッダー ファイル\System\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="GridObjectType.h">
+      <Filter>ヘッダー ファイル\System\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="MapRenderer.h">
       <Filter>ヘッダー ファイル\System\Grid</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,7 +3,7 @@
 GridCell::GridCell()
     : m_position()
     , m_isWall(false)
-    , m_hasObject(false)
+    , m_objectType(GridObjectType::None)
     , m_hasBomb(false)
     , m_hasPlayer(false)
 {
@@ -12,7 +12,7 @@ GridCell::GridCell()
 GridCell::GridCell(const GridPosition& position)
     : m_position(position)
     , m_isWall(false)
-    , m_hasObject(false)
+    , m_objectType(GridObjectType::None)
     , m_hasBomb(false)
     , m_hasPlayer(false)
 {
@@ -30,7 +30,7 @@ bool GridCell::IsWall() const
 
 bool GridCell::HasObject() const
 {
-    return m_hasObject;
+    return m_objectType != GridObjectType::None;
 }
 
 bool GridCell::HasBomb() const
@@ -50,7 +50,14 @@ void GridCell::SetWall(bool wall)
 
 void GridCell::SetObject(bool object)
 {
-    m_hasObject = object;
+    if (object)
+    {
+        m_objectType = GridObjectType::Default;
+    }
+    else
+    {
+        m_objectType = GridObjectType::None;
+    }
 }
 
 void GridCell::SetBomb(bool bomb)
@@ -70,7 +77,7 @@ bool GridCell::IsWalkable() const
         return false;
     }
 
-    if (m_hasObject)
+    if (HasObject())
     {
         return false;
     }
@@ -81,4 +88,14 @@ bool GridCell::IsWalkable() const
     }
 
     return true;
+}
+
+GridObjectType GridCell::GetObjectType() const
+{
+    return m_objectType;
+}
+
+void GridCell::SetObjectType(GridObjectType type)
+{
+    m_objectType = type;
 }

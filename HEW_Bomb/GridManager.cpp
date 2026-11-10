@@ -292,13 +292,36 @@ bool GridManager::RemoveWall(const GridPosition& position)
 
 bool GridManager::SetObject(const GridPosition& position)
 {
+    // 種類を指定しない場合はDefaultにする
+    return SetObject(position, GridObjectType::Default);
+}
+
+bool GridManager::SetObject(
+    const GridPosition& position,
+    GridObjectType type
+)
+{
+    // Noneはオブジェクトとして配置できない
+    if (type == GridObjectType::None)
+    {
+        return false;
+    }
+
+    // 配置できるか確認
     if (!CanPlaceObject(position))
     {
         return false;
     }
 
     GridCell* cell = GetCell(position);
-    cell->SetObject(true);
+
+    if (cell == nullptr)
+    {
+        return false;
+    }
+
+    // オブジェクトの種類を設定
+    cell->SetObjectType(type);
 
     return true;
 }

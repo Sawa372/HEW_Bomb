@@ -3,6 +3,7 @@
 #define __GRID_CELL_H__
 
 #include "GridPosition.h"
+#include "GridObjectType.h"
 
 // グリッド上の1マスを表すクラス
 class GridCell
@@ -19,6 +20,12 @@ public:
 
     // オブジェクトがあるか
     bool HasObject() const;
+
+    // オブジェクトの種類を取得
+    GridObjectType GetObjectType() const;
+
+    // オブジェクトの種類を設定
+    void SetObjectType(GridObjectType type);
 
     // 爆弾があるか
     bool HasBomb() const;
@@ -45,7 +52,7 @@ private:
     GridPosition m_position;
 
     bool m_isWall;
-    bool m_hasObject;
+    GridObjectType m_objectType;    
     bool m_hasBomb;
     bool m_hasPlayer;
 };
