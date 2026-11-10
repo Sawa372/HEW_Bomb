@@ -6,10 +6,16 @@ Map::Map()
 }
 
 // マップの初期化
-bool Map::Initialize(int width, int height, int depth)
+bool Map::Initialize()
 {
+    // マップの最小座標
+    const GridPosition minPosition(-10, 0, -10);
+
+    // マップの最大座標
+    const GridPosition maxPosition(10, 0, 10);
+
     // グリッドを初期化
-    if (!m_gridManager.Initialize(width, height, depth))
+    if (!m_gridManager.Initialize(minPosition, maxPosition))
     {
         return false;
     }
@@ -45,7 +51,7 @@ const GridManager& Map::GetGridManager() const
 bool Map::CreateStage()
 {
     // 壁の配置
-    if (!m_gridManager.SetWall(GridPosition(5, 0, 3))) return false;
+    if (!m_gridManager.SetWall(GridPosition(-5, 0, 3))) return false;
     if (!m_gridManager.SetWall(GridPosition(5, 0, 4))) return false;
     if (!m_gridManager.SetWall(GridPosition(5, 0, 5))) return false;
 
@@ -53,6 +59,10 @@ bool Map::CreateStage()
     if (!m_gridManager.SetObject(GridPosition(3, 0, 3))) return false;
     if (!m_gridManager.SetObject(GridPosition(4, 0, 3))) return false;
     if (!m_gridManager.SetObject(GridPosition(8, 0, 8))) return false;
+
+    // プレイヤーの配置
+    if (!m_gridManager.SetPlayer(GridPosition(0, 0, 0))) return false;
+
 
     return true;
 }

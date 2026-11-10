@@ -11,7 +11,7 @@ public:
     Map();
 
     // マップの初期化
-    bool Initialize(int width, int height, int depth);
+    bool Initialize();
 
     // マップの解放
     void Clear();

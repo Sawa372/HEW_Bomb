@@ -17,6 +17,12 @@ public:
     // グリッドを作成
     bool Initialize(int width, int height, int depth);
 
+    // 指定した最小座標から最大座標までグリッドを作成
+    bool Initialize(
+        const GridPosition& minPosition,
+        const GridPosition& maxPosition
+    );
+
     // グリッドを解放
     void Clear();
 
@@ -25,12 +31,21 @@ public:
     int GetHeight() const;
     int GetDepth() const;
 
+    // グリッドの範囲を取得
+    bool GetBounds(
+        GridPosition& minPosition,
+        GridPosition& maxPosition
+    ) const;
+
     // 指定した座標がグリッド内か
     bool IsInside(const GridPosition& position) const;
 
     // マスを取得
     GridCell* GetCell(const GridPosition& position);
     const GridCell* GetCell(const GridPosition& position) const;
+
+    // 全てのマスを取得（読み取り専用）
+    const std::vector<GridCell>& GetCells() const;
 
     // 壁判定
     bool IsWall(const GridPosition& position) const;
@@ -61,6 +76,9 @@ public:
 
     // オブジェクトが配置されている座標を取得
     std::vector<GridPosition> GetObjectPositions() const;
+
+    // 壁が配置されている座標を取得
+    std::vector<GridPosition> GetWallPositions() const;
 
     // 爆弾を設定
     bool SetBomb(const GridPosition& position);
@@ -104,6 +122,11 @@ public:
         DirectX::XMFLOAT3& worldPosition
     ) const;
 
+    // ワールド座標をグリッド座標に変換
+    bool WorldToGrid(
+        const DirectX::XMFLOAT3& worldPosition,
+        GridPosition& gridPosition
+    ) const;
     
 
 private:
@@ -111,6 +134,9 @@ private:
     int GetIndex(const GridPosition& position) const;
 
 private:
+    // グリッドの最小座標
+    GridPosition m_minPosition;
+
     int m_width;
     int m_height;
     int m_depth;

@@ -1,9 +1,12 @@
 #include <cstdlib>
+#include <cmath>
+#include <climits>
 
 #include "GridManager.h"
 
 GridManager::GridManager()
-    : m_width(0)
+    : m_minPosition(0, 0, 0)
+    , m_width(0)
     , m_height(0)
     , m_depth(0)
     , m_cellSize(1.0f, 1.0f, 1.0f)
@@ -16,6 +19,31 @@ GridManager::~GridManager()
     Clear();
 }
 
+// グリッドの範囲を取得
+bool GridManager::GetBounds(
+    GridPosition& minPosition,
+    GridPosition& maxPosition
+) const
+{
+    // グリッドが初期化されていない場合
+    if (m_cells.empty())
+    {
+        return false;
+    }
+
+    // 最小座標
+    minPosition = m_minPosition;
+
+    // 最大座標
+    maxPosition.Set(
+        m_minPosition.GetX() + m_width - 1,
+        m_minPosition.GetY() + m_height - 1,
+        m_minPosition.GetZ() + m_depth - 1
+    );
+
+    return true;
+}
+
 bool GridManager::Initialize(int width, int height, int depth)
 {
     if (width <= 0 || height <= 0 || depth <= 0)
@@ -23,21 +51,82 @@ bool GridManager::Initialize(int width, int height, int depth)
         return false;
     }
 
+    return Initialize(
+        GridPosition(0, 0, 0),
+        GridPosition(width - 1, height - 1, depth - 1)
+    );
+}
+
+bool GridManager::Initialize(
+    const GridPosition& minPosition,
+    const GridPosition& maxPosition
+)
+{
+    // 最小座標と最大座標の大小関係を確認
+    if (minPosition.GetX() > maxPosition.GetX() ||
+        minPosition.GetY() > maxPosition.GetY() ||
+        minPosition.GetZ() > maxPosition.GetZ())
+    {
+        return false;
+    }
+
+    // 各方向のマス数を計算
+    long long width =
+        static_cast<long long>(maxPosition.GetX()) -
+        minPosition.GetX() + 1;
+
+    long long height =
+        static_cast<long long>(maxPosition.GetY()) -
+        minPosition.GetY() + 1;
+
+    long long depth =
+        static_cast<long long>(maxPosition.GetZ()) -
+        minPosition.GetZ() + 1;
+
+    // インデックスで扱える範囲か確認
+    if (width > INT_MAX || height > INT_MAX || depth > INT_MAX)
+    {
+        return false;
+    }
+
+    if (width * height > INT_MAX ||
+        width * height * depth > INT_MAX)
+    {
+        return false;
+    }
+
+    // 古いグリッドを解放
     Clear();
 
-    m_width = width;
-    m_height = height;
-    m_depth = depth;
+    // 最小座標を保存
+    m_minPosition = minPosition;
 
-    m_cells.reserve(width * height * depth);
+    // グリッドのサイズを保存
+    m_width = static_cast<int>(width);
+    m_height = static_cast<int>(height);
+    m_depth = static_cast<int>(depth);
 
-    for (int y = 0; y < height; ++y)
+    // 必要なマス数を確保
+    m_cells.reserve(
+        static_cast<size_t>(m_width) *
+        m_height *
+        m_depth
+    );
+
+    // グリッドを作成
+    for (int y = 0; y < m_height; ++y)
     {
-        for (int z = 0; z < depth; ++z)
+        for (int z = 0; z < m_depth; ++z)
         {
-            for (int x = 0; x < width; ++x)
+            for (int x = 0; x < m_width; ++x)
             {
-                m_cells.emplace_back(GridPosition(x, y, z));
+                m_cells.emplace_back(
+                    GridPosition(
+                        minPosition.GetX() + x,
+                        minPosition.GetY() + y,
+                        minPosition.GetZ() + z
+                    )
+                );
             }
         }
     }
@@ -45,15 +134,17 @@ bool GridManager::Initialize(int width, int height, int depth)
     return true;
 }
 
+
 void GridManager::Clear()
 {
     m_cells.clear();
+
+    m_minPosition.Set(0, 0, 0);
 
     m_width = 0;
     m_height = 0;
     m_depth = 0;
 }
-
 int GridManager::GetWidth() const
 {
     return m_width;
@@ -71,12 +162,18 @@ int GridManager::GetDepth() const
 
 bool GridManager::IsInside(const GridPosition& position) const
 {
-    return position.GetX() >= 0
-        && position.GetX() < m_width
-        && position.GetY() >= 0
-        && position.GetY() < m_height
-        && position.GetZ() >= 0
-        && position.GetZ() < m_depth;
+    long long x = position.GetX();
+    long long y = position.GetY();
+    long long z = position.GetZ();
+
+    long long minX = m_minPosition.GetX();
+    long long minY = m_minPosition.GetY();
+    long long minZ = m_minPosition.GetZ();
+
+    return
+        x >= minX && x < minX + m_width &&
+        y >= minY && y < minY + m_height &&
+        z >= minZ && z < minZ + m_depth;
 }
 
 GridCell* GridManager::GetCell(const GridPosition& position)
@@ -97,6 +194,12 @@ const GridCell* GridManager::GetCell(const GridPosition& position) const
     }
 
     return &m_cells[GetIndex(position)];
+}
+
+// 全てのマスを取得
+const std::vector<GridCell>& GridManager::GetCells() const
+{
+    return m_cells;
 }
 
 bool GridManager::IsWall(const GridPosition& position) const
@@ -229,6 +332,20 @@ std::vector<GridPosition> GridManager::GetObjectPositions() const
     return positions;
 }
 
+std::vector<GridPosition> GridManager::GetWallPositions() const
+{
+    std::vector<GridPosition> positions;
+    for (const GridCell& cell : m_cells)
+    {
+        if (cell.IsWall())
+        {
+            positions.push_back(cell.GetPosition());
+        }
+    }
+
+    return positions;
+}
+
 bool GridManager::SetBomb(const GridPosition& position)
 {
     if (!CanPlaceBomb(position))
@@ -286,9 +403,13 @@ bool GridManager::RemovePlayer(const GridPosition& position)
 
 int GridManager::GetIndex(const GridPosition& position) const
 {
-    return position.GetY() * m_depth * m_width
-        + position.GetZ() * m_width
-        + position.GetX();
+    int x = position.GetX() - m_minPosition.GetX();
+    int y = position.GetY() - m_minPosition.GetY();
+    int z = position.GetZ() - m_minPosition.GetZ();
+
+    return y * m_depth * m_width
+        + z * m_width
+        + x;
 }
 
 bool GridManager::MovePlayer(
@@ -439,6 +560,70 @@ bool GridManager::GridToWorld(
 
     worldPosition.z =
         m_gridOrigin.z + position.GetZ() * m_cellSize.z;
+
+    return true;
+}
+
+// ワールド座標をグリッド座標に変換
+bool GridManager::WorldToGrid(
+    const DirectX::XMFLOAT3& worldPosition,
+    GridPosition& gridPosition
+) const
+{
+    // グリッドが初期化されていない場合
+    if (m_cells.empty())
+    {
+        return false;
+    }
+
+    // ワールド座標からグリッド座標を計算
+    double x =
+        (static_cast<double>(worldPosition.x) - m_gridOrigin.x)
+        / m_cellSize.x;
+
+    double y =
+        (static_cast<double>(worldPosition.y) - m_gridOrigin.y)
+        / m_cellSize.y;
+
+    double z =
+        (static_cast<double>(worldPosition.z) - m_gridOrigin.z)
+        / m_cellSize.z;
+
+    // 計算結果が正常か確認
+    if (!std::isfinite(x) ||
+        !std::isfinite(y) ||
+        !std::isfinite(z))
+    {
+        return false;
+    }
+
+    // 最も近いグリッド座標に丸める
+    x = std::round(x);
+    y = std::round(y);
+    z = std::round(z);
+
+    // intで扱える範囲か確認
+    if (x < INT_MIN || x > INT_MAX ||
+        y < INT_MIN || y > INT_MAX ||
+        z < INT_MIN || z > INT_MAX)
+    {
+        return false;
+    }
+
+    // グリッド座標に変換
+    GridPosition result(
+        static_cast<int>(x),
+        static_cast<int>(y),
+        static_cast<int>(z)
+    );
+
+    // グリッドの範囲内か確認
+    if (!IsInside(result))
+    {
+        return false;
+    }
+
+    gridPosition = result;
 
     return true;
 }
