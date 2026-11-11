@@ -81,7 +81,8 @@ public:
     // マスの状態確認
 
     // 指定したマスに壁があるか確認する
-    // 範囲外への移動や配置を防ぐため範囲外は true
+    // 範囲外への移動や配置を防ぐため
+    // 範囲外は true
     bool IsWall(const GridPosition& position) const;
 
     // 指定したマスにオブジェクトがあるか確認する
