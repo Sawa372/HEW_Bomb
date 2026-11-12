@@ -3,13 +3,17 @@
 GridCollision::GridCollision(GridManager& gridManager)
     : m_gridManager(gridManager)
 {
+
 }
 
 GridCollision::~GridCollision()
 {
+
 }
 
-// --- ワールド座標ベースのオーバーロード ---
+// ==========================================
+// 1. 移動・通行判定
+// =========================================
 
 bool GridCollision::CanMove(const DirectX::XMFLOAT3& worldPos) const
 {
@@ -25,6 +29,10 @@ bool GridCollision::CanMove(const GridPosition& gridPos) const
 {
     return m_gridManager.CanMove(gridPos);
 }
+
+// ==========================================
+// 2. セルの状態確認
+// ==========================================
 
 bool GridCollision::IsWall(const DirectX::XMFLOAT3& worldPos) const
 {
@@ -86,7 +94,24 @@ bool GridCollision::HasPlayer(const GridPosition& gridPos) const
     return m_gridManager.HasPlayer(gridPos);
 }
 
-// --- 設置判定 ---
+bool GridCollision::HasFloor(const DirectX::XMFLOAT3& worldPos) const
+{
+    GridPosition gridPos;
+    if (!m_gridManager.WorldToGrid(worldPos, gridPos))
+    {
+        return false;
+    }
+    return HasFloor(gridPos);
+}
+
+bool GridCollision::HasFloor(const GridPosition& gridPos) const
+{
+    return m_gridManager.HasFloor(gridPos);
+}
+
+// ==========================================
+// 3. 配置可能判定
+// ==========================================
 
 bool GridCollision::CanPlaceBomb(const DirectX::XMFLOAT3& worldPos) const
 {
@@ -133,14 +158,45 @@ bool GridCollision::CanPlaceObject(const GridPosition& gridPos) const
     return m_gridManager.CanPlaceObject(gridPos);
 }
 
-// --- 演算子オーバーロードによる bool 判定 ---
+bool GridCollision::CanPlacePlayer(const DirectX::XMFLOAT3& worldPos) const
+{
+    GridPosition gridPos;
+    if (!m_gridManager.WorldToGrid(worldPos, gridPos))
+    {
+        return false;
+    }
+    return CanPlacePlayer(gridPos);
+}
+
+bool GridCollision::CanPlacePlayer(const GridPosition& gridPos) const
+{
+    return m_gridManager.CanPlacePlayer(gridPos);
+}
+
+// ==========================================
+// 4. 範囲内判定
+// ==========================================
+bool GridCollision::IsInside(const DirectX::XMFLOAT3& worldPos) const
+{
+    GridPosition gridPos;
+    return m_gridManager.WorldToGrid(worldPos, gridPos);
+}
+bool GridCollision::IsInside(const GridPosition& gridPos) const
+{
+    return m_gridManager.IsInside(gridPos);
+}
+
+// ==========================================
+// 5. 演算子オーバーロードによる bool 判定
+// ==========================================
+
+bool GridCollision::operator()(const DirectX::XMFLOAT3& worldPos) const
+{
+    return CanMove(worldPos);
+}
 
 bool GridCollision::operator()(const GridPosition& gridPos) const
 {
     return CanMove(gridPos);
 }
 
-bool GridCollision::operator()(const DirectX::XMFLOAT3& worldPos) const
-{
-    return CanMove(worldPos);
-}

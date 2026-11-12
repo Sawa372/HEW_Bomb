@@ -78,6 +78,9 @@ private:
 
     // オイル缶の描画に使用するモデル（仮モデル）
     Model* m_pOilDrumModel;
+
+    // プレイヤーモデル
+    Model* m_pPlayerModel;
 };
 
 #endif

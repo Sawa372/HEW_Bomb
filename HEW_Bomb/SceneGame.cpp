@@ -34,6 +34,12 @@ SceneGame::SceneGame()
 			MB_OK
 		);
 	}
+
+	// ==========================================
+	//  プレイヤーの初期化と配置
+	// ==========================================
+	m_player.Initialize(GridPosition(0, 0, 0)); // 初期位置を (0,0,0) に設定
+	m_map.GetGridManager().SetPlayer(m_player.GetPosition()); // マップ側にプレイヤーをセット
 }
 
 SceneGame::~SceneGame()
@@ -62,6 +68,15 @@ void SceneGame::Update()
 	m_pGround->Update();
 	m_pGoal->Update();
 	m_pCamera->Update();
+
+	// ==========================================
+	//  毎フレームの更新でプレイヤーを動かす
+	// ==========================================
+	GridCollision gridCollision(m_map.GetGridManager());
+	//gridCollision.Initialize(m_map.GetGridManager()); // マップの情報を元に当たり判定を準備
+
+	// I, J, K, L キーの入力を受け取って移動処理を実行
+	m_player.Update(m_map.GetGridManager(), gridCollision);
 }
 
 void SceneGame::Draw()

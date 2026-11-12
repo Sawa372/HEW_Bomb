@@ -165,5 +165,11 @@ bool Map::CreateStage()
         return false;
     }
 
+    GridPosition playerStartPos(0, 0, 0);
+    if (!m_gridManager.SetPlayer(playerStartPos))
+    {
+        // 配置に失敗した場合（壁やオブジェクトと被っているなど）
+        return false;
+    }
     return true;
 }

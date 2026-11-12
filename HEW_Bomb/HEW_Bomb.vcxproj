@@ -156,6 +156,7 @@
     <ClCompile Include="Geometory.cpp" />
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="GridCell.cpp" />
+    <ClCompile Include="GridCollision.cpp" />
     <ClCompile Include="GridManager.cpp" />
     <ClCompile Include="GridPosition.cpp" />
     <ClCompile Include="Ground.cpp" />
@@ -165,6 +166,7 @@
     <ClCompile Include="MapRenderer.cpp" />
     <ClCompile Include="MeshBuffer.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneGame.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -184,6 +186,7 @@
     <ClInclude Include="Geometory.h" />
     <ClInclude Include="Goal.h" />
     <ClInclude Include="GridCell.h" />
+    <ClInclude Include="GridCollision.h" />
     <ClInclude Include="GridManager.h" />
     <ClInclude Include="GridObjectType.h" />
     <ClInclude Include="GridPosition.h" />
@@ -194,6 +197,7 @@
     <ClInclude Include="MapRenderer.h" />
     <ClInclude Include="MeshBuffer.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneGame.h" />
     <ClInclude Include="Shader.h" />
