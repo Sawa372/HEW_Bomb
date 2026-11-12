@@ -4,6 +4,7 @@
 // GridManagerを初期化する
 Map::Map()
     : m_gridManager()
+    , m_gridObjectManager()
 {
 }
 
@@ -59,9 +60,12 @@ bool Map::Initialize()
 // グリッド内のセル情報を解放する
 void Map::Clear()
 {
+    // オブジェクトを解放
+    m_gridObjectManager.Clear();
+
+    // グリッドを解放
     m_gridManager.Clear();
 }
-
 
 //==================================================
 // GridManagerの取得
@@ -104,7 +108,9 @@ bool Map::CreateStage()
         {
             for (int x = minPosition.GetX(); x <= maxPosition.GetX(); ++x)
             {
-                if (!m_gridManager.SetFloor(GridPosition(x, y, z)))
+                if (!RegisterStageObject(
+                    GridObjectType::Floor,
+                    GridPosition(x, y, z)))
                 {
                     return false;
                 }
@@ -120,7 +126,7 @@ bool Map::CreateStage()
     // 木を配置
     if (!m_gridManager.SetObject(
         GridPosition(3, 0, 3),
-        GridObjectType::Tree))
+        GridObjectType::Wall))
     {
         return false;
     }
@@ -136,7 +142,7 @@ bool Map::CreateStage()
     // 木を配置
     if (!m_gridManager.SetObject(
         GridPosition(8, 0, 8),
-        GridObjectType::Tree))
+        GridObjectType::Wall))
     {
         return false;
     }
@@ -172,4 +178,54 @@ bool Map::CreateStage()
         return false;
     }
     return true;
+}
+
+bool Map::RegisterStageObject(GridObjectType type, const GridPosition& position)
+{
+    // 種類に応じてGridManagerに登録
+    switch (type)
+    {
+    case GridObjectType::Floor:
+        if (!m_gridManager.SetFloor(position))
+        {
+            return false;
+        }
+        break;
+
+    case GridObjectType::Wall:
+        if (!m_gridManager.SetWall(position))
+        {
+            return false;
+        }
+        break;
+
+    default:
+        if (!m_gridManager.SetObject(position, type))
+        {
+            return false;
+        }
+        break;
+    }
+
+    // 実際のオブジェクトを生成して登録
+    if (!m_gridObjectManager.CreateObject(type, position))
+    {
+        return false;
+    }
+
+    return true;
+}
+
+
+
+// GridObjectManagerを取得
+GridObjectManager& Map::GetGridObjectManager()
+{
+    return m_gridObjectManager;
+}
+
+// GridObjectManagerを取得（読み取り専用）
+const GridObjectManager& Map::GetGridObjectManager() const
+{
+    return m_gridObjectManager;
 }

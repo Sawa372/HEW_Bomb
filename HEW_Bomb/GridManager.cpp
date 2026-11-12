@@ -406,7 +406,7 @@ bool GridManager::RemoveWall(const GridPosition& position)
 bool GridManager::SetObject(const GridPosition& position)
 {
     // 種類を指定しない場合はDefaultにする
-    return SetObject(position, GridObjectType::Default);
+    return SetObject(position, GridObjectType::NetworkServer);
 }
 
 // 指定した種類のオブジェクトをマスに設置する

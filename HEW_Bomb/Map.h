@@ -3,6 +3,7 @@
 #define __MAP_H__
 
 #include "GridManager.h"
+#include "GridObjectManager.h"
 
 //==================================================
 // ステージのマップを管理するクラス
@@ -33,14 +34,26 @@ public:
     // グリッドの情報を参照する場合に使用する
     const GridManager& GetGridManager() const;
 
+    // GridObjectManagerを取得
+    GridObjectManager& GetGridObjectManager();
+    const GridObjectManager& GetGridObjectManager() const;
+
 private:
     // ステージ内の壁やオブジェクトの配置を作成する
     // Initialize()から呼び出される
     bool CreateStage();
 
+    // ステージにオブジェクトを登録
+    bool RegisterStageObject(
+        GridObjectType type,
+        const GridPosition& position
+    );
+
 private:
     // ステージのグリッド情報を管理する
     GridManager m_gridManager;
+
+    GridObjectManager m_gridObjectManager;
 };
 
 #endif // __MAP_H__

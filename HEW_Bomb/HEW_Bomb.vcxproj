@@ -151,13 +151,18 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraDebug.cpp" />
+    <ClCompile Include="Computer.cpp" />
     <ClCompile Include="controller.cpp" />
     <ClCompile Include="DirectX.cpp" />
+    <ClCompile Include="Floor.cpp" />
+    <ClCompile Include="Generator.cpp" />
     <ClCompile Include="Geometory.cpp" />
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="GridCell.cpp" />
     <ClCompile Include="GridCollision.cpp" />
     <ClCompile Include="GridManager.cpp" />
+    <ClCompile Include="GridObject.cpp" />
+    <ClCompile Include="GridObjectManager.cpp" />
     <ClCompile Include="GridPosition.cpp" />
     <ClCompile Include="Ground.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -166,6 +171,9 @@
     <ClCompile Include="MapRenderer.cpp" />
     <ClCompile Include="MeshBuffer.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="NetworkServer.cpp" />
+    <ClCompile Include="OilCan.cpp" />
+    <ClCompile Include="Pillar.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneGame.cpp" />
@@ -174,20 +182,26 @@
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Wall.cpp" />
     <ClCompile Include="_geometory.cpp" />
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraDebug.h" />
+    <ClInclude Include="Computer.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectX.h" />
+    <ClInclude Include="Floor.h" />
+    <ClInclude Include="Generator.h" />
     <ClInclude Include="Geometory.h" />
     <ClInclude Include="Goal.h" />
     <ClInclude Include="GridCell.h" />
     <ClInclude Include="GridCollision.h" />
     <ClInclude Include="GridManager.h" />
+    <ClInclude Include="GridObject.h" />
+    <ClInclude Include="GridObjectManager.h" />
     <ClInclude Include="GridObjectType.h" />
     <ClInclude Include="GridPosition.h" />
     <ClInclude Include="Ground.h" />
@@ -197,6 +211,9 @@
     <ClInclude Include="MapRenderer.h" />
     <ClInclude Include="MeshBuffer.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="NetworkServer.h" />
+    <ClInclude Include="OilCan.h" />
+    <ClInclude Include="Pillar.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneGame.h" />
@@ -204,6 +221,7 @@
     <ClInclude Include="ShaderList.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="Wall.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Local.props" />

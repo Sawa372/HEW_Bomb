@@ -8,20 +8,17 @@
 #include <Windows.h>
 
 // コンストラクタ
-// 各モデルポインタをnullptrで初期化する
 MapRenderer::MapRenderer()
     : m_pWallModel(nullptr)
-    , m_pDefaultModel(nullptr)
-    , m_pTreeModel(nullptr)
-    , m_pRockModel(nullptr)
-    , m_pBoxModel(nullptr)
+    , m_pNetworkServerModel(nullptr)
+    , m_pGeneratorModel(nullptr)
+    , m_pComputerModel(nullptr)
     , m_pPillarModel(nullptr)
-    , m_pOilDrumModel(nullptr)
-    , m_pfloorModel(nullptr)
+    , m_pOilCanModel(nullptr)
+    , m_pFloorModel(nullptr)
     , m_pPlayerModel(nullptr)
 {
 }
-
 // デストラクタ
 // 管理しているモデルをすべて解放する
 MapRenderer::~MapRenderer()
@@ -39,151 +36,52 @@ bool MapRenderer::Initialize()
 {
     // 既存のモデルを解放して初期状態に戻す
     Clear();
-
-
-    // 壁用モデル
-
-    // 壁の描画に使用するモデルを読み込む（仮モデル）
     m_pWallModel = new Model();
-    if (!m_pWallModel->Load(
-        "Assets/Model/tree_forest.fbx", 0.5f))
+    if (!m_pWallModel->Load("Assets/Model/tree_forest.fbx"))
     {
-        // 読み込みに失敗した場合はエラーメッセージを表示する
-        MessageBoxA(
-            nullptr,
-            "壁モデルの読み込みに失敗しました。\n(tree_forest.fbx)",
-            "MapRenderer Error",
-            MB_OK | MB_ICONERROR
-        );
-
-        // 読み込み済みのモデルを解放する
-        Clear();
+        MessageBoxA(nullptr, "Wallモデルの読み込みに失敗しました。\ntree_forest.fbx", "Error", MB_OK);
         return false;
     }
 
-    // Defaultモデル
-
-    // 種類未指定オブジェクト用のモデルを読み込む（仮モデル）
-    m_pDefaultModel = new Model();
-    if (!m_pDefaultModel->Load(
-        "Assets/Model/plantB_forest.fbx", 0.5f))
+    m_pNetworkServerModel = new Model();
+    if (!m_pNetworkServerModel->Load("Assets/Model/plantB_forest.fbx"))
     {
-        MessageBoxA(
-            nullptr,
-            "Defaultモデルの読み込みに失敗しました。\n(plantB_forest.fbx)",
-            "MapRenderer Error",
-            MB_OK | MB_ICONERROR
-        );
-
-        Clear();
+        MessageBoxA(nullptr, "NetworkServerモデルの読み込みに失敗しました。\nplantB_forest.fbx", "Error", MB_OK);
         return false;
     }
 
-    // Treeモデル
-
-    // 木の描画に使用するモデルを読み込む（仮モデル）
-    m_pTreeModel = new Model();
-    if (!m_pTreeModel->Load(
-        "Assets/Model/tree_forest.fbx", 0.5f))
+    m_pGeneratorModel = new Model();
+    if (!m_pGeneratorModel->Load("Assets/Model/rocksA_desert.fbx"))
     {
-        MessageBoxA(
-            nullptr,
-            "Treeモデルの読み込みに失敗しました。\n(tree_forest.fbx)",
-            "MapRenderer Error",
-            MB_OK | MB_ICONERROR
-        );
-
-        Clear();
+        MessageBoxA(nullptr, "Generatorモデルの読み込みに失敗しました。\nrocksA_desert.fbx", "Error", MB_OK);
         return false;
     }
 
-    // Rockモデル
-
-    // 岩の描画に使用するモデルを読み込む（仮モデル）
-    m_pRockModel = new Model();
-    if (!m_pRockModel->Load(
-        "Assets/Model/rocksA_desert.fbx", 0.5f))
+    m_pComputerModel = new Model();
+    if (!m_pComputerModel->Load("Assets/Model/flag_teamBlue.fbx"))
     {
-        MessageBoxA(
-            nullptr,
-            "rocksモデルの読み込みに失敗しました。\n(rocksA_desert.fbx)",
-            "MapRenderer Error",
-            MB_OK | MB_ICONERROR
-        );
-
-        Clear();
+        MessageBoxA(nullptr, "Computerモデルの読み込みに失敗しました。\nflag_teamBlue.fbx", "Error", MB_OK);
         return false;
     }
 
-    // floorモデル
-
-    // 床の描画に使用するモデルを読み込む（仮モデル）
-    m_pfloorModel = new Model();
-    if (!m_pfloorModel->Load(
-        "Assets/Model/tileMedium_forest.fbx", 0.5f))
-    {
-        MessageBoxA(
-            nullptr,
-            "floorモデルの読み込みに失敗しました。\n(tileMedium_forest.fbx)",
-            "MapRenderer Error",
-            MB_OK | MB_ICONERROR
-        );
-
-        Clear();
-        return false;
-    }
-
-    // Boxモデル
-
-    // 箱の描画に使用するモデルを読み込む（仮モデル）
-    m_pBoxModel = new Model();
-    if (!m_pBoxModel->Load(
-        "Assets/Model/flag_teamBlue.fbx", 0.5f))
-    {
-        MessageBoxA(
-            nullptr,
-            "Boxモデルの読み込みに失敗しました。\n(flag_teamBlue.fbx)",
-            "MapRenderer Error",
-            MB_OK | MB_ICONERROR
-        );
-
-        Clear();
-        return false;
-    }
-
-    // Pillarモデル
-
-    // 柱の描画に使用するモデルを読み込む（仮モデル）
     m_pPillarModel = new Model();
-    if (!m_pPillarModel->Load(
-        "Assets/Model/flag_teamRed.fbx", 0.5f))
+    if (!m_pPillarModel->Load("Assets/Model/flag_teamRed.fbx"))
     {
-        MessageBoxA(
-            nullptr,
-            "Pillarモデルの読み込みに失敗しました。\n(flag_teamRed.fbx)",
-            "MapRenderer Error",
-            MB_OK | MB_ICONERROR
-        );
-
-        Clear();
+        MessageBoxA(nullptr, "Pillarモデルの読み込みに失敗しました。\nflag_teamRed.fbx", "Error", MB_OK);
         return false;
     }
 
-    // OilDrumモデル
-
-    // オイル缶の描画に使用するモデルを読み込む（仮モデル）
-    m_pOilDrumModel = new Model();
-    if (!m_pOilDrumModel->Load(
-        "Assets/Model/flag_teamYellow.fbx", 0.5f))
+    m_pOilCanModel = new Model();
+    if (!m_pOilCanModel->Load("Assets/Model/flag_teamYellow.fbx"))
     {
-        MessageBoxA(
-            nullptr,
-            "OilDrumモデルの読み込みに失敗しました。\n(flag_teamYellow.fbx)",
-            "MapRenderer Error",
-            MB_OK | MB_ICONERROR
-        );
+        MessageBoxA(nullptr, "OilCanモデルの読み込みに失敗しました。\nflag_teamYellow.fbx", "Error", MB_OK);
+        return false;
+    }
 
-        Clear();
+    m_pFloorModel = new Model();
+    if (!m_pFloorModel->Load("Assets/Model/tileMedium_forest.fbx",0.5))
+    {
+        MessageBoxA(nullptr, "Floorモデルの読み込みに失敗しました。\ntileMedium_forest.fbx", "Error", MB_OK);
         return false;
     }
 
@@ -202,43 +100,6 @@ bool MapRenderer::Initialize()
 
 //==================================================
 // モデルの解放
-
-// 読み込んだすべてのモデルを解放する
-void MapRenderer::Clear()
-{
-    // 壁用モデルを解放
-    delete m_pWallModel;
-    m_pWallModel = nullptr;
-
-    // Defaultモデルを解放
-    delete m_pDefaultModel;
-    m_pDefaultModel = nullptr;
-
-    // Treeモデルを解放
-    delete m_pTreeModel;
-    m_pTreeModel = nullptr;
-
-    // Rockモデルを解放
-    delete m_pRockModel;
-    m_pRockModel = nullptr;
-
-    // Boxモデルを解放
-    delete m_pBoxModel;
-    m_pBoxModel = nullptr;
-
-    // Pillarモデルを解放
-    delete m_pPillarModel;
-    m_pPillarModel = nullptr;
-
-    // OilDrumモデルを解放
-    delete m_pOilDrumModel;
-    m_pOilDrumModel = nullptr;
-
-    // プレイヤーモデルを解放
-    delete m_pPlayerModel;
-    m_pPlayerModel = nullptr;
-}
-
 
 //==================================================
 // マップの描画
@@ -295,7 +156,7 @@ void MapRenderer::Draw(
             floorPosition.y -= 0.75f;
 
             // 岩モデルを床として使用
-            DrawModel(m_pfloorModel, floorPosition);
+            DrawModel(m_pFloorModel, floorPosition);
         }
 
         // 壁の描画
@@ -317,35 +178,30 @@ void MapRenderer::Draw(
             // セルに設定されているオブジェクトの種類を確認する
             switch (cell.GetObjectType())
             {
-            case GridObjectType::Default:
-                pModel = m_pDefaultModel;
+            case GridObjectType::Wall:
+                DrawModel(m_pWallModel, worldPosition);
                 break;
 
-            case GridObjectType::Tree:
-                pModel = m_pTreeModel;
+            case GridObjectType::NetworkServer:
+                DrawModel(m_pNetworkServerModel, worldPosition);
                 break;
 
-            case GridObjectType::Box:
-                pModel = m_pBoxModel;
+            case GridObjectType::Generator:
+                DrawModel(m_pGeneratorModel, worldPosition);
                 break;
 
-            case GridObjectType::Rock:
-                pModel = m_pRockModel;
+            case GridObjectType::Computer:
+                DrawModel(m_pComputerModel, worldPosition);
                 break;
 
             case GridObjectType::Pillar:
-                pModel = m_pPillarModel;
+                DrawModel(m_pPillarModel, worldPosition);
                 break;
 
-            case GridObjectType::OilDrum:
-                pModel = m_pOilDrumModel;
-                break;
-
-            default:
-                // 対応するモデルがない場合はnullptrのままにする
+            case GridObjectType::OilCan:
+                DrawModel(m_pOilCanModel, worldPosition);
                 break;
             }
-
             // 選択したモデルをセルのワールド座標に描画する
             // モデルがnullptrの場合はDrawModel側で処理を中止する
             DrawModel(pModel, worldPosition);
