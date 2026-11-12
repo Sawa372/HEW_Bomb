@@ -7,6 +7,7 @@
 #include "Camera.h"
 #include "Model.h"
 #include "Map.h"
+#include "MapRenderer.h"
 
 class SceneGame : public Scene
 {
@@ -20,9 +21,9 @@ private:
 	Ground* m_pGround; // 地面オブジェクト
 	Goal* m_pGoal; // ゴールオブジェクト
 	Camera* m_pCamera; // ゲーム中に動かすカメラ
-	Model* m_pModel; // モデル
-
+	
 	Map m_map; // マップ
+	MapRenderer m_mapRenderer;// モデル軍
 };
 
 #endif // __SCENE_GAME_H__

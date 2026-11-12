@@ -128,7 +128,7 @@ void Model::MakeMaterial(const void* ptr, std::string directory)
 		aiString path;
 
 		// テクスチャのパス情報を読み込み
-		m_materials[i].pTexture = m_pDefTex;// nullptr
+		m_materials[i].pTexture = nullptr;
 		if (pScene->mMaterials[i]->Get(AI_MATKEY_TEXTURE_DIFFUSE(0), path) != AI_SUCCESS) {
 			continue;
 		}
