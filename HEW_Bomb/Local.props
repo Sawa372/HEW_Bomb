@@ -4,20 +4,20 @@
 	<!-- Debug x64 -->
 	<ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
 		<ClCompile>
-			<AdditionalIncludeDirectories>"C:\Users\kyawk\OneDrive\Desktop\HEW\SDL3-devel-3.4.20-VC\SDL3-3.4.20\include"</AdditionalIncludeDirectories>
+			<AdditionalIncludeDirectories>"C:\HAL\HAL_2\kouki\HEW\HEW_Bomb\SDL3-devel-3.4.20-VC\SDL3-3.4.20\include"</AdditionalIncludeDirectories>
 		</ClCompile>
 		<Link>
-			<AdditionalLibraryDirectories>"C:\Users\kyawk\OneDrive\Desktop\HEW\SDL3-devel-3.4.20-VC\SDL3-3.4.20\lib\x64"</AdditionalLibraryDirectories>
+			<AdditionalLibraryDirectories>"C:\HAL\HAL_2\kouki\HEW\HEW_Bomb\SDL3-devel-3.4.20-VC\SDL3-3.4.20\lib\x64"</AdditionalLibraryDirectories>
 		</Link>
 	</ItemDefinitionGroup>
 
 	<!-- Release x64 -->
 	<ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
 		<ClCompile>
-			<AdditionalIncludeDirectories>"C:\Users\kyawk\OneDrive\Desktop\HEW\SDL3-devel-3.4.20-VC\SDL3-3.4.20\include"</AdditionalIncludeDirectories>
+			<AdditionalIncludeDirectories>"C:\HAL\HAL_2\kouki\HEW\HEW_Bomb\SDL3-devel-3.4.20-VC\SDL3-3.4.20\include"</AdditionalIncludeDirectories>
 		</ClCompile>
 		<Link>
-			<AdditionalLibraryDirectories>"C:\Users\kyawk\OneDrive\Desktop\HEW\SDL3-devel-3.4.20-VC\SDL3-3.4.20\lib\x64"</AdditionalLibraryDirectories>
+			<AdditionalLibraryDirectories>"C:\HAL\HAL_2\kouki\HEW\HEW_Bomb\SDL3-devel-3.4.20-VC\SDL3-3.4.20\lib\x64"</AdditionalLibraryDirectories>
 		</Link>
 	</ItemDefinitionGroup>
 
