@@ -1,4 +1,6 @@
 #include "Explosion.h"
+#include "GridManager.h"
+
 #include <cmath>
 
 Explosion::Explosion()
@@ -42,4 +44,35 @@ bool Explosion::IsInside(
 
     return distanceSquared <=
         m_radius * m_radius;
+}
+
+std::vector<GridPosition> Explosion::GetAffectedPositions(
+    const GridManager& grid
+) const
+{
+    std::vector<GridPosition> positions;
+
+    // グリッド内の全てのマスを確認
+    const std::vector<GridCell>& cells = grid.GetCells();
+
+    for (const GridCell& cell : cells)
+    {
+        DirectX::XMFLOAT3 worldPosition;
+
+        // グリッド座標をワールド座標に変換
+        if (!grid.GridToWorld(
+            cell.GetPosition(),
+            worldPosition))
+        {
+            continue;
+        }
+
+        // 爆発範囲内か確認
+        if (IsInside(worldPosition))
+        {
+            positions.push_back(cell.GetPosition());
+        }
+    }
+
+    return positions;
 }

@@ -3,6 +3,11 @@
 #define __EXPLOSION_H__
 
 #include <DirectXMath.h>
+#include <vector>
+
+#include "GridPosition.h"
+
+class GridManager;
 
 // 爆発の範囲を管理するクラス
 class Explosion
@@ -19,6 +24,11 @@ public:
 
     // 指定した座標が爆発範囲内か
     bool IsInside(const DirectX::XMFLOAT3& position) const;
+
+    // 爆発範囲内のグリッド座標を取得
+    std::vector<GridPosition> GetAffectedPositions(
+        const GridManager& grid
+    ) const;
 
 private:
     // 爆発の中心位置
