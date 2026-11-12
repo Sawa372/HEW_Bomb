@@ -363,3 +363,5 @@ Local.props
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/HEW_Bomb/Local.props
+/.gitignore
