@@ -356,6 +356,8 @@ healthchecksdb
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 MigrationBackup/
 
+# 個人用Visual Studio設定
+Local.props
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
