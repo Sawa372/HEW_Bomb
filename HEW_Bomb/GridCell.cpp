@@ -7,6 +7,7 @@ GridCell::GridCell()
     , m_objectType(GridObjectType::None)
     , m_hasBomb(false)
     , m_hasPlayer(false)
+    , m_hasFloor(false)
 {
 }
 
@@ -23,6 +24,7 @@ GridCell::GridCell(const GridPosition& position)
     , m_objectType(GridObjectType::None)
     , m_hasBomb(false)
     , m_hasPlayer(false)
+    , m_hasFloor(false)
 {
 }
 
@@ -142,4 +144,16 @@ GridObjectType GridCell::GetObjectType() const
 void GridCell::SetObjectType(GridObjectType type)
 {
     m_objectType = type;
+}
+
+// è∞Ç™Ç†ÇÈÇ©
+bool GridCell::HasFloor() const
+{
+    return m_hasFloor;
+}
+
+// è∞ÇÃê›íË
+void GridCell::SetFloor(bool floor)
+{
+    m_hasFloor = floor;
 }

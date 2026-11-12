@@ -327,6 +327,20 @@ bool GridManager::HasPlayer(const GridPosition& position) const
     return cell->HasPlayer();
 }
 
+// °‚ª‚ ‚é‚©
+bool GridManager::HasFloor(const GridPosition& position) const
+{
+    const GridCell* cell = GetCell(position);
+
+    if (cell == nullptr)
+    {
+        return false;
+    }
+
+    return cell->HasFloor();
+}
+
+
 
 //==================================================
 // ˆÚ“®”»’è
@@ -478,6 +492,34 @@ std::vector<GridPosition> GridManager::GetWallPositions() const
     }
 
     return positions;
+}
+
+// °‚ðÝ’u
+bool GridManager::SetFloor(const GridPosition& position)
+{
+    GridCell* cell = GetCell(position);
+
+    if (cell == nullptr || cell->HasFloor())
+    {
+        return false;
+    }
+
+    cell->SetFloor(true);
+    return true;
+}
+
+// °‚ðíœ
+bool GridManager::RemoveFloor(const GridPosition& position)
+{
+    GridCell* cell = GetCell(position);
+
+    if (cell == nullptr || !cell->HasFloor())
+    {
+        return false;
+    }
+
+    cell->SetFloor(false);
+    return true;
 }
 
 

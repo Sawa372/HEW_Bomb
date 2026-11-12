@@ -101,6 +101,9 @@ public:
     // 範囲外で false
     bool CanMove(const GridPosition& position) const;
 
+    // 床があるか
+    bool HasFloor(const GridPosition& position) const;
+
 
     //==================================================
     // 壁の配置・削除
@@ -132,6 +135,12 @@ public:
 
     // 壁が配置されているすべての座標を取得する
     std::vector<GridPosition> GetWallPositions() const;
+
+    // 床を設置
+    bool SetFloor(const GridPosition& position);
+
+    // 床を削除
+    bool RemoveFloor(const GridPosition& position);
 
 
     //==================================================

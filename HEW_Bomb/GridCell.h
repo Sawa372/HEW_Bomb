@@ -62,6 +62,12 @@ public:
     // 壁・オブジェクト・爆弾がある場合は移動不可とする
     bool IsWalkable() const;
 
+    // 床があるか
+    bool HasFloor() const;
+
+    // 床の設定
+    void SetFloor(bool floor);
+
 private:
     // このセルが存在するグリッド座標
     GridPosition m_position;
@@ -78,6 +84,8 @@ private:
 
     // プレイヤーがこのマスにいるか
     bool m_hasPlayer;
+
+    bool m_hasFloor;
 };
 
 #endif // __GRID_CELL_H__

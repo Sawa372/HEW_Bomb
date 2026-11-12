@@ -234,7 +234,7 @@ void MapRenderer::Draw(
     for (const GridCell& cell : cells)
     {
         // 壁もオブジェクトもないセルは描画する必要がないためスキップする
-        if (!cell.IsWall() && !cell.HasObject())
+        if (!cell.IsWall() && !cell.HasObject() && !cell.HasFloor())
         {
             continue;
         }
@@ -253,6 +253,17 @@ void MapRenderer::Draw(
             continue;
         }
 
+        // 床を描画
+        if (cell.HasFloor())
+        {
+            DirectX::XMFLOAT3 floorPosition = worldPosition;
+
+            // 床を少し下げて配置する
+            floorPosition.y -= 0.2f;
+
+            // 岩モデルを床として使用
+            DrawModel(m_pRockModel, floorPosition);
+        }
 
         // 壁の描画
 
