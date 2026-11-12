@@ -104,7 +104,25 @@ bool MapRenderer::Initialize()
     {
         MessageBoxA(
             nullptr,
-            "Rockモデルの読み込みに失敗しました。\n(rocksA_desert.fbx)",
+            "rocksモデルの読み込みに失敗しました。\n(rocksA_desert.fbx)",
+            "MapRenderer Error",
+            MB_OK | MB_ICONERROR
+        );
+
+        Clear();
+        return false;
+    }
+
+    // floorモデル
+
+    // 床の描画に使用するモデルを読み込む（仮モデル）
+    m_pfloorModel = new Model();
+    if (!m_pfloorModel->Load(
+        "Assets/Model/tileMedium_forest.fbx", 0.5f))
+    {
+        MessageBoxA(
+            nullptr,
+            "floorモデルの読み込みに失敗しました。\n(tileMedium_forest.fbx)",
             "MapRenderer Error",
             MB_OK | MB_ICONERROR
         );
@@ -259,10 +277,10 @@ void MapRenderer::Draw(
             DirectX::XMFLOAT3 floorPosition = worldPosition;
 
             // 床を少し下げて配置する
-            floorPosition.y -= 0.2f;
+            floorPosition.y -= 0.75f;
 
             // 岩モデルを床として使用
-            DrawModel(m_pRockModel, floorPosition);
+            DrawModel(m_pfloorModel, floorPosition);
         }
 
         // 壁の描画

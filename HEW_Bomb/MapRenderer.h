@@ -66,6 +66,9 @@ private:
 
     // 岩の描画に使用するモデル（仮モデル）
     Model* m_pRockModel;
+    
+    // 床の描画に使用するモデル（仮モデル）
+    Model* m_pfloorModel;
 
     // 箱の描画に使用するモデル（仮モデル）
     Model* m_pBoxModel;
