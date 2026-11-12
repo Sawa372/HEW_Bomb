@@ -18,23 +18,6 @@ SceneGame::SceneGame()
 	m_pGoal->SetPos(3.0f, 1.0f, 0.0f);
 	m_pGoal->SetScale(0.5f, 0.5f, 0.5f);
 
-	// マップを初期化
-	if (!m_map.Initialize())
-	{
-		MessageBox(NULL, "マップの初期化に失敗しました", "Error", MB_OK);
-	}
-
-	// マップ描画クラスを初期化
-	if (!m_mapRenderer.Initialize())
-	{
-		MessageBox(
-			NULL,
-			"MapRendererの初期化に失敗しました",
-			"Error",
-			MB_OK
-		);
-	}
-
 	// ==========================================
 	//  プレイヤーの初期化と配置
 	// ==========================================
