@@ -8,6 +8,9 @@
 #include "Model.h"
 #include "Map.h"
 #include "MapRenderer.h"
+#include "Player.h"         
+#include "GridCollision.h"  
+
 
 class SceneGame : public Scene
 {
@@ -24,6 +27,8 @@ private:
 	
 	Map m_map; // マップ
 	MapRenderer m_mapRenderer;// モデル軍
+	Player m_player; // プレイヤー
+
 };
 
 #endif // __SCENE_GAME_H__

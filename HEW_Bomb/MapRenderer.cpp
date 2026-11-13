@@ -17,6 +17,8 @@ MapRenderer::MapRenderer()
     , m_pBoxModel(nullptr)
     , m_pPillarModel(nullptr)
     , m_pOilDrumModel(nullptr)
+    , m_pfloorModel(nullptr)
+    , m_pPlayerModel(nullptr)
 {
 }
 
@@ -104,7 +106,25 @@ bool MapRenderer::Initialize()
     {
         MessageBoxA(
             nullptr,
-            "Rockモデルの読み込みに失敗しました。\n(rocksA_desert.fbx)",
+            "rocksモデルの読み込みに失敗しました。\n(rocksA_desert.fbx)",
+            "MapRenderer Error",
+            MB_OK | MB_ICONERROR
+        );
+
+        Clear();
+        return false;
+    }
+
+    // floorモデル
+
+    // 床の描画に使用するモデルを読み込む（仮モデル）
+    m_pfloorModel = new Model();
+    if (!m_pfloorModel->Load(
+        "Assets/Model/tileMedium_forest.fbx", 0.5f))
+    {
+        MessageBoxA(
+            nullptr,
+            "floorモデルの読み込みに失敗しました。\n(tileMedium_forest.fbx)",
             "MapRenderer Error",
             MB_OK | MB_ICONERROR
         );
@@ -167,6 +187,15 @@ bool MapRenderer::Initialize()
         return false;
     }
 
+    // プレイヤーモデル
+    m_pPlayerModel = new Model();
+    if (!m_pPlayerModel->Load("Assets/Model/ball.fbx", 0.5f)) // パスは実際のファイル名に合わせる
+    {
+        // エラー処理
+        Clear();
+        return false;
+    }
+
     return true;
 }
 
@@ -204,6 +233,10 @@ void MapRenderer::Clear()
     // OilDrumモデルを解放
     delete m_pOilDrumModel;
     m_pOilDrumModel = nullptr;
+
+    // プレイヤーモデルを解放
+    delete m_pPlayerModel;
+    m_pPlayerModel = nullptr;
 }
 
 
@@ -234,7 +267,7 @@ void MapRenderer::Draw(
     for (const GridCell& cell : cells)
     {
         // 壁もオブジェクトもないセルは描画する必要がないためスキップする
-        if (!cell.IsWall() && !cell.HasObject())
+        if (!cell.IsWall() && !cell.HasObject() && !cell.HasFloor() && !cell.HasPlayer())
         {
             continue;
         }
@@ -253,6 +286,17 @@ void MapRenderer::Draw(
             continue;
         }
 
+        // 床を描画
+        if (cell.HasFloor())
+        {
+            DirectX::XMFLOAT3 floorPosition = worldPosition;
+
+            // 床を少し下げて配置する
+            floorPosition.y -= 0.75f;
+
+            // 岩モデルを床として使用
+            DrawModel(m_pfloorModel, floorPosition);
+        }
 
         // 壁の描画
 
@@ -305,6 +349,14 @@ void MapRenderer::Draw(
             // 選択したモデルをセルのワールド座標に描画する
             // モデルがnullptrの場合はDrawModel側で処理を中止する
             DrawModel(pModel, worldPosition);
+        }
+
+        // 4. プレイヤーの描画
+        if (cell.HasPlayer())
+        {
+            DirectX::XMFLOAT3 playerPos = worldPosition;
+            playerPos.y += 0.5f;
+            DrawModel(m_pPlayerModel, playerPos);
         }
     }
 }

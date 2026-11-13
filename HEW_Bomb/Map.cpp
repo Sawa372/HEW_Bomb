@@ -88,6 +88,31 @@ const GridManager& Map::GetGridManager() const
 // 配置に失敗した場合はfalseを返す
 bool Map::CreateStage()
 {
+    // グリッドの範囲を取得
+    GridPosition minPosition;
+    GridPosition maxPosition;
+
+    if (!m_gridManager.GetBounds(minPosition, maxPosition))
+    {
+        return false;
+    }
+
+    // マップ全体に床を設置
+    for (int y = minPosition.GetY(); y <= maxPosition.GetY(); ++y)
+    {
+        for (int z = minPosition.GetZ(); z <= maxPosition.GetZ(); ++z)
+        {
+            for (int x = minPosition.GetX(); x <= maxPosition.GetX(); ++x)
+            {
+                if (!m_gridManager.SetFloor(GridPosition(x, y, z)))
+                {
+                    return false;
+                }
+            }
+        }
+    }
+
+
     //==================================================
     // オブジェクトの配置
     // これは3Dモデルの表示確認用の仮配置
@@ -140,5 +165,11 @@ bool Map::CreateStage()
         return false;
     }
 
+    GridPosition playerStartPos(0, 0, 0);
+    if (!m_gridManager.SetPlayer(playerStartPos))
+    {
+        // 配置に失敗した場合（壁やオブジェクトと被っているなど）
+        return false;
+    }
     return true;
 }
