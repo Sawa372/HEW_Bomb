@@ -2,12 +2,12 @@
 #include "Defines.h"
 
 Camera::Camera()
-	:m_pos(0.0f,0.0f,-5.0f)
-	, m_look(0.0f,0.0f,0.0f)
-	, m_up(0.0f,1.0f,0.0f)
-	, m_fovy(DirectX::XMConvertToRadians(60.0f))
-	, m_aspect(16.0f / 9.0f)
-	, m_near(CMETER(30.0f)), m_far(METER(100.0f)) 
+	:m_pos(0.0f,0.0f,-5.0f)  //座標
+	, m_look(0.0f,0.0f,0.0f) //注視点
+	, m_up(0.0f,1.0f,0.0f)   //上方ベクトル
+	, m_fovy(DirectX::XMConvertToRadians(60.0f))   //画角
+	, m_aspect(16.0f / 9.0f)                       //アスペクト比
+	, m_near(CMETER(30.0f)), m_far(METER(100.0f))  //ニアクリップ,ファークリップ
 {
 }
 
