@@ -20,6 +20,7 @@ void Player::Initialize(const GridPosition& startPos)
 // 毎フレームの移動処理（I, J, K, L キーで操作）
 void Player::Update(GridManager& gridManager, const GridCollision& gridCollision)
 {
+    
     GridPosition nextPos = m_playerPos;
     bool isKeyPressed = false;
 
