@@ -30,7 +30,29 @@ public:
     bool Initialize();
 
     // 読み込んだ3Dモデルをすべて解放する
-    void Clear();
+    // 読み込んだすべてのモデルを解放する
+    void Clear()
+    {
+        delete m_pWallModel;
+        delete m_pNetworkServerModel;
+        delete m_pGeneratorModel;
+        delete m_pComputerModel;
+        delete m_pPillarModel;
+        delete m_pOilCanModel;
+        delete m_pFloorModel;
+
+        m_pWallModel = nullptr;
+        m_pNetworkServerModel = nullptr;
+        m_pGeneratorModel = nullptr;
+        m_pComputerModel = nullptr;
+        m_pPillarModel = nullptr;
+        m_pOilCanModel = nullptr;
+        m_pFloorModel = nullptr;
+
+        // プレイヤーモデルを解放
+        delete m_pPlayerModel;
+        m_pPlayerModel = nullptr;
+    }
 
     // マップの描画
 
@@ -55,29 +77,16 @@ private:
 private:
     // 描画用モデル
 
-    // 壁の描画に使用するモデル（現在は仮モデル）
     Model* m_pWallModel;
-
-    // 種類未指定オブジェクトの描画に使用するモデル（仮モデル）
-    Model* m_pDefaultModel;
-
-    // 木の描画に使用するモデル（仮モデル）
-    Model* m_pTreeModel;
-
-    // 岩の描画に使用するモデル（仮モデル）
-    Model* m_pRockModel;
-    
-    // 床の描画に使用するモデル（仮モデル）
-    Model* m_pfloorModel;
-
-    // 箱の描画に使用するモデル（仮モデル）
-    Model* m_pBoxModel;
-
-    // 柱の描画に使用するモデル（仮モデル）
+    Model* m_pNetworkServerModel;
+    Model* m_pGeneratorModel;
+    Model* m_pComputerModel;
     Model* m_pPillarModel;
+    Model* m_pOilCanModel;
+    Model* m_pFloorModel;
 
-    // オイル缶の描画に使用するモデル（仮モデル）
-    Model* m_pOilDrumModel;
+    // プレイヤーモデル
+    Model* m_pPlayerModel;
 };
 
 #endif
