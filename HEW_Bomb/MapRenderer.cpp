@@ -37,7 +37,7 @@ bool MapRenderer::Initialize()
     // Šù‘¶‚Ìƒ‚ƒfƒ‹‚ğ‰ğ•ú‚µ‚Ä‰Šúó‘Ô‚É–ß‚·
     Clear();
     m_pWallModel = new Model();
-    if (!m_pWallModel->Load("Assets/Model/tree_forest.fbx"))
+    if (!m_pWallModel->Load("Assets/Model/t1.fbx"))
     {
         MessageBoxA(nullptr, "Wallƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½B\ntree_forest.fbx", "Error", MB_OK);
         return false;
