@@ -192,4 +192,7 @@
       <Filter>ヘッダー ファイル\System\Grid</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Local.props" />
+  </ItemGroup>
 </Project>
