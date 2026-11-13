@@ -29,7 +29,7 @@ void Player::Update(GridManager& gridManager, const GridCollision& gridCollision
     //else if (GetAsyncKeyState('J') & 0x8000) { nextPos = m_playerPos + GridPosition(-1, 0, 0); isKeyPressed = true; }
     //else if (GetAsyncKeyState('L') & 0x8000) { nextPos = m_playerPos + GridPosition(1, 0, 0); isKeyPressed = true; }
 
-
+    //
     if (Controller::GetLeftStickDirection() == StickUp) { nextPos = m_playerPos + GridPosition(0, 0, 1); isKeyPressed = true; }
     else if (Controller::GetLeftStickDirection() == StickDown) { nextPos = m_playerPos + GridPosition(0, 0, -1); isKeyPressed = true; }
     else if (Controller::GetLeftStickDirection() == StickLeft) { nextPos = m_playerPos + GridPosition(-1, 0, 0); isKeyPressed = true; }
