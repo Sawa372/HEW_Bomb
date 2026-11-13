@@ -2,6 +2,7 @@
 #include "GridManager.h"
 #include "GridCollision.h"
 #include <Windows.h>
+#include "controller.h"
 
 Player::Player()
     : m_playerPos(0, 0, 0)
@@ -22,10 +23,17 @@ void Player::Update(GridManager& gridManager, const GridCollision& gridCollision
     GridPosition nextPos = m_playerPos;
     bool isKeyPressed = false;
 
-    if (GetAsyncKeyState('I') & 0x8000) { nextPos = m_playerPos + GridPosition(0, 0, 1); isKeyPressed = true; }
-    else if (GetAsyncKeyState('K') & 0x8000) { nextPos = m_playerPos + GridPosition(0, 0, -1); isKeyPressed = true; }
-    else if (GetAsyncKeyState('J') & 0x8000) { nextPos = m_playerPos + GridPosition(-1, 0, 0); isKeyPressed = true; }
-    else if (GetAsyncKeyState('L') & 0x8000) { nextPos = m_playerPos + GridPosition(1, 0, 0); isKeyPressed = true; }
+    //if (GetAsyncKeyState('I') & 0x8000) { nextPos = m_playerPos + GridPosition(0, 0, 1); isKeyPressed = true; }
+    //else if (GetAsyncKeyState('K') & 0x8000) { nextPos = m_playerPos + GridPosition(0, 0, -1); isKeyPressed = true; }
+    //else if (GetAsyncKeyState('J') & 0x8000) { nextPos = m_playerPos + GridPosition(-1, 0, 0); isKeyPressed = true; }
+    //else if (GetAsyncKeyState('L') & 0x8000) { nextPos = m_playerPos + GridPosition(1, 0, 0); isKeyPressed = true; }
+
+
+    if (Controller::GetLeftStickDirection() == StickUp) { nextPos = m_playerPos + GridPosition(0, 0, 1); isKeyPressed = true; }
+    else if (Controller::GetLeftStickDirection() == StickDown) { nextPos = m_playerPos + GridPosition(0, 0, -1); isKeyPressed = true; }
+    else if (Controller::GetLeftStickDirection() == StickLeft) { nextPos = m_playerPos + GridPosition(-1, 0, 0); isKeyPressed = true; }
+    else if (Controller::GetLeftStickDirection() == StickRight) { nextPos = m_playerPos + GridPosition(1, 0, 0); isKeyPressed = true; }
+
 
     if (isKeyPressed)
     {

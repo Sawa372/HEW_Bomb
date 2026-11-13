@@ -1,9 +1,9 @@
 #include "SceneGame.h"
 #include "Geometory.h"
 #include "CameraDebug.h"
-
-
+#include "controller.h"
 #include <ShaderList.h>
+#include <SDL3/SDL.h>
 
 
 SceneGame::SceneGame()
@@ -40,10 +40,13 @@ SceneGame::SceneGame()
 	// ==========================================
 	m_player.Initialize(GridPosition(0, 0, 0)); // 初期位置を (0,0,0) に設定
 	m_map.GetGridManager().SetPlayer(m_player.GetPosition()); // マップ側にプレイヤーをセット
+	Controller::Initialize();
 }
 
 SceneGame::~SceneGame()
 {
+	Controller::Finalize();
+
 	if (m_pCamera)
 	{
 		delete m_pCamera;
@@ -77,6 +80,24 @@ void SceneGame::Update()
 
 	// I, J, K, L キーの入力を受け取って移動処理を実行
 	m_player.Update(m_map.GetGridManager(), gridCollision);
+
+	// コントローラーの状態を更新
+	Controller::Update();
+
+	SDL_Event event;
+
+	while (SDL_PollEvent(&event))
+	{
+		if (event.type == SDL_EVENT_QUIT)
+		{
+			break;
+		}
+
+		Controller::ProcessEvent(event);
+	}
+
+	// SDLイベントを取得
+	SDL_PumpEvents();
 }
 
 void SceneGame::Draw()
