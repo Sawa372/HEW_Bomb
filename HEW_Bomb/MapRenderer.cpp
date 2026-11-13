@@ -37,12 +37,12 @@ bool MapRenderer::Initialize()
     // Šù‘¶‚Ìƒ‚ƒfƒ‹‚ð‰ð•ú‚µ‚Ä‰Šúó‘Ô‚É–ß‚·
     Clear();
     m_pWallModel = new Model();
-    if (!m_pWallModel->Load("Assets/Model/t1.fbx"))
+    if (!m_pWallModel->Load("Assets/Model/tree_forest.fbx"))
     {
         MessageBoxA(nullptr, "Wallƒ‚ƒfƒ‹‚Ì“Ç‚Ýž‚Ý‚ÉŽ¸”s‚µ‚Ü‚µ‚½B\ntree_forest.fbx", "Error", MB_OK);
         return false;
     }
-
+    
     m_pNetworkServerModel = new Model();
     if (!m_pNetworkServerModel->Load("Assets/Model/plantB_forest.fbx"))
     {

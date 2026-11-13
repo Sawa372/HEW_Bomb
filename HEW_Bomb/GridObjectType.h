@@ -19,10 +19,7 @@ enum class GridObjectType
 
     Floor,
 
-    Wall,       // 木（仮置き）
-    Box,        // 箱（仮置き）
-    Rock,       // 岩（仮置き）
-    OilDrum     // オイル缶（仮置き）
+    Wall,       
 };
 
 #endif // __GRID_OBJECT_TYPE_H__

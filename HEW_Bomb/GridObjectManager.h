@@ -38,8 +38,15 @@ public:
     // 指定した位置の床オブジェクトを取得（読み取り専用）
     const GridObject* GetFloorAt(const GridPosition& position) const;
 
+    void ProcessExplosion(
+        const std::vector<GridPosition>& positions);
+
+    // 破壊されたオブジェクトを削除
+    void RemoveDestroyedObjects();
+
     // 全オブジェクトを解放
     void Clear();
+
 
 private:
     // オブジェクトの所有・管理

@@ -1,4 +1,6 @@
 #include "Map.h"
+#include "GridObject.h"
+#include "GridObjectType.h"
 
 // コンストラクタ
 // GridManagerを初期化する
@@ -120,53 +122,53 @@ bool Map::CreateStage()
 
 
     //==================================================
-    // オブジェクトの配置
-    // これは3Dモデルの表示確認用の仮配置
+ // オブジェクトの配置
+ // これは3Dモデルの表示確認用の仮配置
 
-    // 木を配置
-    if (!m_gridManager.SetObject(
-        GridPosition(3, 0, 3),
-        GridObjectType::Wall))
+ // Wall
+    if (!RegisterStageObject(
+        GridObjectType::Wall,
+        GridPosition(3, 0, 3)))
     {
         return false;
     }
 
-    // 岩を配置
-    if (!m_gridManager.SetObject(
-        GridPosition(4, 0, 3),
-        GridObjectType::Rock))
+    // Generator
+    if (!RegisterStageObject(
+        GridObjectType::Generator,
+        GridPosition(4, 0, 3)))
     {
         return false;
     }
 
-    // 木を配置
-    if (!m_gridManager.SetObject(
-        GridPosition(8, 0, 8),
-        GridObjectType::Wall))
+    // Wall
+    if (!RegisterStageObject(
+        GridObjectType::OilCan,
+        GridPosition(8, 0, 8)))
     {
         return false;
     }
 
-    // 箱を配置
-    if (!m_gridManager.SetObject(
-        GridPosition(2, 0, 3),
-        GridObjectType::Box))
+    // NetworkServer
+    if (!RegisterStageObject(
+        GridObjectType::NetworkServer,
+        GridPosition(2, 0, 3)))
     {
         return false;
     }
 
-    // 柱を配置
-    if (!m_gridManager.SetObject(
-        GridPosition(6, 0, 3),
-        GridObjectType::Pillar))
+    // Pillar
+    if (!RegisterStageObject(
+        GridObjectType::Pillar,
+        GridPosition(6, 0, 3)))
     {
         return false;
     }
 
-    // オイル缶を配置
-    if (!m_gridManager.SetObject(
-        GridPosition(7, 0, 4),
-        GridObjectType::OilDrum))
+    // Generator
+    if (!RegisterStageObject(
+        GridObjectType::Generator,
+        GridPosition(7, 0, 4)))
     {
         return false;
     }
@@ -216,16 +218,42 @@ bool Map::RegisterStageObject(GridObjectType type, const GridPosition& position)
     return true;
 }
 
-
-
-// GridObjectManagerを取得
-GridObjectManager& Map::GetGridObjectManager()
+// 爆発範囲内のオブジェクトを処理する
+void Map::ProcessExplosion(
+    const std::vector<GridPosition>& positions)
 {
-    return m_gridObjectManager;
-}
+    // 各オブジェクトに爆発を伝える
+    m_gridObjectManager.ProcessExplosion(positions);
 
-// GridObjectManagerを取得（読み取り専用）
-const GridObjectManager& Map::GetGridObjectManager() const
-{
-    return m_gridObjectManager;
+    // 破壊されたオブジェクトをグリッドから削除する
+    for (const GridPosition& position : positions)
+    {
+        // 通常オブジェクトを確認
+        GridObject* object =
+            m_gridObjectManager.GetObjectAt(position);
+
+        if (object != nullptr && object->IsDestroyed())
+        {
+            if (object->GetType() == GridObjectType::Wall)
+            {
+                m_gridManager.RemoveWall(position);
+            }
+            else
+            {
+                m_gridManager.RemoveObject(position);
+            }
+        }
+
+        // 床を確認
+        GridObject* floor =
+            m_gridObjectManager.GetFloorAt(position);
+
+        if (floor != nullptr && floor->IsDestroyed())
+        {
+            m_gridManager.RemoveFloor(position);
+        }
+    }
+
+    // 破壊されたオブジェクトを管理リストから削除
+    m_gridObjectManager.RemoveDestroyedObjects();
 }

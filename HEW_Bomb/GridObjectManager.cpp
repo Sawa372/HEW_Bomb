@@ -11,6 +11,7 @@
 #include "Floor.h"
 
 #include <utility>
+#include <algorithm>
 
 GridObjectManager::GridObjectManager()
 {
@@ -125,6 +126,22 @@ int GridObjectManager::GetObjectCount() const
     return static_cast<int>(m_objects.size());
 }
 
+// 破壊されたオブジェクトを削除
+void GridObjectManager::RemoveDestroyedObjects()
+{
+    m_objects.erase(
+        std::remove_if(
+            m_objects.begin(),
+            m_objects.end(),
+            [](const std::unique_ptr<GridObject>& object)
+            {
+                return object->IsDestroyed();
+            }),
+        m_objects.end()
+    );
+}
+
+
 // 指定した位置の床オブジェクトを取得
 GridObject* GridObjectManager::GetFloorAt(
     const GridPosition& position)
@@ -155,6 +172,29 @@ const GridObject* GridObjectManager::GetFloorAt(
     }
 
     return nullptr;
+}
+
+void GridObjectManager::ProcessExplosion(
+    const std::vector<GridPosition>& positions)
+{
+    for (const GridPosition& position : positions)
+    {
+        GridObject* object = GetObjectAt(position);
+
+        if (object != nullptr)
+        {
+            object->OnExplosion();
+        }
+
+        GridObject* floor = GetFloorAt(position);
+
+        if (floor != nullptr)
+        {
+            floor->OnExplosion();
+        }
+    }
+
+   // RemoveDestroyedObjects();
 }
 
 // 全オブジェクトを解放

@@ -5,6 +5,8 @@
 #include "GridManager.h"
 #include "GridObjectManager.h"
 
+#include <vector>
+
 //==================================================
 // ステージのマップを管理するクラス
 // グリッドの初期化やステージ内の壁・オブジェクトの配置を行う
@@ -34,9 +36,10 @@ public:
     // グリッドの情報を参照する場合に使用する
     const GridManager& GetGridManager() const;
 
-    // GridObjectManagerを取得
-    GridObjectManager& GetGridObjectManager();
-    const GridObjectManager& GetGridObjectManager() const;
+    // 爆発範囲内のオブジェクトに爆発を伝える
+    void ProcessExplosion(
+        const std::vector<GridPosition>& positions
+    );
 
 private:
     // ステージ内の壁やオブジェクトの配置を作成する
