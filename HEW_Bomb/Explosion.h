@@ -6,36 +6,55 @@
 #include <vector>
 
 #include "GridPosition.h"
+#include "BombType.h"
 
 class GridManager;
 
-// 爆発の範囲を管理するクラス
 class Explosion
 {
 public:
     Explosion();
     ~Explosion();
 
-    // 爆発の中心位置を設定
-    void SetCenter(const DirectX::XMFLOAT3& center);
+    // 爆発の種類
+    void SetType(BombType type);
+    BombType GetType() const;
 
-    // 爆発の範囲を設定
-    void SetRadius(float radius);
+     // 爆弾が置かれたマス（爆発範囲の基準）
+    void SetAnchor(const GridPosition& anchor);
+    const GridPosition& GetAnchor() const;
 
-    // 指定した座標が爆発範囲内か
-    bool IsInside(const DirectX::XMFLOAT3& position) const;
+    // 回転角度（度数法）
+    void SetRotation(const DirectX::XMFLOAT3& rotation);
+    const DirectX::XMFLOAT3& GetRotation() const;
 
-    // 爆発範囲内のグリッド座標を取得
+    // 爆発範囲のマス数
+    bool SetSize(int x, int y, int z);
+    const DirectX::XMINT3& GetSize() const;
+
+    // 爆発範囲内か判定する
+    bool IsInsideShape(
+        const DirectX::XMFLOAT3& localPosition
+    ) const;
+
+    // 爆発範囲内のグリッド座標を取得する
     std::vector<GridPosition> GetAffectedPositions(
         const GridManager& grid
     ) const;
 
-private:
-    // 爆発の中心位置
-    DirectX::XMFLOAT3 m_center;
 
-    // 爆発の半径
-    float m_radius;
+   
+
+private:
+    BombType m_type;
+
+    GridPosition m_anchor;
+
+    // X・Y・Z軸の回転角度
+    DirectX::XMFLOAT3 m_rotation;
+
+    // 爆発範囲のマス数
+    DirectX::XMINT3 m_size;
 };
 
-#endif // __EXPLOSION_H__
+#endif

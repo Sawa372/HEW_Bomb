@@ -4,7 +4,7 @@
 
 #include "GridPosition.h"
 #include <ShaderList.h>
-
+#include "Explosion.h"
 
 SceneGame::SceneGame()
 {
@@ -34,6 +34,34 @@ SceneGame::SceneGame()
 			MB_OK
 		);
 	}
+
+	Explosion testExplosion;
+
+	testExplosion.SetType(BombType::Cylinder);
+
+	testExplosion.SetAnchor(GridPosition(2, 0, 2));
+
+	testExplosion.SetSize(5, 1, 5);
+
+	std::vector<GridPosition> affectedPositions =
+		testExplosion.GetAffectedPositions(
+			m_map.GetGridManager()
+		);
+
+char message[256];
+
+sprintf_s(
+    message,
+    "Cubeの爆発範囲\n対象マス数: %d",
+    static_cast<int>(affectedPositions.size())
+);
+
+MessageBoxA(
+    NULL,
+    message,
+    "Explosion Test",
+    MB_OK
+);
 
 	// ==========================================
 	//  プレイヤーの初期化と配置

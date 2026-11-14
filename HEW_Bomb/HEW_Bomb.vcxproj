@@ -149,11 +149,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="bomb.cpp" />
+    <ClCompile Include="BombInventory.cpp" />
+    <ClCompile Include="BombManager.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraDebug.cpp" />
     <ClCompile Include="Computer.cpp" />
     <ClCompile Include="controller.cpp" />
     <ClCompile Include="DirectX.cpp" />
+    <ClCompile Include="Explosion.cpp" />
     <ClCompile Include="Floor.cpp" />
     <ClCompile Include="Generator.cpp" />
     <ClCompile Include="Geometory.cpp" />
@@ -187,12 +191,17 @@
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bomb.h" />
+    <ClInclude Include="BombInventory.h" />
+    <ClInclude Include="BombManager.h" />
+    <ClInclude Include="BombType.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraDebug.h" />
     <ClInclude Include="Computer.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectX.h" />
+    <ClInclude Include="Explosion.h" />
     <ClInclude Include="Floor.h" />
     <ClInclude Include="Generator.h" />
     <ClInclude Include="Geometory.h" />
