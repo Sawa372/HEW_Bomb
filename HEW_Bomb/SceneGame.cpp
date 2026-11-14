@@ -2,7 +2,7 @@
 #include "Geometory.h"
 #include "CameraDebug.h"
 
-#include "GridPosition.h"s
+#include "GridPosition.h"
 #include <ShaderList.h>
 
 
