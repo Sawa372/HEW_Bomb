@@ -47,7 +47,7 @@ private:
 private:
     // ”š’e‚Ìí—Ş‚²‚Æ‚ÌŠ”
     // 0”Ô–Ú‚ÍNone—p
-    std::array<int, 8> m_counts;
+    std::array<int, static_cast<std::size_t>(BombType::Count)> m_counts;
 
     // Œ»İ‘I‘ğ’†‚Ì”š’e
     BombType m_selectedType;

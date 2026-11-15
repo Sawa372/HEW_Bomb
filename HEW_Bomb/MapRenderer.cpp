@@ -3,9 +3,13 @@
 #include "Model.h"
 #include "GridCell.h"
 #include "GridObjectType.h"
+#include "Map.h"
+#include "Bomb.h"
+#include "Geometory.h"
 
 #include <ShaderList.h>
 #include <Windows.h>
+#include <algorithm>
 
 // コンストラクタ
 MapRenderer::MapRenderer()
@@ -17,6 +21,13 @@ MapRenderer::MapRenderer()
     , m_pOilCanModel(nullptr)
     , m_pFloorModel(nullptr)
     , m_pPlayerModel(nullptr)
+    , m_pCubeBombModel(nullptr)
+    , m_pWideCubeBombModel(nullptr)
+    , m_pCylinderBombModel(nullptr)
+    , m_pVShapeBombModel(nullptr)
+    , m_pCircleBombModel(nullptr)
+    , m_pCrossBombModel(nullptr)
+    , m_pInvertedPyramidBombModel(nullptr)
 {
 }
 // デストラクタ
@@ -94,12 +105,71 @@ bool MapRenderer::Initialize()
         return false;
     }
 
+    //==================================================
+    // 爆弾モデルの読み込み
+
+    if (!LoadBombModel(m_pCubeBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||               // 仮置き
+        !LoadBombModel(m_pWideCubeBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||           // 仮置き
+        !LoadBombModel(m_pCylinderBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||           // 仮置き
+        !LoadBombModel(m_pVShapeBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||             // 仮置き
+        !LoadBombModel(m_pCircleBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||             // 仮置き
+        !LoadBombModel(m_pCrossBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||              // 仮置き
+        !LoadBombModel(m_pInvertedPyramidBombModel, "Assets/Model/bomb_circle/bomb_circle.obj"))      // 仮置き
+    {
+        MessageBoxA(
+            nullptr,
+            "爆弾モデルの読み込みに失敗しました。",
+            "Error",
+            MB_OK
+        );
+
+        Clear();
+        return false;
+    }
+
     return true;
 }
 
 
+// 爆弾モデルの読み込み
+bool MapRenderer::LoadBombModel(
+    Model*& pModel,
+    const char* filePath)
+{
+    pModel = new Model();
+
+    if (!pModel->Load(filePath, 0.3f))
+    {
+        delete pModel;
+        pModel = nullptr;
+        return false;
+    }
+
+    return true;
+}
+
 //==================================================
-// モデルの解放
+// 設置前の爆発範囲を設定する
+
+void MapRenderer::SetExplosionPreview(
+    BombType type,
+    const GridPosition& position,
+    const DirectX::XMFLOAT3& rotation)
+{
+    m_explosionRangeRenderer.SetPreview(
+        type,
+        position,
+        rotation
+    );
+}
+
+//==================================================
+// 設置前の爆発範囲を非表示にする
+
+void MapRenderer::ClearExplosionPreview()
+{
+    m_explosionRangeRenderer.ClearPreview();
+}
 
 //==================================================
 // マップの描画
@@ -108,10 +178,13 @@ bool MapRenderer::Initialize()
 // view：カメラのビュー行列
 // projection：カメラのプロジェクション行列
 void MapRenderer::Draw(
-    const GridManager& grid,
+    const Map& map,
     const DirectX::XMFLOAT4X4& view,
     const DirectX::XMFLOAT4X4& projection)
 {
+    // GridManagerを取得
+    const GridManager& grid = map.GetGridManager();
+
     // カメラの設定
 
     // シェーダーにカメラのビュー行列とプロジェクション行列を設定する
@@ -128,7 +201,7 @@ void MapRenderer::Draw(
     for (const GridCell& cell : cells)
     {
         // 壁もオブジェクトもないセルは描画する必要がないためスキップする
-        if (!cell.IsWall() && !cell.HasObject() && !cell.HasFloor() && !cell.HasPlayer())
+        if (!cell.IsWall() && !cell.HasObject() && !cell.HasFloor() && !cell.HasPlayer() && !cell.HasBomb())
         {
             continue;
         }
@@ -155,7 +228,7 @@ void MapRenderer::Draw(
             // 床を少し下げて配置する
             floorPosition.y -= 0.75f;
 
-            // 岩モデルを床として使用
+            
             DrawModel(m_pFloorModel, floorPosition);
         }
 
@@ -168,42 +241,37 @@ void MapRenderer::Draw(
         }
 
         // オブジェクトの描画
-
-        // セルにオブジェクトがある場合は種類に応じたモデルを描画する
         if (cell.HasObject())
         {
-            // 描画に使用するモデルを保持するポインタ
             Model* pModel = nullptr;
 
-            // セルに設定されているオブジェクトの種類を確認する
             switch (cell.GetObjectType())
             {
             case GridObjectType::Wall:
-                DrawModel(m_pWallModel, worldPosition);
+                pModel = m_pWallModel;
                 break;
 
             case GridObjectType::NetworkServer:
-                DrawModel(m_pNetworkServerModel, worldPosition);
+                pModel = m_pNetworkServerModel;
                 break;
 
             case GridObjectType::Generator:
-                DrawModel(m_pGeneratorModel, worldPosition);
+                pModel = m_pGeneratorModel;
                 break;
 
             case GridObjectType::Computer:
-                DrawModel(m_pComputerModel, worldPosition);
+                pModel = m_pComputerModel;
                 break;
 
             case GridObjectType::Pillar:
-                DrawModel(m_pPillarModel, worldPosition);
+                pModel = m_pPillarModel;
                 break;
 
             case GridObjectType::OilCan:
-                DrawModel(m_pOilCanModel, worldPosition);
+                pModel = m_pOilCanModel;
                 break;
             }
-            // 選択したモデルをセルのワールド座標に描画する
-            // モデルがnullptrの場合はDrawModel側で処理を中止する
+
             DrawModel(pModel, worldPosition);
         }
 
@@ -214,6 +282,160 @@ void MapRenderer::Draw(
             playerPos.y += 0.5f;
             DrawModel(m_pPlayerModel, playerPos);
         }
+
+        //==================================================
+        // 爆弾の描画
+
+        if (cell.HasBomb())
+        {
+            // このマスに設置されている爆弾を取得
+            const Bomb* pBomb =
+                map.GetBombAt(cell.GetPosition());
+
+            if (pBomb != nullptr)
+            {
+                Model* pModel = nullptr;
+
+                // 爆弾の種類に応じてモデルを選択
+                switch (pBomb->GetType())
+                {
+                case BombType::Cube:
+                    pModel = m_pCubeBombModel;
+                    break;
+
+                case BombType::WideCube:
+                    pModel = m_pWideCubeBombModel;
+                    break;
+
+                case BombType::Cylinder:
+                    pModel = m_pCylinderBombModel;
+                    break;
+
+                case BombType::VShape:
+                    pModel = m_pVShapeBombModel;
+                    break;
+
+                case BombType::Circle:
+                    pModel = m_pCircleBombModel;
+                    break;
+
+                case BombType::Cross:
+                    pModel = m_pCrossBombModel;
+                    break;
+
+                case BombType::InvertedPyramid:
+                    pModel = m_pInvertedPyramidBombModel;
+                    break;
+                }
+
+                // 爆弾の描画位置
+                DirectX::XMFLOAT3 bombPosition = worldPosition;
+                bombPosition.y += 0.5f;
+
+                DrawModel(pModel, bombPosition);
+            }
+        }
+      
+    }
+    //==================================================
+      // 爆発範囲の描画
+      // マップ全体の描画が終わってから一度だけ実行
+
+  // 爆発範囲の描画
+    m_explosionRangeRenderer.Draw(
+        map,
+        view,
+        projection
+    );
+
+    // 起爆スポットの描画
+    DrawDetonationSpots(
+        map,
+        view,
+        projection
+    );
+}
+
+//==================================================
+// 起爆スポットのワイヤー描画
+
+void MapRenderer::DrawDetonationSpots(
+    const Map& map,
+    const DirectX::XMFLOAT4X4& view,
+    const DirectX::XMFLOAT4X4& projection)
+{
+    const GridManager& grid = map.GetGridManager();
+
+    // 起爆スポット一覧を取得
+    const auto& spots = map.GetDetonationSpots();
+
+    // カメラ設定
+    Geometory::SetView(view);
+    Geometory::SetProjection(projection);
+
+    // ワイヤーの色（緑色）
+    const DirectX::XMFLOAT4 color(
+        0.0f, 1.0f, 0.2f, 1.0f
+    );
+
+    // 1マスの半分のサイズ
+    const float halfSize = 0.5f;
+
+    // 立方体の12本の辺
+    static const int edges[12][2] =
+    {
+        { 0, 1 }, { 1, 2 }, { 2, 3 }, { 3, 0 },
+        { 4, 5 }, { 5, 6 }, { 6, 7 }, { 7, 4 },
+        { 0, 4 }, { 1, 5 }, { 2, 6 }, { 3, 7 }
+    };
+
+    bool hasLines = false;
+
+    // 登録されている起爆スポットを確認
+    for (const auto& spot : spots)
+    {
+        DirectX::XMFLOAT3 center;
+
+        // グリッド座標からワールド座標に変換
+        if (!grid.GridToWorld(spot.GetPosition(), center))
+        {
+            continue;
+        }
+
+        // 立方体の8頂点
+        DirectX::XMFLOAT3 corners[8] =
+        {
+            { center.x - halfSize, center.y - halfSize, center.z - halfSize },
+            { center.x + halfSize, center.y - halfSize, center.z - halfSize },
+            { center.x + halfSize, center.y + halfSize, center.z - halfSize },
+            { center.x - halfSize, center.y + halfSize, center.z - halfSize },
+
+            { center.x - halfSize, center.y - halfSize, center.z + halfSize },
+            { center.x + halfSize, center.y - halfSize, center.z + halfSize },
+            { center.x + halfSize, center.y + halfSize, center.z + halfSize },
+            { center.x - halfSize, center.y + halfSize, center.z + halfSize }
+        };
+
+        // 12本の辺を描画
+        for (int i = 0; i < 12; ++i)
+        {
+            int a = edges[i][0];
+            int b = edges[i][1];
+
+            Geometory::AddLine(
+                corners[a],
+                corners[b],
+                color
+            );
+
+            hasLines = true;
+        }
+    }
+
+    // 線が存在する場合だけ描画
+    if (hasLines)
+    {
+        Geometory::DrawLines();
     }
 }
 

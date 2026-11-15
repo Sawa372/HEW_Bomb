@@ -4,8 +4,10 @@
 
 #include "GridPosition.h"
 #include "BombType.h"
+#include "Explosion.h"
 
 #include <DirectXMath.h>
+#include <vector>
 
 class GridManager;
 
@@ -48,6 +50,15 @@ public:
     // 設置されているか
     bool IsPlaced() const;
 
+
+    // 爆発範囲のサイズを設定（現在は確認用）
+    bool SetExplosionSize(int x, int y, int z);
+
+    // 爆発範囲内のグリッド座標を取得
+    std::vector<GridPosition> GetAffectedPositions(
+        const GridManager& grid
+    ) const;
+
 private:
     BombType m_type;
 
@@ -60,6 +71,10 @@ private:
     bool m_isExploded;
 
     bool m_isPlaced;
+
+
+    // 爆発情報
+    Explosion m_explosion;
 };
 
 #endif

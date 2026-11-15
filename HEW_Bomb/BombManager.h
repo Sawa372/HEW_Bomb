@@ -3,9 +3,11 @@
 #define __BOMB_MANAGER_H__
 
 #include <vector>
+#include <DirectXMath.h>
 #include <memory>
 
 #include "Bomb.h"
+
 
 class GridManager;
 class BombInventory;
@@ -16,9 +18,17 @@ public:
     BombManager();
     ~BombManager();
 
-    // ‘I‘ğ’†‚Ì”š’e‚ğİ’u‚µ‚Ä“o˜^‚·‚é
+    //// ‘I‘ğ’†‚Ì”š’e‚ğİ’u‚µ‚Ä“o˜^‚·‚é
+    //bool AddBomb(
+    //    const GridPosition& position,
+    //    GridManager& grid,
+    //    BombInventory& inventory
+    //);
+
+    // ‰ñ“]‚ğw’è‚µ‚Ä”š’e‚ğİ’u‚·‚é
     bool AddBomb(
         const GridPosition& position,
+        const DirectX::XMFLOAT3& rotation,
         GridManager& grid,
         BombInventory& inventory
     );

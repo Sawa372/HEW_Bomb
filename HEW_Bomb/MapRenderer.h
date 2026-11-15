@@ -3,9 +3,16 @@
 #define __MAP_RENDERER_H__
 
 #include <DirectXMath.h>
+#include <vector>
+
+#include "GridPosition.h"
+#include "BombType.h"
+#include "ExplosionRangeRenderer.h"
 
 class GridManager;
 class Model;
+class Map;
+class Bomb;
 
 //==================================================
 // マップの描画を管理するクラス
@@ -33,6 +40,7 @@ public:
     // 読み込んだすべてのモデルを解放する
     void Clear()
     {
+		// オブジェクトモデルを解放
         delete m_pWallModel;
         delete m_pNetworkServerModel;
         delete m_pGeneratorModel;
@@ -52,6 +60,25 @@ public:
         // プレイヤーモデルを解放
         delete m_pPlayerModel;
         m_pPlayerModel = nullptr;
+
+		// 爆弾モデルを解放
+        delete m_pCubeBombModel;
+        delete m_pWideCubeBombModel;
+        delete m_pCylinderBombModel;
+        delete m_pVShapeBombModel;
+        delete m_pCircleBombModel;
+        delete m_pCrossBombModel;
+        delete m_pInvertedPyramidBombModel;
+
+        m_pCubeBombModel = nullptr;
+        m_pWideCubeBombModel = nullptr;
+        m_pCylinderBombModel = nullptr;
+        m_pVShapeBombModel = nullptr;
+        m_pCircleBombModel = nullptr;
+        m_pCrossBombModel = nullptr;
+        m_pInvertedPyramidBombModel = nullptr;
+        // 爆発範囲のキャッシュを削除
+        m_explosionRangeRenderer.Clear();
     }
 
     // マップの描画
@@ -60,10 +87,24 @@ public:
     // view：カメラのビュー行列
     // projection：カメラのプロジェクション行列
     void Draw(
-        const GridManager& grid,
+        const Map& map,
         const DirectX::XMFLOAT4X4& view,
         const DirectX::XMFLOAT4X4& projection
     );
+
+    //==================================================
+    // 設置前の爆発範囲プレビュー
+
+    // 爆発範囲を設定する
+    void SetExplosionPreview(
+        BombType type,
+        const GridPosition& position,
+        const DirectX::XMFLOAT3& rotation
+    );
+
+    // プレビューを非表示にする
+    void ClearExplosionPreview();
+
 
 private:
     // 指定したモデルを指定したワールド座標に描画する
@@ -72,6 +113,13 @@ private:
     void DrawModel(
         Model* pModel,
         const DirectX::XMFLOAT3& worldPosition
+    );
+
+    // 起爆スポットのワイヤー描画
+    void DrawDetonationSpots(
+        const Map& map,
+        const DirectX::XMFLOAT4X4& view,
+        const DirectX::XMFLOAT4X4& projection
     );
 
 private:
@@ -87,6 +135,43 @@ private:
 
     // プレイヤーモデル
     Model* m_pPlayerModel;
+
+    //==================================================
+    // 爆弾モデル
+
+    Model* m_pCubeBombModel;
+    Model* m_pWideCubeBombModel;
+    Model* m_pCylinderBombModel;
+    Model* m_pVShapeBombModel;
+    Model* m_pCircleBombModel;
+    Model* m_pCrossBombModel;
+    Model* m_pInvertedPyramidBombModel;
+
+    // 爆弾モデルの読み込み
+    bool LoadBombModel(Model*& pModel, const char* filePath);
+
+
+    //==================================================
+    // 爆発範囲のキャッシュ
+
+    struct ExplosionRangeCache
+    {
+        // キャッシュ対象の爆弾
+        const Bomb* pBomb;
+
+        // 前回計算した爆弾の情報
+        BombType type;
+        GridPosition position;
+        DirectX::XMFLOAT3 rotation;
+
+        // 計算済みの爆発範囲
+        std::vector<GridPosition> affectedPositions;
+
+        // 今回の描画で使用されたか
+        bool isUsed;
+    };
+    // 爆発範囲の描画管理
+    ExplosionRangeRenderer m_explosionRangeRenderer;
 };
 
 #endif

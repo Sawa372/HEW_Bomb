@@ -5,7 +5,7 @@
 // ”š’e‚Ìí—Ş
 enum class BombType
 {
-    None,
+    None = 0,
 
     Cross,              // \š
     Cylinder,           // ‰~’Œ
@@ -13,7 +13,24 @@ enum class BombType
     VShape,             // Vš
     Cube,               // —§•û‘Ì
     Circle,             // ‰~Œ^
-    InvertedPyramid     // ‹tOŠp
+    InvertedPyramid,    // ‹tOŠp
+
+    Count               // ”š’e‚Ìí—Ş”‚ğæ“¾‚·‚é‚½‚ß‚Ì”Ô•º
 };
+
+// ”š’e‚Ìí—Ş”
+inline int GetBombTypeCount()
+{
+    return static_cast<int>(BombType::Count) - 1;
+}
+
+// ƒCƒ“ƒfƒbƒNƒX‚©‚ç”š’e‚Ìí—Ş‚ğæ“¾
+inline BombType GetBombTypeByIndex(int index)
+{
+    if (index < 0 || index >= GetBombTypeCount())
+        return BombType::None;
+
+    return static_cast<BombType>(index + 1);
+}
 
 #endif

@@ -11,8 +11,11 @@ Bomb::Bomb(
     , m_isExploded(false)
     , m_isPlaced(false)
 {
+    // Explosionに爆弾の情報を設定
+    m_explosion.SetType(m_type);
+    m_explosion.SetAnchor(m_position);
+    m_explosion.SetRotation(m_rotation);
 }
-
 // デストラクタ
 Bomb::~Bomb()
 {
@@ -32,8 +35,18 @@ const GridPosition& Bomb::GetPosition() const
 
 void Bomb::SetPosition(const GridPosition& position)
 {
+    // 設置中は位置を変更しない
+    if (m_isPlaced)
+    {
+        return;
+    }
+
     m_position = position;
+
+    // Explosionにも反映
+    m_explosion.SetAnchor(m_position);
 }
+
 
 // 回転角度
 const DirectX::XMFLOAT3& Bomb::GetRotation() const
@@ -44,7 +57,11 @@ const DirectX::XMFLOAT3& Bomb::GetRotation() const
 void Bomb::SetRotation(const DirectX::XMFLOAT3& rotation)
 {
     m_rotation = rotation;
+
+    // Explosionにも反映
+    m_explosion.SetRotation(m_rotation);
 }
+
 
 // 回転角度を加算する
 void Bomb::Rotate(float x, float y, float z)
@@ -52,6 +69,9 @@ void Bomb::Rotate(float x, float y, float z)
     m_rotation.x += x;
     m_rotation.y += y;
     m_rotation.z += z;
+
+    // Explosionにも反映
+    m_explosion.SetRotation(m_rotation);
 }
 
 // 爆発済みかどうか
@@ -116,4 +136,18 @@ bool Bomb::RemoveFromGrid(GridManager& grid)
 bool Bomb::IsPlaced() const
 {
     return m_isPlaced;
+}
+
+// 爆発範囲のサイズを設定（現在は確認用）
+bool Bomb::SetExplosionSize(int x, int y, int z)
+{
+    return m_explosion.SetSize(x, y, z);
+}
+
+// 爆発範囲内のグリッド座標を取得
+std::vector<GridPosition> Bomb::GetAffectedPositions(
+    const GridManager& grid
+) const
+{
+    return m_explosion.GetAffectedPositions(grid);
 }

@@ -156,8 +156,10 @@
     <ClCompile Include="CameraDebug.cpp" />
     <ClCompile Include="Computer.cpp" />
     <ClCompile Include="controller.cpp" />
+    <ClCompile Include="DetonationSpot.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Explosion.cpp" />
+    <ClCompile Include="ExplosionRangeRenderer.cpp" />
     <ClCompile Include="Floor.cpp" />
     <ClCompile Include="Generator.cpp" />
     <ClCompile Include="Geometory.cpp" />
@@ -200,8 +202,10 @@
     <ClInclude Include="Computer.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="Defines.h" />
+    <ClInclude Include="DetonationSpot.h" />
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="Explosion.h" />
+    <ClInclude Include="ExplosionRangeRenderer.h" />
     <ClInclude Include="Floor.h" />
     <ClInclude Include="Generator.h" />
     <ClInclude Include="Geometory.h" />

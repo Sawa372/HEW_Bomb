@@ -4,6 +4,10 @@
 
 #include "GridManager.h"
 #include "GridObjectManager.h"
+#include "BombManager.h"
+#include "DetonationSpot.h"
+
+#include <DirectXMath.h>
 
 #include <vector>
 
@@ -13,6 +17,10 @@
 // マップ作成用のヘッダのつもり
 // 改善していく予定
 //==================================================
+
+
+class BombInventory;
+
 class Map
 {
 public:
@@ -41,6 +49,51 @@ public:
         const std::vector<GridPosition>& positions
     );
 
+
+
+    //==================================================
+    // 爆弾の管理
+
+   //// 爆弾を設置する
+   // bool AddBomb(
+   //     const GridPosition& position,
+   //     BombInventory& inventory
+   // );
+
+    // 回転を指定して爆弾を設置する
+    bool AddBomb(
+        const GridPosition& position,
+        const DirectX::XMFLOAT3& rotation,
+        BombInventory& inventory
+    );
+
+    // 爆弾を回収する
+    bool RemoveBombAt(
+        const GridPosition& position,
+        BombInventory& inventory
+    );
+
+    // 指定位置の爆弾を取得する
+    Bomb* GetBombAt(const GridPosition& position);
+    const Bomb* GetBombAt(const GridPosition& position) const;
+
+    // 指定位置に爆弾があるか
+    bool HasBombAt(const GridPosition& position) const;
+
+    // 設置済み爆弾の数
+    int GetBombCount() const;
+
+    // 指定位置の爆弾を起爆する
+    bool DetonateBombAt(const GridPosition& position);
+
+
+    // 起爆スポットを登録
+    bool AddDetonationSpot(const GridPosition& position);
+
+    // 登録されている起爆スポット一覧を取得
+    const std::vector<DetonationSpot>& GetDetonationSpots() const;
+
+
 private:
     // ステージ内の壁やオブジェクトの配置を作成する
     // Initialize()から呼び出される
@@ -52,11 +105,19 @@ private:
         const GridPosition& position
     );
 
+
 private:
     // ステージのグリッド情報を管理する
     GridManager m_gridManager;
 
     GridObjectManager m_gridObjectManager;
+
+    // 設置済み爆弾を管理する
+    BombManager m_bombManager;
+
+
+    // 起爆スポット
+    std::vector<DetonationSpot> m_detonationSpots;
 };
 
 #endif // __MAP_H__

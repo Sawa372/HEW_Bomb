@@ -17,9 +17,29 @@ BombManager::~BombManager()
     m_bombs.clear();
 }
 
-// ‘I‘ğ’†‚Ì”š’e‚ğİ’u‚µ‚Ä“o˜^‚·‚é
+//==================================================
+//// ‰ñ“]‚ğw’è‚¹‚¸‚É”š’e‚ğİ’u‚·‚é
+//// ]—ˆ‚ÌŒÄ‚Ño‚µ•û‚Æ‚ÌŒİŠ·«‚ğˆÛ‚·‚é
+//
+//bool BombManager::AddBomb(
+//    const GridPosition& position,
+//    GridManager& grid,
+//    BombInventory& inventory)
+//{
+//    return AddBomb(
+//        position,
+//        DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f),
+//        grid,
+//        inventory
+//    );
+//}
+
+//==================================================
+// ‰ñ“]‚ğw’è‚µ‚Ä”š’e‚ğİ’u‚·‚é
+
 bool BombManager::AddBomb(
     const GridPosition& position,
+    const DirectX::XMFLOAT3& rotation,
     GridManager& grid,
     BombInventory& inventory)
 {
@@ -38,11 +58,15 @@ bool BombManager::AddBomb(
         return false;
     }
 
-    // Bomb‚ğ¶¬‚µ‚ÄŠÇ—ƒŠƒXƒg‚É“o˜^
+    // Bomb‚ğ¶¬
     std::unique_ptr<Bomb> bomb(
         new Bomb(type, position)
     );
 
+    // ”š’e‚Ì‰ñ“]‚ğİ’è
+    bomb->SetRotation(rotation);
+
+    // ŠÇ—ƒŠƒXƒg‚É“o˜^
     m_bombs.push_back(std::move(bomb));
 
     // ƒOƒŠƒbƒh‚Éİ’u
@@ -63,8 +87,7 @@ bool BombManager::AddBomb(
     }
 
     return true;
-}
-// w’èˆÊ’u‚Ì”š’e‚ğæ“¾‚·‚é
+}// w’èˆÊ’u‚Ì”š’e‚ğæ“¾‚·‚é
 Bomb* BombManager::GetBombAt(
     const GridPosition& position)
 {
