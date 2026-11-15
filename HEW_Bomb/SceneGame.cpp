@@ -2,13 +2,11 @@
 
 #include "Geometory.h"
 #include "CameraDebug.h"
-#include "controller.h"
 #include "GridCollision.h"
 #include "GridPosition.h"
 #include "BombType.h"
 
 #include <ShaderList.h>
-#include <SDL3/SDL.h>
 #include <Windows.h>
 
 
@@ -17,9 +15,6 @@
 
 SceneGame::SceneGame()
     : m_pCamera(nullptr)
-	, m_map()
-	, m_mapRenderer()
-	, m_player()
 {
     //==================================================
     // カメラの生成
@@ -40,29 +35,49 @@ SceneGame::SceneGame()
         );
     }
 
-	// マップ描画クラスを初期化
-	if (!m_mapRenderer.Initialize())
-	{
-		MessageBox(
-			NULL,
-			"MapRendererの初期化に失敗しました",
-			"Error",
-			MB_OK
-		);
-	}
 
-	// ==========================================
-	//  プレイヤーの初期化と配置
-	// ==========================================
-	m_player.Initialize(GridPosition(0, 0, 0)); // 初期位置を (0,0,0) に設定
-	m_map.GetGridManager().SetPlayer(m_player.GetPosition()); // マップ側にプレイヤーをセット
-	Controller::Initialize();
+    //==================================================
+    // マップ描画クラスの初期化
+
+    if (!m_mapRenderer.Initialize())
+    {
+        MessageBoxA(
+            nullptr,
+            "MapRendererの初期化に失敗しました",
+            "Error",
+            MB_OK
+        );
+    }
+
+
+    //==================================================
+    // 爆弾の所持数設定（現在はテスト用）
+
+    // 全種類の爆弾を5個ずつ所持
+    // 将来的にはステージデータから設定する
+
+    for (int i = 0; i < GetBombTypeCount(); i++)
+    {
+        BombType type = GetBombTypeByIndex(i);
+
+        m_bombInventory.SetCount(type, 5);
+    }
 
     // 最初の爆弾を選択
     m_bombInventory.SelectBomb(
         GetBombTypeByIndex(0)
     );
 
+
+    //==================================================
+    // プレイヤーの初期化
+
+    m_player.Initialize(GridPosition(0, 0, 0));
+
+    // マップ側にプレイヤーの位置を登録
+    m_map.GetGridManager().SetPlayer(
+        m_player.GetPosition()
+    );
 
 
     //==================================================
@@ -77,18 +92,14 @@ SceneGame::SceneGame()
 
 SceneGame::~SceneGame()
 {
-    Controller::Finalize();
-
-    if (m_pCamera)
-    {
-        delete m_pCamera;
-        m_pCamera = nullptr;
-    }
-};
+    delete m_pCamera;
+    m_pCamera = nullptr;
+}
 
 
 //==================================================
 // 更新処理
+
 void SceneGame::Update()
 {
     //==================================================
@@ -103,37 +114,17 @@ void SceneGame::Update()
     // マップの情報を使って当たり判定を行う
     GridCollision gridCollision(m_map.GetGridManager());
 
-    /*m_player.Update(
+    m_player.Update(
         m_map,
-		m_bombInventory,/////////////////////////////Player.cppを書き換えたら動くはず！(多分！！！)
+        m_bombInventory,/////////////////////////////Player.cppを書き換えたら動くはず！(多分！！！)
         gridCollision
-    );*/
+    );
 
 
     //==================================================
     // 爆発範囲プレビューの更新
 
     UpdateBombPreview();
-	// I, J, K, L キーの入力を受け取って移動処理を実行
-	m_player.Update(m_map.GetGridManager(), gridCollision);
-
-	// コントローラーの状態を更新
-	Controller::Update();
-
-	SDL_Event event;
-
-	while (SDL_PollEvent(&event))
-	{
-		if (event.type == SDL_EVENT_QUIT)
-		{
-			break;
-		}
-
-		Controller::ProcessEvent(event);
-	}
-
-	// SDLイベントを取得
-	SDL_PumpEvents();
 }
 
 
@@ -174,9 +165,9 @@ void SceneGame::Draw()
 
 void SceneGame::UpdateBombPreview()
 {
-   /* m_mapRenderer.SetExplosionPreview(
+    m_mapRenderer.SetExplosionPreview(
         m_bombInventory.GetSelectedType(),
         m_player.GetBombPlacementPosition(),/////////////////////////////これもPlayer.cppを書き換えたら動くはず！
         m_player.GetBombPlacementRotation()
-    );*/
+    );
 }
