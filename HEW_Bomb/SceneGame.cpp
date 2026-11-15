@@ -54,21 +54,12 @@ SceneGame::SceneGame()
 	m_player.Initialize(GridPosition(0, 0, 0)); // 初期位置を (0,0,0) に設定
 	m_map.GetGridManager().SetPlayer(m_player.GetPosition()); // マップ側にプレイヤーをセット
 	Controller::Initialize();
+
     // 最初の爆弾を選択
     m_bombInventory.SelectBomb(
         GetBombTypeByIndex(0)
     );
 
-
-    //==================================================
-    // プレイヤーの初期化
-
-    m_player.Initialize(GridPosition(0, 0, 0));
-
-    // マップ側にプレイヤーの位置を登録
-    m_map.GetGridManager().SetPlayer(
-        m_player.GetPosition()
-    );
 
 
     //==================================================
@@ -94,7 +85,6 @@ SceneGame::~SceneGame()
 
 //==================================================
 // 更新処理
-
 void SceneGame::Update()
 {
     //==================================================
