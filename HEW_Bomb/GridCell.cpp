@@ -79,7 +79,7 @@ void GridCell::SetObject(bool object)
 {
     if (object)
     {
-        m_objectType = GridObjectType::Default;
+        m_objectType = GridObjectType::NetworkServer;
     }
     else
     {
