@@ -28,7 +28,7 @@ Map::~Map()
 bool Map::Initialize()
 {
     // マップの最小座標
-    const GridPosition minPosition(-10, 0, -10);
+    const GridPosition minPosition(-10, -1, -10);
 
     // マップの最大座標
     const GridPosition maxPosition(10, 5, 10);
@@ -112,7 +112,7 @@ bool Map::CreateStage()
     }
 
     // マップ全体に床を設置
-    for (int y = minPosition.GetY(); y <= maxPosition.GetY(); y += maxPosition.GetY() - 1)
+    for (int y = minPosition.GetY(); y <= maxPosition.GetY(); y += maxPosition.GetY())
     {
         for (int z = minPosition.GetZ(); z <= maxPosition.GetZ(); ++z)
         {

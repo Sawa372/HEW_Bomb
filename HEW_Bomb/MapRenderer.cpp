@@ -226,7 +226,7 @@ void MapRenderer::Draw(
             DirectX::XMFLOAT3 floorPosition = worldPosition;
 
             // è∞Çè≠Çµâ∫Ç∞ÇƒîzíuÇ∑ÇÈ
-            floorPosition.y -= 0.75f;
+            floorPosition.y +=0.25f;
 
             
             DrawModel(m_pFloorModel, floorPosition);
