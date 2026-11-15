@@ -17,6 +17,9 @@
 
 SceneGame::SceneGame()
     : m_pCamera(nullptr)
+	, m_map()
+	, m_mapRenderer()
+	, m_player()
 {
     //==================================================
     // ÉJÉÅÉâÇÃê∂ê¨
@@ -74,13 +77,14 @@ SceneGame::SceneGame()
 
 SceneGame::~SceneGame()
 {
-	Controller::Finalize();
+    Controller::Finalize();
 
-	if (m_pCamera)
-	{
-		delete m_pCamera;
-		m_pCamera = nullptr;
-	}
+    if (m_pCamera)
+    {
+        delete m_pCamera;
+        m_pCamera = nullptr;
+    }
+};
 
 
 //==================================================
