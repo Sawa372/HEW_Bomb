@@ -3,25 +3,33 @@
 #include "Model.h"
 #include "GridCell.h"
 #include "GridObjectType.h"
+#include "Map.h"
+#include "Bomb.h"
+#include "Geometory.h"
 
 #include <ShaderList.h>
 #include <Windows.h>
+#include <algorithm>
 
 // コンストラクタ
-// 各モデルポインタをnullptrで初期化する
 MapRenderer::MapRenderer()
     : m_pWallModel(nullptr)
-    , m_pDefaultModel(nullptr)
-    , m_pTreeModel(nullptr)
-    , m_pRockModel(nullptr)
-    , m_pBoxModel(nullptr)
+    , m_pNetworkServerModel(nullptr)
+    , m_pGeneratorModel(nullptr)
+    , m_pComputerModel(nullptr)
     , m_pPillarModel(nullptr)
-    , m_pOilDrumModel(nullptr)
-    , m_pfloorModel(nullptr)
+    , m_pOilCanModel(nullptr)
+    , m_pFloorModel(nullptr)
     , m_pPlayerModel(nullptr)
+    , m_pCubeBombModel(nullptr)
+    , m_pWideCubeBombModel(nullptr)
+    , m_pCylinderBombModel(nullptr)
+    , m_pVShapeBombModel(nullptr)
+    , m_pCircleBombModel(nullptr)
+    , m_pCrossBombModel(nullptr)
+    , m_pInvertedPyramidBombModel(nullptr)
 {
 }
-
 // デストラクタ
 // 管理しているモデルをすべて解放する
 MapRenderer::~MapRenderer()
@@ -39,151 +47,52 @@ bool MapRenderer::Initialize()
 {
     // 既存のモデルを解放して初期状態に戻す
     Clear();
-
-
-    // 壁用モデル
-
-    // 壁の描画に使用するモデルを読み込む（仮モデル）
     m_pWallModel = new Model();
-    if (!m_pWallModel->Load(
-        "Assets/Model/tree_forest.fbx", 0.5f))
+    if (!m_pWallModel->Load("Assets/Model/tree_forest.fbx"))
     {
-        // 読み込みに失敗した場合はエラーメッセージを表示する
-        MessageBoxA(
-            nullptr,
-            "壁モデルの読み込みに失敗しました。\n(tree_forest.fbx)",
-            "MapRenderer Error",
-            MB_OK | MB_ICONERROR
-        );
-
-        // 読み込み済みのモデルを解放する
-        Clear();
+        MessageBoxA(nullptr, "Wallモデルの読み込みに失敗しました。\ntree_forest.fbx", "Error", MB_OK);
+        return false;
+    }
+    
+    m_pNetworkServerModel = new Model();
+    if (!m_pNetworkServerModel->Load("Assets/Model/plantB_forest.fbx"))
+    {
+        MessageBoxA(nullptr, "NetworkServerモデルの読み込みに失敗しました。\nplantB_forest.fbx", "Error", MB_OK);
         return false;
     }
 
-    // Defaultモデル
-
-    // 種類未指定オブジェクト用のモデルを読み込む（仮モデル）
-    m_pDefaultModel = new Model();
-    if (!m_pDefaultModel->Load(
-        "Assets/Model/plantB_forest.fbx", 0.5f))
+    m_pGeneratorModel = new Model();
+    if (!m_pGeneratorModel->Load("Assets/Model/rocksA_desert.fbx"))
     {
-        MessageBoxA(
-            nullptr,
-            "Defaultモデルの読み込みに失敗しました。\n(plantB_forest.fbx)",
-            "MapRenderer Error",
-            MB_OK | MB_ICONERROR
-        );
-
-        Clear();
+        MessageBoxA(nullptr, "Generatorモデルの読み込みに失敗しました。\nrocksA_desert.fbx", "Error", MB_OK);
         return false;
     }
 
-    // Treeモデル
-
-    // 木の描画に使用するモデルを読み込む（仮モデル）
-    m_pTreeModel = new Model();
-    if (!m_pTreeModel->Load(
-        "Assets/Model/tree_forest.fbx", 0.5f))
+    m_pComputerModel = new Model();
+    if (!m_pComputerModel->Load("Assets/Model/flag_teamBlue.fbx"))
     {
-        MessageBoxA(
-            nullptr,
-            "Treeモデルの読み込みに失敗しました。\n(tree_forest.fbx)",
-            "MapRenderer Error",
-            MB_OK | MB_ICONERROR
-        );
-
-        Clear();
+        MessageBoxA(nullptr, "Computerモデルの読み込みに失敗しました。\nflag_teamBlue.fbx", "Error", MB_OK);
         return false;
     }
 
-    // Rockモデル
-
-    // 岩の描画に使用するモデルを読み込む（仮モデル）
-    m_pRockModel = new Model();
-    if (!m_pRockModel->Load(
-        "Assets/Model/rocksA_desert.fbx", 0.5f))
-    {
-        MessageBoxA(
-            nullptr,
-            "rocksモデルの読み込みに失敗しました。\n(rocksA_desert.fbx)",
-            "MapRenderer Error",
-            MB_OK | MB_ICONERROR
-        );
-
-        Clear();
-        return false;
-    }
-
-    // floorモデル
-
-    // 床の描画に使用するモデルを読み込む（仮モデル）
-    m_pfloorModel = new Model();
-    if (!m_pfloorModel->Load(
-        "Assets/Model/tileMedium_forest.fbx", 0.5f))
-    {
-        MessageBoxA(
-            nullptr,
-            "floorモデルの読み込みに失敗しました。\n(tileMedium_forest.fbx)",
-            "MapRenderer Error",
-            MB_OK | MB_ICONERROR
-        );
-
-        Clear();
-        return false;
-    }
-
-    // Boxモデル
-
-    // 箱の描画に使用するモデルを読み込む（仮モデル）
-    m_pBoxModel = new Model();
-    if (!m_pBoxModel->Load(
-        "Assets/Model/flag_teamBlue.fbx", 0.5f))
-    {
-        MessageBoxA(
-            nullptr,
-            "Boxモデルの読み込みに失敗しました。\n(flag_teamBlue.fbx)",
-            "MapRenderer Error",
-            MB_OK | MB_ICONERROR
-        );
-
-        Clear();
-        return false;
-    }
-
-    // Pillarモデル
-
-    // 柱の描画に使用するモデルを読み込む（仮モデル）
     m_pPillarModel = new Model();
-    if (!m_pPillarModel->Load(
-        "Assets/Model/flag_teamRed.fbx", 0.5f))
+    if (!m_pPillarModel->Load("Assets/Model/flag_teamRed.fbx"))
     {
-        MessageBoxA(
-            nullptr,
-            "Pillarモデルの読み込みに失敗しました。\n(flag_teamRed.fbx)",
-            "MapRenderer Error",
-            MB_OK | MB_ICONERROR
-        );
-
-        Clear();
+        MessageBoxA(nullptr, "Pillarモデルの読み込みに失敗しました。\nflag_teamRed.fbx", "Error", MB_OK);
         return false;
     }
 
-    // OilDrumモデル
-
-    // オイル缶の描画に使用するモデルを読み込む（仮モデル）
-    m_pOilDrumModel = new Model();
-    if (!m_pOilDrumModel->Load(
-        "Assets/Model/flag_teamYellow.fbx", 0.5f))
+    m_pOilCanModel = new Model();
+    if (!m_pOilCanModel->Load("Assets/Model/flag_teamYellow.fbx"))
     {
-        MessageBoxA(
-            nullptr,
-            "OilDrumモデルの読み込みに失敗しました。\n(flag_teamYellow.fbx)",
-            "MapRenderer Error",
-            MB_OK | MB_ICONERROR
-        );
+        MessageBoxA(nullptr, "OilCanモデルの読み込みに失敗しました。\nflag_teamYellow.fbx", "Error", MB_OK);
+        return false;
+    }
 
-        Clear();
+    m_pFloorModel = new Model();
+    if (!m_pFloorModel->Load("Assets/Model/tileMedium_forest.fbx",0.5))
+    {
+        MessageBoxA(nullptr, "Floorモデルの読み込みに失敗しました。\ntileMedium_forest.fbx", "Error", MB_OK);
         return false;
     }
 
@@ -196,49 +105,71 @@ bool MapRenderer::Initialize()
         return false;
     }
 
+    //==================================================
+    // 爆弾モデルの読み込み
+
+    if (!LoadBombModel(m_pCubeBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||               // 仮置き
+        !LoadBombModel(m_pWideCubeBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||           // 仮置き
+        !LoadBombModel(m_pCylinderBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||           // 仮置き
+        !LoadBombModel(m_pVShapeBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||             // 仮置き
+        !LoadBombModel(m_pCircleBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||             // 仮置き
+        !LoadBombModel(m_pCrossBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||              // 仮置き
+        !LoadBombModel(m_pInvertedPyramidBombModel, "Assets/Model/bomb_circle/bomb_circle.obj"))      // 仮置き
+    {
+        MessageBoxA(
+            nullptr,
+            "爆弾モデルの読み込みに失敗しました。",
+            "Error",
+            MB_OK
+        );
+
+        Clear();
+        return false;
+    }
+
     return true;
 }
 
 
-//==================================================
-// モデルの解放
-
-// 読み込んだすべてのモデルを解放する
-void MapRenderer::Clear()
+// 爆弾モデルの読み込み
+bool MapRenderer::LoadBombModel(
+    Model*& pModel,
+    const char* filePath)
 {
-    // 壁用モデルを解放
-    delete m_pWallModel;
-    m_pWallModel = nullptr;
+    pModel = new Model();
 
-    // Defaultモデルを解放
-    delete m_pDefaultModel;
-    m_pDefaultModel = nullptr;
+    if (!pModel->Load(filePath, 0.3f))
+    {
+        delete pModel;
+        pModel = nullptr;
+        return false;
+    }
 
-    // Treeモデルを解放
-    delete m_pTreeModel;
-    m_pTreeModel = nullptr;
-
-    // Rockモデルを解放
-    delete m_pRockModel;
-    m_pRockModel = nullptr;
-
-    // Boxモデルを解放
-    delete m_pBoxModel;
-    m_pBoxModel = nullptr;
-
-    // Pillarモデルを解放
-    delete m_pPillarModel;
-    m_pPillarModel = nullptr;
-
-    // OilDrumモデルを解放
-    delete m_pOilDrumModel;
-    m_pOilDrumModel = nullptr;
-
-    // プレイヤーモデルを解放
-    delete m_pPlayerModel;
-    m_pPlayerModel = nullptr;
+    return true;
 }
 
+//==================================================
+// 設置前の爆発範囲を設定する
+
+void MapRenderer::SetExplosionPreview(
+    BombType type,
+    const GridPosition& position,
+    const DirectX::XMFLOAT3& rotation)
+{
+    m_explosionRangeRenderer.SetPreview(
+        type,
+        position,
+        rotation
+    );
+}
+
+//==================================================
+// 設置前の爆発範囲を非表示にする
+
+void MapRenderer::ClearExplosionPreview()
+{
+    m_explosionRangeRenderer.ClearPreview();
+}
 
 //==================================================
 // マップの描画
@@ -247,10 +178,13 @@ void MapRenderer::Clear()
 // view：カメラのビュー行列
 // projection：カメラのプロジェクション行列
 void MapRenderer::Draw(
-    const GridManager& grid,
+    const Map& map,
     const DirectX::XMFLOAT4X4& view,
     const DirectX::XMFLOAT4X4& projection)
 {
+    // GridManagerを取得
+    const GridManager& grid = map.GetGridManager();
+
     // カメラの設定
 
     // シェーダーにカメラのビュー行列とプロジェクション行列を設定する
@@ -267,7 +201,7 @@ void MapRenderer::Draw(
     for (const GridCell& cell : cells)
     {
         // 壁もオブジェクトもないセルは描画する必要がないためスキップする
-        if (!cell.IsWall() && !cell.HasObject() && !cell.HasFloor() && !cell.HasPlayer())
+        if (!cell.IsWall() && !cell.HasObject() && !cell.HasFloor() && !cell.HasPlayer() && !cell.HasBomb())
         {
             continue;
         }
@@ -292,10 +226,10 @@ void MapRenderer::Draw(
             DirectX::XMFLOAT3 floorPosition = worldPosition;
 
             // 床を少し下げて配置する
-            floorPosition.y -= 0.75f;
+            floorPosition.y +=0.25f;
 
-            // 岩モデルを床として使用
-            DrawModel(m_pfloorModel, floorPosition);
+            
+            DrawModel(m_pFloorModel, floorPosition);
         }
 
         // 壁の描画
@@ -307,47 +241,37 @@ void MapRenderer::Draw(
         }
 
         // オブジェクトの描画
-
-        // セルにオブジェクトがある場合は種類に応じたモデルを描画する
         if (cell.HasObject())
         {
-            // 描画に使用するモデルを保持するポインタ
             Model* pModel = nullptr;
 
-            // セルに設定されているオブジェクトの種類を確認する
             switch (cell.GetObjectType())
             {
-            case GridObjectType::Default:
-                pModel = m_pDefaultModel;
+            case GridObjectType::Wall:
+                pModel = m_pWallModel;
                 break;
 
-            case GridObjectType::Tree:
-                pModel = m_pTreeModel;
+            case GridObjectType::NetworkServer:
+                pModel = m_pNetworkServerModel;
                 break;
 
-            case GridObjectType::Box:
-                pModel = m_pBoxModel;
+            case GridObjectType::Generator:
+                pModel = m_pGeneratorModel;
                 break;
 
-            case GridObjectType::Rock:
-                pModel = m_pRockModel;
+            case GridObjectType::Computer:
+                pModel = m_pComputerModel;
                 break;
 
             case GridObjectType::Pillar:
                 pModel = m_pPillarModel;
                 break;
 
-            case GridObjectType::OilDrum:
-                pModel = m_pOilDrumModel;
-                break;
-
-            default:
-                // 対応するモデルがない場合はnullptrのままにする
+            case GridObjectType::OilCan:
+                pModel = m_pOilCanModel;
                 break;
             }
 
-            // 選択したモデルをセルのワールド座標に描画する
-            // モデルがnullptrの場合はDrawModel側で処理を中止する
             DrawModel(pModel, worldPosition);
         }
 
@@ -358,6 +282,160 @@ void MapRenderer::Draw(
             playerPos.y += 0.5f;
             DrawModel(m_pPlayerModel, playerPos);
         }
+
+        //==================================================
+        // 爆弾の描画
+
+        if (cell.HasBomb())
+        {
+            // このマスに設置されている爆弾を取得
+            const Bomb* pBomb =
+                map.GetBombAt(cell.GetPosition());
+
+            if (pBomb != nullptr)
+            {
+                Model* pModel = nullptr;
+
+                // 爆弾の種類に応じてモデルを選択
+                switch (pBomb->GetType())
+                {
+                case BombType::Cube:
+                    pModel = m_pCubeBombModel;
+                    break;
+
+                case BombType::WideCube:
+                    pModel = m_pWideCubeBombModel;
+                    break;
+
+                case BombType::Cylinder:
+                    pModel = m_pCylinderBombModel;
+                    break;
+
+                case BombType::VShape:
+                    pModel = m_pVShapeBombModel;
+                    break;
+
+                case BombType::Circle:
+                    pModel = m_pCircleBombModel;
+                    break;
+
+                case BombType::Cross:
+                    pModel = m_pCrossBombModel;
+                    break;
+
+                case BombType::InvertedPyramid:
+                    pModel = m_pInvertedPyramidBombModel;
+                    break;
+                }
+
+                // 爆弾の描画位置
+                DirectX::XMFLOAT3 bombPosition = worldPosition;
+                bombPosition.y += 0.5f;
+
+                DrawModel(pModel, bombPosition);
+            }
+        }
+      
+    }
+    //==================================================
+      // 爆発範囲の描画
+      // マップ全体の描画が終わってから一度だけ実行
+
+  // 爆発範囲の描画
+    m_explosionRangeRenderer.Draw(
+        map,
+        view,
+        projection
+    );
+
+    // 起爆スポットの描画
+    DrawDetonationSpots(
+        map,
+        view,
+        projection
+    );
+}
+
+//==================================================
+// 起爆スポットのワイヤー描画
+
+void MapRenderer::DrawDetonationSpots(
+    const Map& map,
+    const DirectX::XMFLOAT4X4& view,
+    const DirectX::XMFLOAT4X4& projection)
+{
+    const GridManager& grid = map.GetGridManager();
+
+    // 起爆スポット一覧を取得
+    const auto& spots = map.GetDetonationSpots();
+
+    // カメラ設定
+    Geometory::SetView(view);
+    Geometory::SetProjection(projection);
+
+    // ワイヤーの色（緑色）
+    const DirectX::XMFLOAT4 color(
+        0.0f, 1.0f, 0.2f, 1.0f
+    );
+
+    // 1マスの半分のサイズ
+    const float halfSize = 0.5f;
+
+    // 立方体の12本の辺
+    static const int edges[12][2] =
+    {
+        { 0, 1 }, { 1, 2 }, { 2, 3 }, { 3, 0 },
+        { 4, 5 }, { 5, 6 }, { 6, 7 }, { 7, 4 },
+        { 0, 4 }, { 1, 5 }, { 2, 6 }, { 3, 7 }
+    };
+
+    bool hasLines = false;
+
+    // 登録されている起爆スポットを確認
+    for (const auto& spot : spots)
+    {
+        DirectX::XMFLOAT3 center;
+
+        // グリッド座標からワールド座標に変換
+        if (!grid.GridToWorld(spot.GetPosition(), center))
+        {
+            continue;
+        }
+
+        // 立方体の8頂点
+        DirectX::XMFLOAT3 corners[8] =
+        {
+            { center.x - halfSize, center.y - halfSize, center.z - halfSize },
+            { center.x + halfSize, center.y - halfSize, center.z - halfSize },
+            { center.x + halfSize, center.y + halfSize, center.z - halfSize },
+            { center.x - halfSize, center.y + halfSize, center.z - halfSize },
+
+            { center.x - halfSize, center.y - halfSize, center.z + halfSize },
+            { center.x + halfSize, center.y - halfSize, center.z + halfSize },
+            { center.x + halfSize, center.y + halfSize, center.z + halfSize },
+            { center.x - halfSize, center.y + halfSize, center.z + halfSize }
+        };
+
+        // 12本の辺を描画
+        for (int i = 0; i < 12; ++i)
+        {
+            int a = edges[i][0];
+            int b = edges[i][1];
+
+            Geometory::AddLine(
+                corners[a],
+                corners[b],
+                color
+            );
+
+            hasLines = true;
+        }
+    }
+
+    // 線が存在する場合だけ描画
+    if (hasLines)
+    {
+        Geometory::DrawLines();
     }
 }
 
