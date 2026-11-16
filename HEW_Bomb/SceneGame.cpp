@@ -114,11 +114,11 @@ void SceneGame::Update()
     // マップの情報を使って当たり判定を行う
     GridCollision gridCollision(m_map.GetGridManager());
 
-    /*m_player.Update(
+    m_player.Update(
         m_map,
-		m_bombInventory,/////////////////////////////Player.cppを書き換えたら動くはず！(多分！！！)
+        m_bombInventory,/////////////////////////////Player.cppを書き換えたら動くはず！(多分！！！)
         gridCollision
-    );*/
+    );
 
 
     //==================================================
@@ -165,9 +165,9 @@ void SceneGame::Draw()
 
 void SceneGame::UpdateBombPreview()
 {
-   /* m_mapRenderer.SetExplosionPreview(
+    m_mapRenderer.SetExplosionPreview(
         m_bombInventory.GetSelectedType(),
         m_player.GetBombPlacementPosition(),/////////////////////////////これもPlayer.cppを書き換えたら動くはず！
         m_player.GetBombPlacementRotation()
-    );*/
+    );
 }
