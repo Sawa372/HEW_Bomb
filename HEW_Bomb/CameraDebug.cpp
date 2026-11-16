@@ -5,8 +5,8 @@ CameraDebug::CameraDebug()
 	,m_radY(0.0f)
 	,m_radius(5.0f)
 	, m_zoomSpeed(DirectX::XMConvertToRadians(20.0f) / fFPS)
-	,m_minFovy(DirectX::XMConvertToRadians(25.0f))
-	,m_maxFovy(DirectX::XMConvertToRadians(80.0f))
+	,m_minFovy(DirectX::XMConvertToRadians(80.0f)) //ズームイン上限
+	,m_maxFovy(DirectX::XMConvertToRadians(110.0f)) //ズームアウト上限
 {
 	// 注視点：マップ中央
 	m_look = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
