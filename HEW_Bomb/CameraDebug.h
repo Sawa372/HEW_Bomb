@@ -14,6 +14,8 @@ private:
 	float m_zoomSpeed;  // ズーム速度
 	float m_minFovy;    // 最小画角
 	float m_maxFovy;    // 最大画角
+	float m_minRadY; // 縦回転の下限
+	float m_maxRadY; // 縦回転の上限
 
 public:
 	// コンストラクタ
