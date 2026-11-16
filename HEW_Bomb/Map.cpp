@@ -147,7 +147,7 @@ bool Map::CreateStage()
     // Generator
     if (!RegisterStageObject(
         GridObjectType::Generator,
-        GridPosition(4, 0, 3)))
+        GridPosition(1, 0, 5)))
     {
         return false;
     }
@@ -155,7 +155,7 @@ bool Map::CreateStage()
     // OilCan
     if (!RegisterStageObject(
         GridObjectType::OilCan,
-        GridPosition(8, 0, 8)))
+        GridPosition(3, 0, 1)))
     {
         return false;
     }
@@ -163,7 +163,7 @@ bool Map::CreateStage()
     // NetworkServer
     if (!RegisterStageObject(
         GridObjectType::NetworkServer,
-        GridPosition(2, 0, 3)))
+        GridPosition(1, 0, 4)))
     {
         return false;
     }
@@ -171,15 +171,15 @@ bool Map::CreateStage()
     // Pillar
     if (!RegisterStageObject(
         GridObjectType::Pillar,
-        GridPosition(6, 0, 3)))
+        GridPosition(1, 0, 2)))
     {
         return false;
     }
 
-    // Generator
+    // Computer
     if (!RegisterStageObject(
-        GridObjectType::Generator,
-        GridPosition(7, 0, 4)))
+        GridObjectType::Computer,
+        GridPosition(1, 0, 1)))
     {
         return false;
     }
