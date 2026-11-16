@@ -24,6 +24,8 @@ Player::Player()
     , m_selectedBombIndex(0)
     , m_isBombNextKeyReleased(true)
     , m_isBombPreviousKeyReleased(true)
+    , m_isRotateXKeyReleased(true)
+    , m_isRotateYKeyReleased(true)
     , m_pCamera(nullptr)
 {
 }
@@ -44,6 +46,10 @@ void Player::Initialize(const GridPosition& startPos)
 {
     m_playerPos = startPos;
     m_bombPlacementPosition = startPos;
+
+    // 爆弾の回転を初期化
+    m_bombPlacementRotation =
+        DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 }
 
 
@@ -68,7 +74,7 @@ void Player::Update(
 
 
     //==================================================
-    // ① プレイヤーの移動
+    //  プレイヤーの移動
 
     GridPosition nextPos = m_playerPos;
     bool isKeyPressed = false;
@@ -98,6 +104,11 @@ void Player::Update(
         nextPos = m_playerPos + GridPosition(0, 1, 0);
         isKeyPressed = true;
     }
+    else if (GetAsyncKeyState('8') & 0x8000)
+    {
+        nextPos = m_playerPos + GridPosition(0, -1, 0);
+        isKeyPressed = true;
+    }
 
     if (isKeyPressed)
     {
@@ -124,7 +135,7 @@ void Player::Update(
 
 
     //==================================================
-    // ② 爆弾の設置予定位置
+    //  爆弾の設置予定位置
 
     // 【現在のテスト処理】
     // 現在はプレイヤーと同じ座標を設置予定位置にしている。
@@ -139,7 +150,7 @@ void Player::Update(
 
 
     //==================================================
-    // ③ 爆弾の設置（Spaceキー）
+    //  爆弾の設置（Spaceキー）
 
     bool isPlaceKeyPressed =
         (GetAsyncKeyState(VK_SPACE) & 0x8000) != 0;
@@ -164,7 +175,7 @@ void Player::Update(
 
 
     //==================================================
-    // ④ 爆弾の回収（Rキー）
+    //  爆弾の回収（Rキー）
 
     bool isRetrieveKeyPressed =
         (GetAsyncKeyState('R') & 0x8000) != 0;
@@ -188,7 +199,7 @@ void Player::Update(
 
 
     //==================================================
-    // ⑤ 爆弾の起爆（Eキー）
+    //  爆弾の起爆（Eキー）
 
     // 登録された起爆スポットをすべて確認する。
     // 爆弾が置かれているスポットだけ起爆する。
@@ -223,7 +234,7 @@ void Player::Update(
 
 
     //==================================================
-    // ⑥ 爆弾の種類切り替え（テスト用）
+    //  爆弾の種類切り替え（テスト用）
 
     // 1キー：次の爆弾
     bool isNextBombPressed =
@@ -279,6 +290,74 @@ void Player::Update(
     {
         m_isBombPreviousKeyReleased = true;
     }
+
+    //==================================================
+    //  爆弾の回転
+
+    const float ROTATE_90 = DirectX::XM_PIDIV2;
+
+
+    //--------------------------------------------------
+    // 3キー：X軸回転
+
+    bool isRotateXKeyPressed =
+        (GetAsyncKeyState('3') & 0x8000) != 0;
+
+    if (isRotateXKeyPressed)
+    {
+        if (m_isRotateXKeyReleased)
+        {
+            DirectX::XMFLOAT3 rotation =
+                m_bombPlacementRotation;
+
+            rotation.x += ROTATE_90;
+            
+            if (rotation.x >= DirectX::XM_2PI)
+            {
+                rotation.x -= DirectX::XM_2PI;
+            }
+
+            SetBombPlacementRotation(rotation);
+
+            m_isRotateXKeyReleased = false;
+        }
+    }
+    else
+    {
+        m_isRotateXKeyReleased = true;
+    }
+
+
+    //--------------------------------------------------
+    // 4キー：Y軸回転
+
+    bool isRotateYKeyPressed =
+        (GetAsyncKeyState('4') & 0x8000) != 0;
+
+    if (isRotateYKeyPressed)
+    {
+        if (m_isRotateYKeyReleased)
+        {
+            DirectX::XMFLOAT3 rotation =
+                m_bombPlacementRotation;
+
+            rotation.y += ROTATE_90;
+
+            if (rotation.y >= DirectX::XM_2PI)
+            {
+                rotation.y -= DirectX::XM_2PI;
+            }
+
+            SetBombPlacementRotation(rotation);
+
+            m_isRotateYKeyReleased = false;
+        }
+    }
+    else
+    {
+        m_isRotateYKeyReleased = true;
+    }
+
 }
 
 

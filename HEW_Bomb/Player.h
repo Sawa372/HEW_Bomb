@@ -70,7 +70,7 @@ private:
 
 
     //==================================================
-    // 爆弾操作用のキー入力状態　　ここは要らんと思う
+    // 爆弾操作用のキー入力状態　
 
     bool m_isPlaceKeyReleased;          // 設置：Space
     bool m_isRetrieveKeyReleased;       // 回収：R
@@ -81,6 +81,10 @@ private:
 
     bool m_isBombNextKeyReleased;       // 次の爆弾：1
     bool m_isBombPreviousKeyReleased;   // 前の爆弾：2
+
+    // 爆弾回転
+    bool m_isRotateXKeyReleased;        // X軸回転：3
+    bool m_isRotateYKeyReleased;        // Y軸回転：4
 
     // カメラ情報
     Camera* m_pCamera;
