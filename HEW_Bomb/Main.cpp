@@ -7,6 +7,7 @@
 #include "SceneGame.h"
 #include "Defines.h"
 #include "ShaderList.h"
+#include "SpriteDrawer.h"
 
 //--- グローバル変数
 Scene* g_pScene;
@@ -23,6 +24,8 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	Sprite::Init();
 	InitInput();
 	ShaderList::Init();
+	// SpriteDrawerの初期化
+	InitSpriteDrawer(GetDevice(), GetContext(), SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	// シーン
 	g_pScene = new SceneGame();
@@ -39,6 +42,7 @@ void Uninit()
 	Sprite::Uninit();
 	Geometory::Uninit();
 	UninitDirectX();
+	UninitSpriteDrawer();
 }
 
 void Update()

@@ -8,6 +8,7 @@
 #include "MapRenderer.h"
 #include "Player.h"
 #include "BombInventory.h"
+#include "HandheldBombUI.h"
 
 
 class SceneGame : public Scene
@@ -26,6 +27,9 @@ private:
     // ƒJƒƒ‰
     Camera* m_pCamera;
 
+    //==================================================
+    // UI
+    HandheldBombUI* m_pHandheldBombUI;
 
     //==================================================
     // ƒQ[ƒ€ŠÇ—

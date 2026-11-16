@@ -123,11 +123,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalIncludeDirectories>"C:\Users\のん\Desktop\Hew_Bomb\SDL3-devel-3.4.20-VC\SDL3-3.4.20\include";%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SDL3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>"C:\Users\のん\Desktop\Hew_Bomb\SDL3-devel-3.4.20-VC\SDL3-3.4.20\lib\x64";%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -139,6 +141,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>"C:\Users\のん\Desktop\Hew_Bomb\SDL3-devel-3.4.20-VC\SDL3-3.4.20\include";%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -146,6 +149,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SDL3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>"C:\Users\のん\Desktop\Hew_Bomb\SDL3-devel-3.4.20-VC\SDL3-3.4.20\lib\x64";%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -171,6 +175,7 @@
     <ClCompile Include="GridObjectManager.cpp" />
     <ClCompile Include="GridPosition.cpp" />
     <ClCompile Include="Ground.cpp" />
+    <ClCompile Include="HandheldBombUI.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Map.cpp" />
@@ -186,8 +191,10 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderList.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="SpriteDrawer.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="Wall.cpp" />
     <ClCompile Include="_geometory.cpp" />
     <ClCompile Include="_model.cpp" />
@@ -218,6 +225,7 @@
     <ClInclude Include="GridObjectType.h" />
     <ClInclude Include="GridPosition.h" />
     <ClInclude Include="Ground.h" />
+    <ClInclude Include="HandheldBombUI.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="Map.h" />
@@ -233,7 +241,9 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderList.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="SpriteDrawer.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="Wall.h" />
   </ItemGroup>
   <ItemGroup>

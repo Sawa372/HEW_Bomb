@@ -5,6 +5,8 @@
 #include "GridCollision.h"
 #include "GridPosition.h"
 #include "BombType.h"
+#include "HandheldBombUI.h"
+#include "SpriteDrawer.h"
 
 #include <ShaderList.h>
 #include <Windows.h>
@@ -15,12 +17,18 @@
 
 SceneGame::SceneGame()
     : m_pCamera(nullptr)
+    ,m_pHandheldBombUI(nullptr)
 {
+
     //==================================================
     // カメラの生成
 
     m_pCamera = new CameraDebug;
 
+    //==================================================
+    // UIの生成
+
+    m_pHandheldBombUI = new HandheldBombUI;
 
     //==================================================
     // マップの初期化
@@ -94,6 +102,12 @@ SceneGame::~SceneGame()
 {
     delete m_pCamera;
     m_pCamera = nullptr;
+
+    if (m_pHandheldBombUI)
+    {
+        delete m_pHandheldBombUI;
+        m_pHandheldBombUI = nullptr;
+    }
 }
 
 
@@ -157,6 +171,8 @@ void SceneGame::Draw()
         m_pCamera->GetViewMatrix(),
         m_pCamera->GetProjectionMatrix()
     );
+
+    m_pHandheldBombUI->Draw();
 }
 
 
