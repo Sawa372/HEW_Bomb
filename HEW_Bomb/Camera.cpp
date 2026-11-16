@@ -2,7 +2,7 @@
 #include "Defines.h"
 
 Camera::Camera()
-	:m_pos(0.0f,0.0f,-5.0f)  //座標
+	: m_pos(0.0f,0.0f,-5.0f)  //座標
 	, m_look(0.0f,0.0f,0.0f) //注視点
 	, m_up(0.0f,1.0f,0.0f)   //上方ベクトル
 	, m_fovy(DirectX::XMConvertToRadians(60.0f))   //画角
