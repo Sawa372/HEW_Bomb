@@ -108,13 +108,13 @@ bool MapRenderer::Initialize()
     //==================================================
     // 爆弾モデルの読み込み
 
-    if (!LoadBombModel(m_pCubeBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||               // 仮置き
-        !LoadBombModel(m_pWideCubeBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||           // 仮置き
-        !LoadBombModel(m_pCylinderBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||           // 仮置き
-        !LoadBombModel(m_pVShapeBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||             // 仮置き
-        !LoadBombModel(m_pCircleBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||             // 仮置き
-        !LoadBombModel(m_pCrossBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||              // 仮置き
-        !LoadBombModel(m_pInvertedPyramidBombModel, "Assets/Model/bomb_circle/bomb_circle.obj"))      // 仮置き
+    if (!LoadBombModel(m_pCubeBombModel, "Assets/Model/Bom_Cube.fbx") ||              
+        !LoadBombModel(m_pWideCubeBombModel, "Assets/Model/Bom_WideCube.fbx") ||          
+        !LoadBombModel(m_pCylinderBombModel, "Assets/Model/Bom_Cylinder.fbx") ||          
+        !LoadBombModel(m_pVShapeBombModel, "Assets/Model/Bom_VShape.fbx") ||            
+        !LoadBombModel(m_pCircleBombModel, "Assets/Model/Bom_Circle.fbx") ||            
+        !LoadBombModel(m_pCrossBombModel, "Assets/Model/Bom_Cross.fbx") ||             
+        !LoadBombModel(m_pInvertedPyramidBombModel, "Assets/Model/Bom_InvertedPyramid.fbx"))     
     {
         MessageBoxA(
             nullptr,
@@ -138,7 +138,7 @@ bool MapRenderer::LoadBombModel(
 {
     pModel = new Model();
 
-    if (!pModel->Load(filePath, 0.3f))
+    if (!pModel->Load(filePath, 0.5f))
     {
         delete pModel;
         pModel = nullptr;
