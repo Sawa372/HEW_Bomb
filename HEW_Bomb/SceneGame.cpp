@@ -156,7 +156,7 @@ void SceneGame::Draw()
         m_map,
         m_pCamera->GetViewMatrix(),
         m_pCamera->GetProjectionMatrix()
-    );6
+    );
 }
 
 
