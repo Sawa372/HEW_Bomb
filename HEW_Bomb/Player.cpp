@@ -5,6 +5,7 @@
 #include "GridCollision.h"
 #include "BombInventory.h"
 #include "BombType.h"
+#include "Explosion.h"
 
 #include <Windows.h>
 
@@ -27,9 +28,9 @@ Player::Player()
     , m_isRotateXKeyReleased(true)
     , m_isRotateYKeyReleased(true)
     , m_pCamera(nullptr)
+    , m_pBomb(nullptr)
 {
 }
-
 
 //==================================================
 // デストラクタ
@@ -63,7 +64,7 @@ void Player::Update(
 {
     GridManager& gridManager = map.GetGridManager();
 
-    float nPos[3] = { PlayerGetPosition().GetX(), PlayerGetPosition().GetY(), PlayerGetPosition().GetZ() };
+    //float nPos[3] = { PlayerGetPosition().GetX(), PlayerGetPosition().GetY(), PlayerGetPosition().GetZ() };
 
     //// カメラからキャラクターの向きを取得
     //DirectX::XMFLOAT3 camPos = m_pCamera->GetPos(); // カメラの位置を取得
@@ -399,18 +400,32 @@ void Player::SetBombPlacementRotation(
 
 
 
-bool Player::DeathPlayer()
+// 引数に GridManager& を受け取るようにする
+bool Player::IsDeathPlayer(GridManager& gridManager)
 {
-    GridManager* p_gridmanager;
-    
-    std::vector<GridPosition> affectedPositions;
-    GridManager gridManager;
-    Bomb* pBomb;
+    // m_pBomb が nullptr の場合は安全に抜ける（アクセス違反防止）
+    if (m_pBomb == nullptr)
+    {
+        return false;
+    }
 
-    //p_gridmanager->HasPlayer(affectedPositions =
-    //    pBomb->GetAffectedPositions(gridManager););
+    // 正しいゲーム全体の GridManager を使って影響範囲を取得
+    std::vector<GridPosition> affectedPositions = m_pBomb->GetAffectedPositions(gridManager);
 
-    
+    bool isPlayerHit = false;
+    for (const auto& pos : affectedPositions)
+    {
+        if (gridManager.HasPlayer(pos))
+        {
+            isPlayerHit = true;
+            break;
+        }
+    }
 
-    return true;
+    if (isPlayerHit)
+    {
+        m_nLife--;
+    }
+
+    return isPlayerHit; // 常に true ではなく、ヒットしたかどうかを返す
 }

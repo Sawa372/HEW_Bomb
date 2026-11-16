@@ -120,6 +120,11 @@ void SceneGame::Update()
         gridCollision
     );
 
+    if(m_player.IsDeathPlayer(m_map.GetGridManager()))
+    {
+        m_player.Initialize(GridPosition(0, 0, 0));
+    }
+
 
     //==================================================
     // 爆発範囲プレビューの更新
