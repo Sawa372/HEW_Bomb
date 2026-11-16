@@ -299,8 +299,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Local.props" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Local.props" />
   </ItemGroup>
 </Project>
