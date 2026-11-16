@@ -3,6 +3,7 @@
 #include <DirectXMath.h>
 #include "GridPosition.h"
 #include "Camera.h"
+#include "Bomb.h"
 
 class Map;
 class BombInventory;
@@ -26,7 +27,7 @@ public:
     );
 
     // プレイヤーの現在位置を取得
-    GridPosition GetPosition() const;
+    GridPosition PlayerGetPosition() const;
 
     // 爆弾の設置予定位置を取得
     // SceneGameの爆発範囲プレビューで使用する
@@ -42,12 +43,17 @@ public:
         const DirectX::XMFLOAT3& rotation
     );
 
+    // プレイヤー死亡判定
+    bool DeathPlayer();
+
 private:
 
     //==================================================
     // プレイヤーの基本情報
 
-    GridPosition m_playerPos;
+    GridPosition m_playerPos; // グリッド上のプレイヤー位置
+
+    int m_nLife;    // プレイヤー残機
 
     // 移動キーの押しっぱなし防止
     bool m_isKeyReleased;
@@ -78,4 +84,5 @@ private:
 
     // カメラ情報
     Camera* m_pCamera;
+    
 };
