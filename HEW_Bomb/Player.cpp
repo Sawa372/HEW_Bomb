@@ -14,6 +14,7 @@
 
 Player::Player()
     : m_playerPos(0, 0, 0)
+    , m_nLife(3)
     , m_isKeyReleased(true)
     , m_bombPlacementPosition(0, 0, 0)
     , m_bombPlacementRotation(0.0f, 0.0f, 0.0f)
@@ -56,7 +57,7 @@ void Player::Update(
 {
     GridManager& gridManager = map.GetGridManager();
 
-    float nPos[3] = { GetPosition().GetX(), GetPosition().GetY(), GetPosition().GetZ() };
+    float nPos[3] = { PlayerGetPosition().GetX(), PlayerGetPosition().GetY(), PlayerGetPosition().GetZ() };
 
     //// カメラからキャラクターの向きを取得
     //DirectX::XMFLOAT3 camPos = m_pCamera->GetPos(); // カメラの位置を取得
@@ -279,7 +280,7 @@ void Player::Update(
 //==================================================
 // プレイヤーの現在位置を取得
 
-GridPosition Player::GetPosition() const
+GridPosition Player::PlayerGetPosition() const
 {
     return m_playerPos;
 }
@@ -310,4 +311,22 @@ void Player::SetBombPlacementRotation(
     const DirectX::XMFLOAT3& rotation)
 {
     m_bombPlacementRotation = rotation;
+}
+
+
+
+bool Player::DeathPlayer()
+{
+    GridManager* p_gridmanager;
+    
+    std::vector<GridPosition> affectedPositions;
+    GridManager gridManager;
+    Bomb* pBomb;
+
+    //p_gridmanager->HasPlayer(affectedPositions =
+    //    pBomb->GetAffectedPositions(gridManager););
+
+    
+
+    return true;
 }
