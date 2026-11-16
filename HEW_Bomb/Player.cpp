@@ -93,6 +93,11 @@ void Player::Update(
         nextPos = m_playerPos + GridPosition(1, 0, 0);
         isKeyPressed = true;
     }
+    else if (GetAsyncKeyState('7') & 0x8000)
+    {
+        nextPos = m_playerPos + GridPosition(0, 1, 0);
+        isKeyPressed = true;
+    }
 
     if (isKeyPressed)
     {
