@@ -44,7 +44,7 @@ public:
     );
 
     // プレイヤー死亡判定
-    bool DeathPlayer();
+    bool IsDeathPlayer(GridManager& gridManager);
 
 private:
 
@@ -84,5 +84,7 @@ private:
 
     // カメラ情報
     Camera* m_pCamera;
+
+    Bomb* m_pBomb;
     
 };
