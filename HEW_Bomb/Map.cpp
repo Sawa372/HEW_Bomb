@@ -28,10 +28,10 @@ Map::~Map()
 bool Map::Initialize()
 {
     // マップの最小座標
-    const GridPosition minPosition(-10, -1, -10);
+    const GridPosition minPosition(-4, -1, -4);
 
     // マップの最大座標
-    const GridPosition maxPosition(10, 5, 10);
+    const GridPosition maxPosition(4, 5, 4);
 
     // 1マスあたりのワールド空間でのサイズを設定
     if (!m_gridManager.SetCellSize(1.0f, 1.0f, 1.0f))
@@ -128,7 +128,7 @@ bool Map::CreateStage()
         }
     }
     // 起爆スポット
-    if (!AddDetonationSpot(GridPosition(-5, 0, -5)))
+    if (!AddDetonationSpot(GridPosition(0, 0, 0)))
         return false;
 
 
@@ -136,53 +136,53 @@ bool Map::CreateStage()
     // オブジェクトの配置
     // これは3Dモデルの表示確認用の仮配置
 
-    // Wall
-    if (!RegisterStageObject(
-        GridObjectType::Wall,
-        GridPosition(3, 0, 3)))
-    {
-        return false;
-    }
+    //// Wall
+    //if (!RegisterStageObject(
+    //    GridObjectType::Wall,
+    //    GridPosition(3, 0, 3)))
+    //{
+    //    return false;
+    //}
 
-    // Generator
-    if (!RegisterStageObject(
-        GridObjectType::Generator,
-        GridPosition(4, 0, 3)))
-    {
-        return false;
-    }
+    //// Generator
+    //if (!RegisterStageObject(
+    //    GridObjectType::Generator,
+    //    GridPosition(4, 0, 3)))
+    //{
+    //    return false;
+    //}
 
-    // OilCan
-    if (!RegisterStageObject(
-        GridObjectType::OilCan,
-        GridPosition(8, 0, 8)))
-    {
-        return false;
-    }
+    //// OilCan
+    //if (!RegisterStageObject(
+    //    GridObjectType::OilCan,
+    //    GridPosition(8, 0, 8)))
+    //{
+    //    return false;
+    //}
 
-    // NetworkServer
-    if (!RegisterStageObject(
-        GridObjectType::NetworkServer,
-        GridPosition(2, 0, 3)))
-    {
-        return false;
-    }
+    //// NetworkServer
+    //if (!RegisterStageObject(
+    //    GridObjectType::NetworkServer,
+    //    GridPosition(2, 0, 3)))
+    //{
+    //    return false;
+    //}
 
-    // Pillar
-    if (!RegisterStageObject(
-        GridObjectType::Pillar,
-        GridPosition(6, 0, 3)))
-    {
-        return false;
-    }
+    //// Pillar
+    //if (!RegisterStageObject(
+    //    GridObjectType::Pillar,
+    //    GridPosition(6, 0, 3)))
+    //{
+    //    return false;
+    //}
 
-    // Generator
-    if (!RegisterStageObject(
-        GridObjectType::Generator,
-        GridPosition(7, 0, 4)))
-    {
-        return false;
-    }
+    //// Generator
+    //if (!RegisterStageObject(
+    //    GridObjectType::Generator,
+    //    GridPosition(7, 0, 4)))
+    //{
+    //    return false;
+    //}
 
     GridPosition playerStartPos(0, 0, 0);
     if (!m_gridManager.SetPlayer(playerStartPos))

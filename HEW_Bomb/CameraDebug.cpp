@@ -6,7 +6,7 @@ CameraDebug::CameraDebug()
 	,m_radius(5.0f)
 	, m_zoomSpeed(DirectX::XMConvertToRadians(20.0f) / fFPS)
 	,m_minFovy(DirectX::XMConvertToRadians(80.0f)) //ズームイン上限
-	,m_maxFovy(DirectX::XMConvertToRadians(110.0f)) //ズームアウト上限
+	,m_maxFovy(DirectX::XMConvertToRadians(160.0f)) //ズームアウト上限
 	, m_minRadY(DirectX::XMConvertToRadians(10.0f))//カメラ位置上限
 	, m_maxRadY(DirectX::XMConvertToRadians(50.0f))//カメラ位置下限
 {
