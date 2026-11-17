@@ -225,9 +225,6 @@ void MapRenderer::Draw(
         {
             DirectX::XMFLOAT3 floorPosition = worldPosition;
 
-            // 床を少し下げて配置する
-            floorPosition.y -= 0.75f;
-
             
             DrawModel(m_pFloorModel, floorPosition);
         }
@@ -275,11 +272,10 @@ void MapRenderer::Draw(
             DrawModel(pModel, worldPosition);
         }
 
-        // 4. プレイヤーの描画
+        // 4. プレイヤーの描画ww
         if (cell.HasPlayer())
         {
             DirectX::XMFLOAT3 playerPos = worldPosition;
-            playerPos.y += 0.5f;
             DrawModel(m_pPlayerModel, playerPos);
         }
 
