@@ -7,7 +7,7 @@ CameraDebug::CameraDebug()
 	,m_minRadY(DirectX::XMConvertToRadians(10.0f))
 	,m_maxRadY(DirectX::XMConvertToRadians(50.0f))
 	,m_minRadius(METER(5.0f))
-	,m_maxRadius(METER(15.0f))
+	,m_maxRadius(METER(10.0f))
 {
 	// 注視点：マップ中央
 	m_look = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -21,6 +21,13 @@ CameraDebug::CameraDebug()
 
 CameraDebug::~CameraDebug()
 {
+}
+
+// 注視点のY座標設定
+
+void CameraDebug::SetTargetY(float y)
+{
+	m_look.y = y;
 }
 
 void CameraDebug::Update()
