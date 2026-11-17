@@ -79,4 +79,4 @@ private:
     GridManager& m_gridManager; // Šù‘¶‚ÌGridManager‚Ö‚ÌQÆ
 };
 
-#endif // __GRID_COLLISION_H__
+#endif //__GRID_COLLISION_H__

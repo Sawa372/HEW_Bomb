@@ -31,7 +31,7 @@ bool Map::Initialize()
     const GridPosition minPosition(-10, 0, -10);
 
     // マップの最大座標
-    const GridPosition maxPosition(10, 5, 10);
+    const GridPosition maxPosition(10, 3, 10);
 
     // 1マスあたりのワールド空間でのサイズを設定
     if (!m_gridManager.SetCellSize(1.0f, 1.0f, 1.0f))
@@ -128,7 +128,7 @@ bool Map::CreateStage()
         }
     }
     // 起爆スポット
-    if (!AddDetonationSpot(GridPosition(-5, 0, -5)))
+    if (!AddDetonationSpot(GridPosition(-5, 2, -5)))
         return false;
 
 

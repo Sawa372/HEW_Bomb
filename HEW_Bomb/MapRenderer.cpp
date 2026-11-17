@@ -279,7 +279,7 @@ void MapRenderer::Draw(
         if (cell.HasPlayer())
         {
             DirectX::XMFLOAT3 playerPos = worldPosition;
-            playerPos.y += 0.5f;
+            playerPos.y += 2.5f/*0.5f*/;
             DrawModel(m_pPlayerModel, playerPos);
         }
 
