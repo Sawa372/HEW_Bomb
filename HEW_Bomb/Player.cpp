@@ -16,6 +16,7 @@
 Player::Player()
     : m_playerPos(0, 0, 0)
     , m_nLife(3)
+    , m_startPos(0, 0, 0)
     , m_isKeyReleased(true)
     , m_bombPlacementPosition(0, 0, 0)
     , m_bombPlacementRotation(0.0f, 0.0f, 0.0f)
@@ -29,6 +30,7 @@ Player::Player()
     , m_isRotateYKeyReleased(true)
     , m_pCamera(nullptr)
     , m_pBomb(nullptr)
+	, m_bombRotation()
 {
 }
 
@@ -54,6 +56,10 @@ void Player::Initialize(const GridPosition& startPos)
     // 初期回転角度を取得
     m_bombPlacementRotation =
         m_bombRotation.GetEulerAngles();
+
+    m_playerPos = startPos;
+    m_startPos = startPos;
+    m_bombPlacementPosition = startPos;
 
 }
 
@@ -299,10 +305,6 @@ void Player::Update(
 
     //==================================================
     //  爆弾の起爆（Eキー）
-
-    // 登録された起爆スポットをすべて確認する。
-    // 爆弾が置かれているスポットだけ起爆する。
-
     bool isDetonateKeyPressed =
         (GetAsyncKeyState('E') & 0x8000) != 0;
 
@@ -310,17 +312,82 @@ void Player::Update(
     {
         if (m_isDetonateKeyReleased)
         {
+            // 起爆直前のプレイヤー位置を保存
+            GridPosition playerPositionBefore =
+                m_playerPos;
+
+            GridPosition placementPositionBefore =
+                m_bombPlacementPosition;
+
+            // 起爆スポットに爆弾があるか確認
+            bool hasBomb = false;
+
             for (const auto& spot : map.GetDetonationSpots())
             {
-                const GridPosition& position =
-                    spot.GetPosition();
-
-                if (!map.HasBombAt(position))
+                if (map.HasBombAt(spot.GetPosition()))
                 {
-                    continue;
+                    hasBomb = true;
+                    break;
                 }
+            }
 
-                map.DetonateBombAt(position);
+            if (hasBomb)
+            {
+                //==================================================
+                // 起爆直前の状態を保存
+
+                if (map.SaveUndoState())
+                {
+                    std::vector<GridPosition> dangerousPositions;
+
+                    //==================================================
+                    // 爆発・連鎖爆発
+
+                    for (const auto& spot : map.GetDetonationSpots())
+                    {
+                        const GridPosition& position =
+                            spot.GetPosition();
+
+                        if (!map.HasBombAt(position))
+                        {
+                            continue;
+                        }
+
+                        std::vector<GridPosition> bombAffectedPositions;
+
+                        if (map.DetonateBombAt(
+                            position,
+                            &bombAffectedPositions))
+                        {
+                            dangerousPositions.insert(
+                                dangerousPositions.end(),
+                                bombAffectedPositions.begin(),
+                                bombAffectedPositions.end()
+                            );
+                        }
+                    }
+
+                    //==================================================
+                    // 死亡判定
+
+                    if (CheckDeath(dangerousPositions))
+                    {
+                        // 起爆直前のMapに戻す
+                        if (map.RestoreUndoState())
+                        {
+                            // プレイヤー自身の座標も戻す
+                            m_playerPos = playerPositionBefore;
+
+                            m_bombPlacementPosition =
+                                placementPositionBefore;
+                        }
+                    }
+                    else
+                    {
+                        // 生存した場合は保存データを破棄
+                        map.DiscardUndoState();
+                    }
+                }
             }
 
             m_isDetonateKeyReleased = false;
@@ -330,7 +397,6 @@ void Player::Update(
     {
         m_isDetonateKeyReleased = true;
     }
-
 
     //==================================================
     //  爆弾の種類切り替え（テスト用）
@@ -481,32 +547,20 @@ void Player::SetCamera(Camera* pCamera)
 
 
 
-// 引数に GridManager& を受け取るようにする
-bool Player::IsDeathPlayer(GridManager& gridManager)
+//==================================================
+// プレイヤーの死亡判定
+
+bool Player::CheckDeath(
+    const std::vector<GridPosition>& dangerousPositions) const
 {
-    // m_pBomb が nullptr の場合は安全に抜ける（アクセス違反防止）
-    if (m_pBomb == nullptr)
+    // 危険範囲にプレイヤーがいるか確認
+    for (const GridPosition& position : dangerousPositions)
     {
-        return false;
-    }
-
-    // 正しいゲーム全体の GridManager を使って影響範囲を取得
-    std::vector<GridPosition> affectedPositions = m_pBomb->GetAffectedPositions(gridManager);
-
-    bool isPlayerHit = false;
-    for (const auto& pos : affectedPositions)
-    {
-        if (gridManager.HasPlayer(pos))
+        if (position == m_playerPos)
         {
-            isPlayerHit = true;
-            break;
+            return true;
         }
     }
 
-    if (isPlayerHit)
-    {
-        m_nLife--;
-    }
-
-    return isPlayerHit; // 常に true ではなく、ヒットしたかどうかを返す
+    return false;
 }

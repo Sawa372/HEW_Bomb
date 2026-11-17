@@ -527,3 +527,72 @@ const std::vector<DetonationSpot>& Map::GetDetonationSpots() const
 {
     return m_detonationSpots;
 }
+
+
+//==================================================
+// Undo処理
+
+// マップ全体の状態を保存
+bool Map::SaveUndoState()
+{
+    // グリッドの状態を保存
+    if (!m_gridManager.SaveUndoState())
+    {
+        return false;
+    }
+
+    // オブジェクトの状態を保存
+    if (!m_gridObjectManager.SaveUndoState())
+    {
+        m_gridManager.DiscardUndoState();
+        return false;
+    }
+
+    // 爆弾の状態を保存
+    if (!m_bombManager.SaveUndoState())
+    {
+        m_gridManager.DiscardUndoState();
+        m_gridObjectManager.DiscardUndoState();
+        return false;
+    }
+
+    return true;
+}
+
+
+//==================================================
+// 保存した状態に戻す
+
+bool Map::RestoreUndoState()
+{
+    // グリッドの状態を復元
+    if (!m_gridManager.RestoreUndoState())
+    {
+        return false;
+    }
+
+    // オブジェクトの状態を復元
+    if (!m_gridObjectManager.RestoreUndoState())
+    {
+        return false;
+    }
+
+    // 爆弾の状態を復元
+    if (!m_bombManager.RestoreUndoState())
+    {
+        return false;
+    }
+
+    return true;
+}
+
+
+//==================================================
+// Undo用の保存データを破棄
+
+void Map::DiscardUndoState()
+{
+    m_gridManager.DiscardUndoState();
+    m_gridObjectManager.DiscardUndoState();
+    m_bombManager.DiscardUndoState();
+}

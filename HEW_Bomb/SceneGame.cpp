@@ -102,7 +102,6 @@ SceneGame::~SceneGame()
 
 //==================================================
 // 更新処理
-
 void SceneGame::Update()
 {
     //==================================================
@@ -114,19 +113,13 @@ void SceneGame::Update()
     //==================================================
     // プレイヤーの更新
 
-    // マップの情報を使って当たり判定を行う
     GridCollision gridCollision(m_map.GetGridManager());
 
     m_player.Update(
         m_map,
-        m_bombInventory,/////////////////////////////Player.cppを書き換えたら動くはず！(多分！！！)
+        m_bombInventory,
         gridCollision
     );
-
-    if(m_player.IsDeathPlayer(m_map.GetGridManager()))
-    {
-        m_player.Initialize(GridPosition(0, 0, 0));
-    }
 
 
     //==================================================

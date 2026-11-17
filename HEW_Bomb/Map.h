@@ -97,6 +97,18 @@ public:
     // 登録されている起爆スポット一覧を取得
     const std::vector<DetonationSpot>& GetDetonationSpots() const;
 
+    //==================================================
+    // Undo処理
+
+    // マップの状態を保存
+    bool SaveUndoState();
+
+    // 保存した状態に戻す
+    bool RestoreUndoState();
+
+    // 保存データを破棄
+    void DiscardUndoState();
+
 
 private:
     // ステージ内の壁やオブジェクトの配置を作成する

@@ -20,3 +20,10 @@ GridObjectType Pillar::GetType() const
 {
     return GridObjectType::Pillar;
 }
+
+std::unique_ptr<GridObject> Pillar::Clone() const
+{
+    return std::unique_ptr<GridObject>(
+        new Pillar(*this)
+    );
+}
