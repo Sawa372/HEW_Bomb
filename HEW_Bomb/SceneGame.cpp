@@ -103,20 +103,13 @@ SceneGame::~SceneGame()
 void SceneGame::Update()
 {
     //==================================================
-    // カメラの更新
-
-    m_pCamera->Update();
-
-
-    //==================================================
     // プレイヤーの更新
 
-    // マップの情報を使って当たり判定を行う
     GridCollision gridCollision(m_map.GetGridManager());
 
     m_player.Update(
         m_map,
-        m_bombInventory,/////////////////////////////Player.cppを書き換えたら動くはず！(多分！！！)
+        m_bombInventory,
         gridCollision
     );
 
@@ -124,6 +117,28 @@ void SceneGame::Update()
     {
         m_player.Initialize(GridPosition(0, 0, 0));
     }
+
+
+    //==================================================
+    // プレイヤーのワールド座標を取得
+
+    DirectX::XMFLOAT3 playerWorldPos;
+
+    if (m_map.GetGridManager().GridToWorld(
+        m_player.PlayerGetPosition(),
+        playerWorldPos))
+    {
+        CameraDebug* pCamera =
+            static_cast<CameraDebug*>(m_pCamera);
+
+        pCamera->SetTargetY(playerWorldPos.y);
+    }
+
+
+    //==================================================
+    // カメラの更新
+
+    m_pCamera->Update();
 
 
     //==================================================

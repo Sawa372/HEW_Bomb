@@ -28,10 +28,10 @@ Map::~Map()
 bool Map::Initialize()
 {
     // マップの最小座標
-    const GridPosition minPosition(-10, -1, -10);
+    const GridPosition minPosition(-4, -1, -4);
 
     // マップの最大座標
-    const GridPosition maxPosition(10, 5, 10);
+    const GridPosition maxPosition(4, 5, 4);
 
     // 1マスあたりのワールド空間でのサイズを設定
     if (!m_gridManager.SetCellSize(1.0f, 1.0f, 1.0f))
@@ -112,8 +112,8 @@ bool Map::CreateStage()
     }
 
     // マップ全体に床を設置
-    //for (int y = minPosition.GetY(); y <= maxPosition.GetY(); y += maxPosition.GetY() - 1)
-    //{
+    for (int y = minPosition.GetY(); y <= maxPosition.GetY(); y += maxPosition.GetY() - 1)
+    {
         for (int z = minPosition.GetZ(); z <= maxPosition.GetZ(); ++z)
         {
             for (int x = minPosition.GetX(); x <= maxPosition.GetX(); ++x)
@@ -128,7 +128,7 @@ bool Map::CreateStage()
         }
     // }
     // 起爆スポット
-    if (!AddDetonationSpot(GridPosition(-5, 0, -5)))
+    if (!AddDetonationSpot(GridPosition(0, 0, 0)))
         return false;
 
 
