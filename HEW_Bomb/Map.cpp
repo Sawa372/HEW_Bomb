@@ -28,7 +28,7 @@ Map::~Map()
 bool Map::Initialize()
 {
     // マップの最小座標
-    const GridPosition minPosition(-10, 0, -10);
+    const GridPosition minPosition(-10, -1, -10);
 
     // マップの最大座標
     const GridPosition maxPosition(10, 5, 10);
@@ -112,21 +112,21 @@ bool Map::CreateStage()
     }
 
     // マップ全体に床を設置
-    for (int y = minPosition.GetY(); y <= maxPosition.GetY(); y += maxPosition.GetY() - 1)
-    {
+    //for (int y = minPosition.GetY(); y <= maxPosition.GetY(); y += maxPosition.GetY() - 1)
+    //{
         for (int z = minPosition.GetZ(); z <= maxPosition.GetZ(); ++z)
         {
             for (int x = minPosition.GetX(); x <= maxPosition.GetX(); ++x)
             {
                 if (!RegisterStageObject(
                     GridObjectType::Floor,
-                    GridPosition(x, y, z)))
+                    GridPosition(x, -1, z)))
                 {
                     return false;
                 }
             }
         }
-    }
+    // }
     // 起爆スポット
     if (!AddDetonationSpot(GridPosition(-5, 0, -5)))
         return false;
@@ -139,23 +139,7 @@ bool Map::CreateStage()
     // Wall
     if (!RegisterStageObject(
         GridObjectType::Wall,
-        GridPosition(3, 0, 3)))
-    {
-        return false;
-    }
-
-    // Generator
-    if (!RegisterStageObject(
-        GridObjectType::Generator,
-        GridPosition(4, 0, 3)))
-    {
-        return false;
-    }
-
-    // OilCan
-    if (!RegisterStageObject(
-        GridObjectType::OilCan,
-        GridPosition(8, 0, 8)))
+        GridPosition(1, 0, 1)))
     {
         return false;
     }
@@ -163,15 +147,7 @@ bool Map::CreateStage()
     // NetworkServer
     if (!RegisterStageObject(
         GridObjectType::NetworkServer,
-        GridPosition(2, 0, 3)))
-    {
-        return false;
-    }
-
-    // Pillar
-    if (!RegisterStageObject(
-        GridObjectType::Pillar,
-        GridPosition(6, 0, 3)))
+        GridPosition(2, 0, -2)))
     {
         return false;
     }
@@ -179,7 +155,31 @@ bool Map::CreateStage()
     // Generator
     if (!RegisterStageObject(
         GridObjectType::Generator,
-        GridPosition(7, 0, 4)))
+        GridPosition(3, 0, 2)))
+    {
+        return false;
+    }
+
+    // Computer
+    if (!RegisterStageObject(
+        GridObjectType::Computer,
+        GridPosition(4, 0, 0)))
+    {
+        return false;
+    }
+
+    // Pillar
+    if (!RegisterStageObject(
+        GridObjectType::Pillar,
+        GridPosition(5, 0, 1)))
+    {
+        return false;
+    }
+
+    // OilCan
+    if (!RegisterStageObject(
+        GridObjectType::OilCan,
+        GridPosition(7, 0, 1)))
     {
         return false;
     }

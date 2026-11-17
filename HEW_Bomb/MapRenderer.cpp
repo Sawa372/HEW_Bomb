@@ -48,49 +48,49 @@ bool MapRenderer::Initialize()
     // 既存のモデルを解放して初期状態に戻す
     Clear();
     m_pWallModel = new Model();
-    if (!m_pWallModel->Load("Assets/Model/tree_forest.fbx"))
+    if (!m_pWallModel->Load("Assets/Model/wall.fbx",0.5f))
     {
         MessageBoxA(nullptr, "Wallモデルの読み込みに失敗しました。\ntree_forest.fbx", "Error", MB_OK);
         return false;
     }
     
     m_pNetworkServerModel = new Model();
-    if (!m_pNetworkServerModel->Load("Assets/Model/plantB_forest.fbx"))
+    if (!m_pNetworkServerModel->Load("Assets/Model/NetworkServer.fbx",0.5f))
     {
         MessageBoxA(nullptr, "NetworkServerモデルの読み込みに失敗しました。\nplantB_forest.fbx", "Error", MB_OK);
         return false;
     }
 
     m_pGeneratorModel = new Model();
-    if (!m_pGeneratorModel->Load("Assets/Model/rocksA_desert.fbx"))
+    if (!m_pGeneratorModel->Load("Assets/Model/Generator.fbx",0.5f))
     {
         MessageBoxA(nullptr, "Generatorモデルの読み込みに失敗しました。\nrocksA_desert.fbx", "Error", MB_OK);
         return false;
     }
 
     m_pComputerModel = new Model();
-    if (!m_pComputerModel->Load("Assets/Model/flag_teamBlue.fbx"))
+    if (!m_pComputerModel->Load("Assets/Model/Computer.fbx",0.5f))
     {
         MessageBoxA(nullptr, "Computerモデルの読み込みに失敗しました。\nflag_teamBlue.fbx", "Error", MB_OK);
         return false;
     }
 
     m_pPillarModel = new Model();
-    if (!m_pPillarModel->Load("Assets/Model/flag_teamRed.fbx"))
+    if (!m_pPillarModel->Load("Assets/Model/pillar.fbx",0.5f))
     {
         MessageBoxA(nullptr, "Pillarモデルの読み込みに失敗しました。\nflag_teamRed.fbx", "Error", MB_OK);
         return false;
     }
 
     m_pOilCanModel = new Model();
-    if (!m_pOilCanModel->Load("Assets/Model/flag_teamYellow.fbx"))
+    if (!m_pOilCanModel->Load("Assets/Model/Oil can.fbx",0.5f))
     {
         MessageBoxA(nullptr, "OilCanモデルの読み込みに失敗しました。\nflag_teamYellow.fbx", "Error", MB_OK);
         return false;
     }
 
     m_pFloorModel = new Model();
-    if (!m_pFloorModel->Load("Assets/Model/tileMedium_forest.fbx",0.5))
+    if (!m_pFloorModel->Load("Assets/Model/floor.fbx",0.5))
     {
         MessageBoxA(nullptr, "Floorモデルの読み込みに失敗しました。\ntileMedium_forest.fbx", "Error", MB_OK);
         return false;
@@ -98,7 +98,7 @@ bool MapRenderer::Initialize()
 
     // プレイヤーモデル
     m_pPlayerModel = new Model();
-    if (!m_pPlayerModel->Load("Assets/Model/ball.fbx", 0.5f)) // パスは実際のファイル名に合わせる
+    if (!m_pPlayerModel->Load("Assets/Model/charactar.fbx", 0.5f)) // パスは実際のファイル名に合わせる
     {
         // エラー処理
         Clear();
