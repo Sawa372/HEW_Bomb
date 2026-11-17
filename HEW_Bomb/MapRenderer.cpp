@@ -504,7 +504,34 @@ void MapRenderer::DrawModel(
             roll
         );
 
-    // 移動行列
+    //==================================================
+    // 回転の基準点をモデルの中心にする
+
+    // モデルの中心位置
+    // 高さ1.0のモデル想定
+    DirectX::XMFLOAT3 pivot(
+        0.0f,
+        0.5f,
+        0.0f
+    );
+
+    // 原点を中心位置に移動
+    DirectX::XMMATRIX moveToOrigin =
+        DirectX::XMMatrixTranslation(
+            -pivot.x,
+            -pivot.y,
+            -pivot.z
+        );
+
+    // 中心位置に戻す
+    DirectX::XMMATRIX moveBack =
+        DirectX::XMMatrixTranslation(
+            pivot.x,
+            pivot.y,
+            pivot.z
+        );
+
+    // ワールド座標への移動
     DirectX::XMMATRIX trans =
         DirectX::XMMatrixTranslation(
             worldPosition.x,
@@ -512,9 +539,12 @@ void MapRenderer::DrawModel(
             worldPosition.z
         );
 
-    // 回転してから移動
-    DirectX::XMMATRIX world = rot * trans;
-
+    // 中心を基準に回転
+    DirectX::XMMATRIX world =
+        moveToOrigin *
+        rot *
+        moveBack *
+        trans;
 
     //==================================================
     // ワールド行列の設定
