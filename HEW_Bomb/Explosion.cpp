@@ -7,7 +7,7 @@
 Explosion::Explosion()
     : m_type(BombType::None)
     , m_anchor(0, 0, 0)
-    , m_rotation(0.0f, 0.0f,0.0f)
+    , m_rotation(0.0f, 0.0f, 0.0f)
     , m_size(1, 1, 1)
 {
 }
@@ -332,7 +332,7 @@ bool Explosion::IsInsideShape(
     }
     default:
         return false;
-    
+
     }
 }
 

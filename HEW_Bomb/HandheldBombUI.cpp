@@ -4,7 +4,8 @@
 #include "SpriteDrawer.h"
 
 HandheldBombUI::HandheldBombUI()
-	:m_pBuffer(nullptr)
+	:m_pSlotBuffer(nullptr)
+	,m_pLargeBuffer(nullptr)
 	,m_pTexture(nullptr)
 {
 	// 頂点バッファの作成
@@ -17,8 +18,8 @@ HandheldBombUI::HandheldBombUI()
 		{{ w,  h, 0.0f}, {1.0f, 1.0f}},
 	};
 
-	m_pBuffer = CreateVertexBuffer(GetDevice(), vtx, _countof(vtx));
-	if (m_pBuffer == nullptr)
+	m_pSlotBuffer = CreateVertexBuffer(GetDevice(), vtx, _countof(vtx));
+	if (m_pSlotBuffer == nullptr)
 	{
 		MessageBox(NULL, "HandheldBombUI", "Error", MB_OK);
 	}
@@ -34,10 +35,10 @@ HandheldBombUI::~HandheldBombUI()
 		m_pTexture->Release();
 		m_pTexture = nullptr;
 	}
-	if (m_pBuffer != nullptr)
+	if (m_pSlotBuffer != nullptr)
 	{
-		m_pBuffer->Release();
-		m_pBuffer = nullptr;
+		m_pSlotBuffer->Release();
+		m_pSlotBuffer = nullptr;
 	}
 }
 
@@ -51,5 +52,5 @@ void HandheldBombUI::Draw()
 	// 画像表示処理
 	SetSpritePos(-500, 250);
 	SetSpriteTexture(m_pTexture);
-	DrawSprite(m_pBuffer);
+	DrawSprite(m_pSlotBuffer);
 }
