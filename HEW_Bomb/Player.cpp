@@ -64,15 +64,7 @@ void Player::Update(
 {
     GridManager& gridManager = map.GetGridManager();
 
-    //float nPos[3] = { PlayerGetPosition().GetX(), PlayerGetPosition().GetY(), PlayerGetPosition().GetZ() };
-
-    //// カメラからキャラクターの向きを取得
-    //DirectX::XMFLOAT3 camPos = m_pCamera->GetPos(); // カメラの位置を取得
-    //DirectX::XMVECTOR vCamPos = DirectX::XMLoadFloat3(&camPos); // camPosを計算用のデータに変換
-    //DirectX::XMVECTOR vPos = DirectX::XMLoadFloat3(nPos[0], ); // プレイヤーの位置を計算用のデータに変換
-    //DirectX::XMVECTOR vec = DirectX::XMVectorSubtract(vPos, vCamPos);// カメラからプレイヤーに向かうベクトルを計算
-    //vec = DirectX::XMVector3Normalize(vec); // vecを長さ１のベクトルに変換
-
+    
 
     //==================================================
     //  プレイヤーの移動
@@ -80,36 +72,139 @@ void Player::Update(
     GridPosition nextPos = m_playerPos;
     bool isKeyPressed = false;
 
-    if (GetAsyncKeyState('I') & 0x8000)
+    if (m_pCamera->GetPos().z <= 0.0f && abs(m_pCamera->GetPos().x) <= 2.5f) // Z+が正面
     {
-        nextPos = m_playerPos + GridPosition(0, 0, 1);
-        isKeyPressed = true;
+        if (GetAsyncKeyState('I') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, 0, 1);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('K') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, 0, -1);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('J') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(-1, 0, 0);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('L') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(1, 0, 0);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('7') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, 1, 0);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('8') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, -1, 0);
+            isKeyPressed = true;
+        }
     }
-    else if (GetAsyncKeyState('K') & 0x8000)
+    else if (m_pCamera->GetPos().z >= 0.0f && abs(m_pCamera->GetPos().x) <= 2.5f) // Z-が正面
     {
-        nextPos = m_playerPos + GridPosition(0, 0, -1);
-        isKeyPressed = true;
+        if (GetAsyncKeyState('I') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, 0, -1);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('K') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, 0, 1);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('J') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(1, 0, 0);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('L') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(-1, 0, 0);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('7') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, 1, 0);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('8') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, -1, 0);
+            isKeyPressed = true;
+        }
     }
-    else if (GetAsyncKeyState('J') & 0x8000)
+    else if (abs(m_pCamera->GetPos().z) <= 2.5f && m_pCamera->GetPos().x <= 0.0f) // X+が正面
     {
-        nextPos = m_playerPos + GridPosition(-1, 0, 0);
-        isKeyPressed = true;
+        if (GetAsyncKeyState('I') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(1, 0, 0);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('K') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(-1, 0, 0);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('J') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, 0, 1);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('L') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, 0, -1);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('7') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, 1, 0);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('8') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, -1, 0);
+            isKeyPressed = true;
+        }
     }
-    else if (GetAsyncKeyState('L') & 0x8000)
+    else if (abs(m_pCamera->GetPos().z) <= 2.5f && m_pCamera->GetPos().x >= 0.0f) // X-が正面
     {
-        nextPos = m_playerPos + GridPosition(1, 0, 0);
-        isKeyPressed = true;
+        if (GetAsyncKeyState('I') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(-1, 0, 0);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('K') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(1, 0, 0);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('J') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, 0, -1);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('L') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, 0, 1);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('7') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, 1, 0);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('8') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, -1, 0);
+            isKeyPressed = true;
+        }
     }
-    else if (GetAsyncKeyState('7') & 0x8000)
-    {
-        nextPos = m_playerPos + GridPosition(0, 1, 0);
-        isKeyPressed = true;
-    }
-    else if (GetAsyncKeyState('8') & 0x8000)
-    {
-        nextPos = m_playerPos + GridPosition(0, -1, 0);
-        isKeyPressed = true;
-    }
+    
 
     if (isKeyPressed)
     {
@@ -396,6 +491,12 @@ void Player::SetBombPlacementRotation(
     const DirectX::XMFLOAT3& rotation)
 {
     m_bombPlacementRotation = rotation;
+}
+
+// カメラ情報を取得
+void Player::SetCamera(Camera* pCamera)
+{
+    m_pCamera = pCamera;
 }
 
 
