@@ -44,6 +44,8 @@ public:
         const DirectX::XMFLOAT3& rotation
     );
 
+    void SetCamera(Camera* pCamera);
+
     // ƒvƒŒƒCƒ„[€–S”»’è
     bool IsDeathPlayer(GridManager& gridManager);
 

@@ -74,6 +74,9 @@ SceneGame::SceneGame()
 
     m_player.Initialize(GridPosition(0, 0, 0));
 
+    // カメラのセット
+    m_player.SetCamera(m_pCamera);
+
     // マップ側にプレイヤーの位置を登録
     m_map.GetGridManager().SetPlayer(
         m_player.PlayerGetPosition()
