@@ -111,22 +111,37 @@ bool Map::CreateStage()
         return false;
     }
 
-    // マップ全体に床を設置
-    for (int y = minPosition.GetY(); y <= maxPosition.GetY(); y += maxPosition.GetY())
-    {
+    //// マップ全体に床を設置
+    //for (int y = minPosition.GetY(); y <= maxPosition.GetY(); y += maxPosition.GetY())
+    //{
+    //    for (int z = minPosition.GetZ(); z <= maxPosition.GetZ(); ++z)
+    //    {
+    //        for (int x = minPosition.GetX(); x <= maxPosition.GetX(); ++x)
+    //        {
+    //            if (!RegisterStageObject(
+    //                GridObjectType::Floor,
+    //                GridPosition(x, y, z)))
+    //            {
+    //                return false;
+    //            }
+    //        }
+    //    }
+    //}
+
         for (int z = minPosition.GetZ(); z <= maxPosition.GetZ(); ++z)
         {
             for (int x = minPosition.GetX(); x <= maxPosition.GetX(); ++x)
             {
                 if (!RegisterStageObject(
                     GridObjectType::Floor,
-                    GridPosition(x, y, z)))
+                    GridPosition(x, 1, z)))
                 {
                     return false;
                 }
             }
         }
-    }
+    
+
     // 起爆スポット
     if (!AddDetonationSpot(GridPosition(-5, 2, -5)))
         return false;
@@ -183,6 +198,7 @@ bool Map::CreateStage()
     {
         return false;
     }
+
 
     GridPosition playerStartPos(0, 0, 0);
     if (!m_gridManager.SetPlayer(playerStartPos))
