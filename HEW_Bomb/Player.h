@@ -4,6 +4,7 @@
 #include "GridPosition.h"
 #include "Camera.h"
 #include "Bomb.h"
+#include "BombRotation.h"
 
 class Map;
 class BombInventory;
@@ -87,6 +88,9 @@ private:
     // ”š’e‰ñ“]
     bool m_isRotateXKeyReleased;        // X²‰ñ“]F3
     bool m_isRotateYKeyReleased;        // Y²‰ñ“]F4
+
+    // ”š’e‚Ì‰ñ“]ŠÇ—
+    BombRotation m_bombRotation;
 
     // ƒJƒƒ‰î•ñ
     Camera* m_pCamera;

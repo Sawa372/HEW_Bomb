@@ -138,7 +138,7 @@ bool MapRenderer::LoadBombModel(
 {
     pModel = new Model();
 
-    if (!pModel->Load(filePath, 0.3f))
+    if (!pModel->Load(filePath, 0.5f))
     {
         delete pModel;
         pModel = nullptr;
@@ -330,9 +330,17 @@ void MapRenderer::Draw(
 
                 // 爆弾の描画位置
                 DirectX::XMFLOAT3 bombPosition = worldPosition;
-                bombPosition.y += 0.5f;
+                
+                // 爆弾の回転を取得
+                const DirectX::XMFLOAT3& rotation =
+                    pBomb->GetRotation();
 
-                DrawModel(pModel, bombPosition);
+                // 回転を適用して描画
+                DrawModel(
+                    pModel,
+                    bombPosition,
+                    rotation
+                );
             }
         }
       
@@ -446,61 +454,135 @@ void MapRenderer::DrawDetonationSpots(
 // 指定したモデルを指定したワールド座標に描画する
 // pModel：描画するモデル
 // worldPosition：モデルを配置するワールド座標
+//==================================================
+// モデルの描画（回転なし）
+
 void MapRenderer::DrawModel(
     Model* pModel,
     const DirectX::XMFLOAT3& worldPosition)
 {
-    // 描画するモデルが存在しない場合は処理を終了する
+    // 回転なしで描画
+    DirectX::XMFLOAT3 rotation(0.0f, 0.0f, 0.0f);
+
+    DrawModel(
+        pModel,
+        worldPosition,
+        rotation
+    );
+}
+
+
+//==================================================
+// モデルの描画（回転あり）
+
+void MapRenderer::DrawModel(
+    Model* pModel,
+    const DirectX::XMFLOAT3& worldPosition,
+    const DirectX::XMFLOAT3& rotation)
+{
     if (pModel == nullptr)
     {
         return;
     }
 
+    //==================================================
+    // 度数法からラジアンに変換
+
+    float pitch = DirectX::XMConvertToRadians(rotation.x);
+    float yaw = DirectX::XMConvertToRadians(rotation.y);
+    float roll = DirectX::XMConvertToRadians(rotation.z);
+
+
+    //==================================================
     // ワールド行列の作成
 
-    // 指定されたワールド座標へモデルを移動させる行列を作成する
-    DirectX::XMMATRIX world =
+    // 回転行列
+    DirectX::XMMATRIX rot =
+        DirectX::XMMatrixRotationRollPitchYaw(
+            pitch,
+            yaw,
+            roll
+        );
+
+    //==================================================
+    // 回転の基準点をモデルの中心にする
+
+    // モデルの中心位置
+    // 高さ1.0のモデル想定
+    DirectX::XMFLOAT3 pivot(
+        0.0f,
+        0.5f,
+        0.0f
+    );
+
+    // 原点を中心位置に移動
+    DirectX::XMMATRIX moveToOrigin =
+        DirectX::XMMatrixTranslation(
+            -pivot.x,
+            -pivot.y,
+            -pivot.z
+        );
+
+    // 中心位置に戻す
+    DirectX::XMMATRIX moveBack =
+        DirectX::XMMatrixTranslation(
+            pivot.x,
+            pivot.y,
+            pivot.z
+        );
+
+    // ワールド座標への移動
+    DirectX::XMMATRIX trans =
         DirectX::XMMatrixTranslation(
             worldPosition.x,
             worldPosition.y,
             worldPosition.z
         );
 
-    // XMMATRIXをシェーダーに渡す形式に変換する
-    DirectX::XMFLOAT4X4 fWorld;
-    DirectX::XMStoreFloat4x4(&fWorld, world);
+    // 中心を基準に回転
+    DirectX::XMMATRIX world =
+        moveToOrigin *
+        rot *
+        moveBack *
+        trans;
 
-    // シェーダーにモデルのワールド行列を設定する
+    //==================================================
+    // ワールド行列の設定
+
+    DirectX::XMFLOAT4X4 fWorld;
+
+    DirectX::XMStoreFloat4x4(
+        &fWorld,
+        world
+    );
+
     ShaderList::SetWorld(fWorld);
 
+
+    //==================================================
     // シェーダーの設定
 
-    // ワールド空間で描画する頂点シェーダーを設定する
     pModel->SetVertexShader(
         ShaderList::GetVS(ShaderList::VS_WORLD)
     );
 
-    // ランバート反射を使用するピクセルシェーダーを設定する
     pModel->SetPixelShader(
         ShaderList::GetPS(ShaderList::PS_LAMBERT)
     );
 
+
+    //==================================================
     // メッシュの描画
 
-    // モデルが持つすべてのメッシュを順番に描画する
     for (int i = 0; i < pModel->GetMeshNum(); ++i)
     {
-        // 描画対象のメッシュ情報を取得する
         const Model::Mesh* mesh = pModel->GetMesh(i);
 
-        // メッシュに対応するマテリアル情報を取得する
         Model::Material material =
             *pModel->GetMaterial(mesh->materialID);
 
-        // シェーダーにマテリアル情報を設定する
         ShaderList::SetMaterial(material);
 
-        // 指定したメッシュを描画する
         pModel->Draw(i);
     }
 }

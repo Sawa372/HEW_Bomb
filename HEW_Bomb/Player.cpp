@@ -49,10 +49,13 @@ void Player::Initialize(const GridPosition& startPos)
     m_bombPlacementPosition = startPos;
 
     // ”š’e‚Ì‰ñ“]‚ð‰Šú‰»
-    m_bombPlacementRotation =
-        DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-}
+    m_bombRotation.Reset();
 
+    // ‰Šú‰ñ“]Šp“x‚ðŽæ“¾
+    m_bombPlacementRotation =
+        m_bombRotation.GetEulerAngles();
+
+}
 
 //==================================================
 // XV
@@ -388,14 +391,9 @@ void Player::Update(
     }
 
     //==================================================
-    //  ”š’e‚Ì‰ñ“]
+    // ”š’e‚Ì‰ñ“]
 
-    const float ROTATE_90 = DirectX::XM_PIDIV2;
-
-
-    //--------------------------------------------------
-    // 3ƒL[FXŽ²‰ñ“]
-
+    // 3ƒL[Fƒ[ƒ‹ƒhXŽ²‚ð90“x‰ñ“]
     bool isRotateXKeyPressed =
         (GetAsyncKeyState('3') & 0x8000) != 0;
 
@@ -403,17 +401,10 @@ void Player::Update(
     {
         if (m_isRotateXKeyReleased)
         {
-            DirectX::XMFLOAT3 rotation =
-                m_bombPlacementRotation;
+            m_bombRotation.RotateWorldX90();
 
-            rotation.x += ROTATE_90;
-            
-            if (rotation.x >= DirectX::XM_2PI)
-            {
-                rotation.x -= DirectX::XM_2PI;
-            }
-
-            SetBombPlacementRotation(rotation);
+            m_bombPlacementRotation =
+                m_bombRotation.GetEulerAngles();
 
             m_isRotateXKeyReleased = false;
         }
@@ -423,10 +414,7 @@ void Player::Update(
         m_isRotateXKeyReleased = true;
     }
 
-
-    //--------------------------------------------------
-    // 4ƒL[FYŽ²‰ñ“]
-
+    // 4ƒL[Fƒ[ƒ‹ƒhYŽ²‚ð90“x‰ñ“]
     bool isRotateYKeyPressed =
         (GetAsyncKeyState('4') & 0x8000) != 0;
 
@@ -434,17 +422,10 @@ void Player::Update(
     {
         if (m_isRotateYKeyReleased)
         {
-            DirectX::XMFLOAT3 rotation =
-                m_bombPlacementRotation;
+            m_bombRotation.RotateWorldY90();
 
-            rotation.y += ROTATE_90;
-
-            if (rotation.y >= DirectX::XM_2PI)
-            {
-                rotation.y -= DirectX::XM_2PI;
-            }
-
-            SetBombPlacementRotation(rotation);
+            m_bombPlacementRotation =
+                m_bombRotation.GetEulerAngles();
 
             m_isRotateYKeyReleased = false;
         }
@@ -453,7 +434,6 @@ void Player::Update(
     {
         m_isRotateYKeyReleased = true;
     }
-
 }
 
 

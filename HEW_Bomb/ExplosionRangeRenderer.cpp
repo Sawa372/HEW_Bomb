@@ -308,6 +308,9 @@ void ExplosionRangeRenderer::BuildWireframe(
             continue;
         }
 
+        // ワイヤーフレームを少し浮かせる
+        center.y += 0.5f;
+
         //==================================================
         // 立方体の8頂点
 

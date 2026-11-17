@@ -40,18 +40,18 @@
     <Filter Include="ソース ファイル\System\Grid">
       <UniqueIdentifier>{0848f355-89b4-468f-b0f8-5ed022542fb7}</UniqueIdentifier>
     </Filter>
-	<Filter Include="ヘッダー ファイル\Object">
-	  <UniqueIdentifier>{3acd22de-819a-4e3d-99d5-4900a3af8a64}</UniqueIdentifier>
-	</Filter>
-	 <Filter Include="ソース ファイル\Object">
-	  <UniqueIdentifier>{0848f355-89b4-468f-b0f8-5ed022542fb7}</UniqueIdentifier>
-	 </Filter>
-	 <Filter Include="ヘッダー ファイル\Bomb">
-	  <UniqueIdentifier>{3acd22de-819a-4e3d-99d5-4900a3af8a64}</UniqueIdentifier>
-	 </Filter>
-	 <Filter Include="ソース ファイル\Bomb">
-	  <UniqueIdentifier>{0848f355-89b4-468f-b0f8-5ed022542fb7}</UniqueIdentifier>
-	 </Filter>
+    <Filter Include="ヘッダー ファイル\Object">
+      <UniqueIdentifier>{3acd22de-819a-4e3d-99d5-4900a3af8a64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Object">
+      <UniqueIdentifier>{0848f355-89b4-468f-b0f8-5ed022542fb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Bomb">
+      <UniqueIdentifier>{3acd22de-819a-4e3d-99d5-4900a3af8a64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Bomb">
+      <UniqueIdentifier>{0848f355-89b4-468f-b0f8-5ed022542fb7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Startup.cpp">
@@ -180,6 +180,9 @@
     <ClCompile Include="DetonationSpot.cpp">
       <Filter>ソース ファイル\Bomb</Filter>
     </ClCompile>
+    <ClCompile Include="BombRotation.cpp">
+      <Filter>ソース ファイル\Bomb</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -306,6 +309,9 @@
       <Filter>ヘッダー ファイル\Bomb</Filter>
     </ClInclude>
     <ClInclude Include="DetonationSpot.h">
+      <Filter>ヘッダー ファイル\Bomb</Filter>
+    </ClInclude>
+    <ClInclude Include="BombRotation.h">
       <Filter>ヘッダー ファイル\Bomb</Filter>
     </ClInclude>
   </ItemGroup>
