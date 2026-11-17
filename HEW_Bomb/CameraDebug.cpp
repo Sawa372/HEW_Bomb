@@ -1,14 +1,13 @@
 #include "CameraDebug.h"
 
 CameraDebug::CameraDebug()
-	: m_radXZ(0.0f)
+	:m_radXZ(0.0f)
 	,m_radY(0.0f)
 	,m_radius(5.0f)
-	, m_zoomSpeed(DirectX::XMConvertToRadians(20.0f) / fFPS)
-	,m_minFovy(DirectX::XMConvertToRadians(80.0f)) //ズームイン上限
-	,m_maxFovy(DirectX::XMConvertToRadians(160.0f)) //ズームアウト上限
-	, m_minRadY(DirectX::XMConvertToRadians(10.0f))//カメラ位置上限
-	, m_maxRadY(DirectX::XMConvertToRadians(50.0f))//カメラ位置下限
+	,m_minRadY(DirectX::XMConvertToRadians(10.0f))
+	,m_maxRadY(DirectX::XMConvertToRadians(50.0f))
+	,m_minRadius(METER(5.0f))
+	,m_maxRadius(METER(15.0f))
 {
 	// 注視点：マップ中央
 	m_look = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -48,42 +47,46 @@ void CameraDebug::Update()
 	// ズームイン
 	if (IsKeyPress('N'))
 	{
-		m_fovy -= 0.01;
+		m_radius -= 0.1;
 	}
 
 	// ズームアウト
 	if (IsKeyPress('M'))
 	{
-		m_fovy += 0.01;
+		m_radius += 0.1;
 	}
 
 	// カメラ位置の計算
 
-	m_pos.x = cos(m_radY) * sin(m_radXZ) * m_radius;
+	m_pos.x = m_look.x + cos(m_radY) * sin(m_radXZ) * m_radius;
 		
-	m_pos.y = sin(m_radY)* m_radius;
+	m_pos.y = m_look.y + sin(m_radY)* m_radius;
 		
-	m_pos.z = cos(m_radY) * -cos(m_radXZ) * m_radius;
+	m_pos.z = m_look.z + cos(m_radY) * -cos(m_radXZ) * m_radius;
 
 	//垂直方向の回転角度を制限
+	//下限を制限
 	if (m_radY < m_minRadY)
 	{
 		m_radY = m_minRadY;
 	}
 
-	if (m_radY > m_maxRadY)
+	//上限を制限
+	else if (m_radY > m_maxRadY)
 	{
 		m_radY = m_maxRadY;
 	}
 
-	// 画角の制限
-	if (m_fovy < m_minFovy)
+	// カメラ距離を制限
+	// 最短距離を制限
+	if (m_radius < m_minRadius)
 	{
-		m_fovy = m_minFovy;
+		m_radius = m_minRadius;
 	}
 
-	if (m_fovy > m_maxFovy)
+	// 最長距離を制限
+	else if (m_radius > m_maxRadius)
 	{
-		m_fovy = m_maxFovy;
+		m_radius = m_maxRadius;
 	}
 }
