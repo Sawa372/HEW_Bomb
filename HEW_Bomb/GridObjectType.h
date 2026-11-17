@@ -20,6 +20,8 @@ enum class GridObjectType
     Floor,             // 床
                        //
     Wall,              // 壁
+                       //
+    Unbreak,           // 壊れないオブジェクト
 };
 
 #endif // __GRID_OBJECT_TYPE_H__

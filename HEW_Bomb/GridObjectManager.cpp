@@ -8,6 +8,7 @@
 #include "Computer.h"
 #include "Pillar.h"
 #include "OilCan.h"
+#include "UnbreakObject.h"
 #include "Floor.h"
 
 #include <utility>
@@ -72,6 +73,10 @@ bool GridObjectManager::CreateObject(
 
     case GridObjectType::OilCan:
         object.reset(new OilCan(position));
+        break;
+
+    case GridObjectType::Unbreak:
+        object.reset(new UnbreakObject(position));
         break;
 
     case GridObjectType::Floor:

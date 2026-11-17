@@ -184,6 +184,14 @@ bool Map::CreateStage()
         return false;
     }
 
+    // UnbreakObject
+    if (!RegisterStageObject(
+        GridObjectType::Unbreak,
+        GridPosition(2, 0, 1)))
+    {
+        return false;
+    }
+
     GridPosition playerStartPos(0, 0, 0);
     if (!m_gridManager.SetPlayer(playerStartPos))
     {

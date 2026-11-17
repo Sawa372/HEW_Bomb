@@ -19,6 +19,7 @@ MapRenderer::MapRenderer()
     , m_pComputerModel(nullptr)
     , m_pPillarModel(nullptr)
     , m_pOilCanModel(nullptr)
+    , m_pUnbreakModel(nullptr)
     , m_pFloorModel(nullptr)
     , m_pPlayerModel(nullptr)
     , m_pCubeBombModel(nullptr)
@@ -85,7 +86,14 @@ bool MapRenderer::Initialize()
     m_pOilCanModel = new Model();
     if (!m_pOilCanModel->Load("Assets/Model/Oil can.fbx",0.5f, Model::ZFlip))
     {
-        MessageBoxA(nullptr, "OilCanモデルの読み込みに失敗しました。\nflag_teamYellow.fbx", "Error", MB_OK);
+        MessageBoxA(nullptr, "OilCanモデルの読み込みに失敗しました。\nOil can.fbx", "Error", MB_OK);
+        return false;
+    }
+
+    m_pUnbreakModel = new Model();
+    if (!m_pUnbreakModel->Load("Assets/Model/Oil can.fbx", 0.5f, Model::ZFlip))
+    {
+        MessageBoxA(nullptr, "Unbreak(仮OilCan)モデルの読み込みに失敗しました。\nOil can.fbx", "Error", MB_OK);
         return false;
     }
 
@@ -266,6 +274,10 @@ void MapRenderer::Draw(
 
             case GridObjectType::OilCan:
                 pModel = m_pOilCanModel;
+                break;
+
+            case GridObjectType::Unbreak:
+                pModel = m_pUnbreakModel;
                 break;
             }
 

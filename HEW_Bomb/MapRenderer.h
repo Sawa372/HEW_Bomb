@@ -138,6 +138,7 @@ private:
     Model* m_pComputerModel;
     Model* m_pPillarModel;
     Model* m_pOilCanModel;
+    Model* m_pUnbreakModel;
     Model* m_pFloorModel;
 
     // プレイヤーモデル

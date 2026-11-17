@@ -189,6 +189,7 @@
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="UnbreakObject.cpp" />
     <ClCompile Include="Wall.cpp" />
     <ClCompile Include="_geometory.cpp" />
     <ClCompile Include="_model.cpp" />
@@ -236,6 +237,7 @@
     <ClInclude Include="ShaderList.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="UnbreakObject.h" />
     <ClInclude Include="Wall.h" />
   </ItemGroup>
   <ItemGroup>
