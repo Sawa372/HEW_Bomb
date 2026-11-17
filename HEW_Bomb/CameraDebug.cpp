@@ -1,9 +1,9 @@
 #include "CameraDebug.h"
 
 CameraDebug::CameraDebug()
-	:m_radXZ(0.0f)
-	,m_radY(0.0f)
-	,m_radius(5.0f)
+	:m_radXZ(DirectX::XMConvertToRadians(45.0f))
+	,m_radY(DirectX::XMConvertToRadians(25.0f))
+	,m_radius(METER(10.0f))
 	,m_minRadY(DirectX::XMConvertToRadians(10.0f))
 	,m_maxRadY(DirectX::XMConvertToRadians(50.0f))
 	,m_minRadius(METER(5.0f))
