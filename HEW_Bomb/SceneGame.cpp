@@ -76,7 +76,7 @@ SceneGame::SceneGame()
 
     // マップ側にプレイヤーの位置を登録
     m_map.GetGridManager().SetPlayer(
-        m_player.GetPosition()
+        m_player.PlayerGetPosition()
     );
 
 

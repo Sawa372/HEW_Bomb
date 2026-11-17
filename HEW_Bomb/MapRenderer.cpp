@@ -108,13 +108,13 @@ bool MapRenderer::Initialize()
     //==================================================
     // 爆弾モデルの読み込み
 
-    if (!LoadBombModel(m_pCubeBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||               // 仮置き
-        !LoadBombModel(m_pWideCubeBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||           // 仮置き
-        !LoadBombModel(m_pCylinderBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||           // 仮置き
-        !LoadBombModel(m_pVShapeBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||             // 仮置き
-        !LoadBombModel(m_pCircleBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||             // 仮置き
-        !LoadBombModel(m_pCrossBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||              // 仮置き
-        !LoadBombModel(m_pInvertedPyramidBombModel, "Assets/Model/bomb_circle/bomb_circle.obj"))      // 仮置き
+    if (!LoadBombModel(m_pCubeBombModel, "Assets/Model/bomb_circle/Bom_Cube.fbx") ||               // 仮置き
+        !LoadBombModel(m_pWideCubeBombModel, "Assets/Model/bomb_circle/Bom_WideCube.fbx") ||           // 仮置き
+        !LoadBombModel(m_pCylinderBombModel, "Assets/Model/bomb_circle/Bom_Cylinder.fbx") ||           // 仮置き
+        !LoadBombModel(m_pVShapeBombModel, "Assets/Model/bomb_circle/Bom_VShape.fbx") ||             // 仮置き
+        !LoadBombModel(m_pCircleBombModel, "Assets/Model/bomb_circle/Bom_Circle.fbx") ||             // 仮置き
+        !LoadBombModel(m_pCrossBombModel, "Assets/Model/bomb_circle/Bom_Cross.fbx") ||              // 仮置き
+        !LoadBombModel(m_pInvertedPyramidBombModel, "Assets/Model/bomb_circle/Bom_InvertedPyramid.fbx"))      // 仮置き
     {
         MessageBoxA(
             nullptr,
@@ -226,7 +226,7 @@ void MapRenderer::Draw(
             DirectX::XMFLOAT3 floorPosition = worldPosition;
 
             // 床を少し下げて配置する
-            floorPosition.y -= 0.75f;
+            floorPosition.y +=0.25f;
 
             
             DrawModel(m_pFloorModel, floorPosition);
