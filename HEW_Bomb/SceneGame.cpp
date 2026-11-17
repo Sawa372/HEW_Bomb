@@ -76,7 +76,7 @@ SceneGame::SceneGame()
 
     // マップ側にプレイヤーの位置を登録
     m_map.GetGridManager().SetPlayer(
-        m_player.GetPosition()
+        m_player.PlayerGetPosition()
     );
 
 
@@ -119,6 +119,11 @@ void SceneGame::Update()
         m_bombInventory,/////////////////////////////Player.cppを書き換えたら動くはず！(多分！！！)
         gridCollision
     );
+
+    if(m_player.IsDeathPlayer(m_map.GetGridManager()))
+    {
+        m_player.Initialize(GridPosition(0, 0, 0));
+    }
 
 
     //==================================================

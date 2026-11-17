@@ -84,7 +84,11 @@ public:
     int GetBombCount() const;
 
     // 指定位置の爆弾を起爆する
-    bool DetonateBombAt(const GridPosition& position);
+    // 爆発したすべてのマスを outAffectedPositions に記録する
+    bool DetonateBombAt(
+        const GridPosition& position,
+        std::vector<GridPosition>* outAffectedPositions = nullptr
+    );
 
 
     // 起爆スポットを登録

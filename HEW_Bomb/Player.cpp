@@ -5,6 +5,7 @@
 #include "GridCollision.h"
 #include "BombInventory.h"
 #include "BombType.h"
+#include "Explosion.h"
 
 #include <Windows.h>
 
@@ -14,6 +15,7 @@
 
 Player::Player()
     : m_playerPos(0, 0, 0)
+    , m_nLife(3)
     , m_isKeyReleased(true)
     , m_bombPlacementPosition(0, 0, 0)
     , m_bombPlacementRotation(0.0f, 0.0f, 0.0f)
@@ -23,10 +25,12 @@ Player::Player()
     , m_selectedBombIndex(0)
     , m_isBombNextKeyReleased(true)
     , m_isBombPreviousKeyReleased(true)
+    , m_isRotateXKeyReleased(true)
+    , m_isRotateYKeyReleased(true)
     , m_pCamera(nullptr)
+    , m_pBomb(nullptr)
 {
 }
-
 
 //==================================================
 // デストラクタ
@@ -43,8 +47,15 @@ void Player::Initialize(const GridPosition& startPos)
 {
     m_playerPos = startPos;
     m_bombPlacementPosition = startPos;
-}
 
+    // 爆弾の回転を初期化
+    m_bombRotation.Reset();
+
+    // 初期回転角度を取得
+    m_bombPlacementRotation =
+        m_bombRotation.GetEulerAngles();
+
+}
 
 //==================================================
 // 更新
@@ -56,7 +67,7 @@ void Player::Update(
 {
     GridManager& gridManager = map.GetGridManager();
 
-    float nPos[3] = { GetPosition().GetX(), GetPosition().GetY(), GetPosition().GetZ() };
+    //float nPos[3] = { PlayerGetPosition().GetX(), PlayerGetPosition().GetY(), PlayerGetPosition().GetZ() };
 
     //// カメラからキャラクターの向きを取得
     //DirectX::XMFLOAT3 camPos = m_pCamera->GetPos(); // カメラの位置を取得
@@ -67,7 +78,7 @@ void Player::Update(
 
 
     //==================================================
-    // ① プレイヤーの移動
+    //  プレイヤーの移動
 
     GridPosition nextPos = m_playerPos;
     bool isKeyPressed = false;
@@ -90,6 +101,16 @@ void Player::Update(
     else if (GetAsyncKeyState('L') & 0x8000)
     {
         nextPos = m_playerPos + GridPosition(1, 0, 0);
+        isKeyPressed = true;
+    }
+    else if (GetAsyncKeyState('7') & 0x8000)
+    {
+        nextPos = m_playerPos + GridPosition(0, 1, 0);
+        isKeyPressed = true;
+    }
+    else if (GetAsyncKeyState('8') & 0x8000)
+    {
+        nextPos = m_playerPos + GridPosition(0, -1, 0);
         isKeyPressed = true;
     }
 
@@ -118,7 +139,7 @@ void Player::Update(
 
 
     //==================================================
-    // ② 爆弾の設置予定位置
+    //  爆弾の設置予定位置
 
     // 【現在のテスト処理】
     // 現在はプレイヤーと同じ座標を設置予定位置にしている。
@@ -133,7 +154,7 @@ void Player::Update(
 
 
     //==================================================
-    // ③ 爆弾の設置（Spaceキー）
+    //  爆弾の設置（Spaceキー）
 
     bool isPlaceKeyPressed =
         (GetAsyncKeyState(VK_SPACE) & 0x8000) != 0;
@@ -158,7 +179,7 @@ void Player::Update(
 
 
     //==================================================
-    // ④ 爆弾の回収（Rキー）
+    //  爆弾の回収（Rキー）
 
     bool isRetrieveKeyPressed =
         (GetAsyncKeyState('R') & 0x8000) != 0;
@@ -182,7 +203,7 @@ void Player::Update(
 
 
     //==================================================
-    // ⑤ 爆弾の起爆（Eキー）
+    //  爆弾の起爆（Eキー）
 
     // 登録された起爆スポットをすべて確認する。
     // 爆弾が置かれているスポットだけ起爆する。
@@ -217,7 +238,7 @@ void Player::Update(
 
 
     //==================================================
-    // ⑥ 爆弾の種類切り替え（テスト用）
+    //  爆弾の種類切り替え（テスト用）
 
     // 1キー：次の爆弾
     bool isNextBombPressed =
@@ -273,13 +294,58 @@ void Player::Update(
     {
         m_isBombPreviousKeyReleased = true;
     }
+
+    //==================================================
+    // 爆弾の回転
+
+    // 3キー：ワールドX軸を90度回転
+    bool isRotateXKeyPressed =
+        (GetAsyncKeyState('3') & 0x8000) != 0;
+
+    if (isRotateXKeyPressed)
+    {
+        if (m_isRotateXKeyReleased)
+        {
+            m_bombRotation.RotateWorldX90();
+
+            m_bombPlacementRotation =
+                m_bombRotation.GetEulerAngles();
+
+            m_isRotateXKeyReleased = false;
+        }
+    }
+    else
+    {
+        m_isRotateXKeyReleased = true;
+    }
+
+    // 4キー：ワールドY軸を90度回転
+    bool isRotateYKeyPressed =
+        (GetAsyncKeyState('4') & 0x8000) != 0;
+
+    if (isRotateYKeyPressed)
+    {
+        if (m_isRotateYKeyReleased)
+        {
+            m_bombRotation.RotateWorldY90();
+
+            m_bombPlacementRotation =
+                m_bombRotation.GetEulerAngles();
+
+            m_isRotateYKeyReleased = false;
+        }
+    }
+    else
+    {
+        m_isRotateYKeyReleased = true;
+    }
 }
 
 
 //==================================================
 // プレイヤーの現在位置を取得
 
-GridPosition Player::GetPosition() const
+GridPosition Player::PlayerGetPosition() const
 {
     return m_playerPos;
 }
@@ -310,4 +376,36 @@ void Player::SetBombPlacementRotation(
     const DirectX::XMFLOAT3& rotation)
 {
     m_bombPlacementRotation = rotation;
+}
+
+
+
+// 引数に GridManager& を受け取るようにする
+bool Player::IsDeathPlayer(GridManager& gridManager)
+{
+    // m_pBomb が nullptr の場合は安全に抜ける（アクセス違反防止）
+    if (m_pBomb == nullptr)
+    {
+        return false;
+    }
+
+    // 正しいゲーム全体の GridManager を使って影響範囲を取得
+    std::vector<GridPosition> affectedPositions = m_pBomb->GetAffectedPositions(gridManager);
+
+    bool isPlayerHit = false;
+    for (const auto& pos : affectedPositions)
+    {
+        if (gridManager.HasPlayer(pos))
+        {
+            isPlayerHit = true;
+            break;
+        }
+    }
+
+    if (isPlayerHit)
+    {
+        m_nLife--;
+    }
+
+    return isPlayerHit; // 常に true ではなく、ヒットしたかどうかを返す
 }

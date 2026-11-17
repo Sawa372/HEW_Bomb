@@ -344,8 +344,17 @@ int Map::GetBombCount() const
 
 //==================================================
 // 爆弾の起爆・連鎖爆発
-bool Map::DetonateBombAt(const GridPosition& position)
+bool Map::DetonateBombAt(
+    const GridPosition& position,
+    std::vector<GridPosition>* outAffectedPositions)
 {
+    // 爆発範囲の記録を初期化
+    if (outAffectedPositions != nullptr)
+    {
+        outAffectedPositions->clear();
+    }
+
+
     // 最初に起爆する爆弾を取得
     Bomb* pFirstBomb = m_bombManager.GetBombAt(position);
 
@@ -415,6 +424,28 @@ bool Map::DetonateBombAt(const GridPosition& position)
 
         std::vector<GridPosition> affectedPositions =
             pBomb->GetAffectedPositions(m_gridManager);
+
+        //==================================================
+        // 爆発したマスを記録
+
+        if (outAffectedPositions != nullptr)
+        {
+            for (const GridPosition& affectedPosition : affectedPositions)
+            {
+                // すでに記録されているマスか確認
+                auto it = std::find(
+                    outAffectedPositions->begin(),
+                    outAffectedPositions->end(),
+                    affectedPosition
+                );
+
+                // 未登録なら追加
+                if (it == outAffectedPositions->end())
+                {
+                    outAffectedPositions->push_back(affectedPosition);
+                }
+            }
+        }
 
         //==================================================
         // 爆発範囲内の爆弾を連鎖対象に登録
