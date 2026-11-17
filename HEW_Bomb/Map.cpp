@@ -112,8 +112,8 @@ bool Map::CreateStage()
     }
 
     // マップ全体に床を設置
-    for (int y = minPosition.GetY(); y <= maxPosition.GetY(); y += maxPosition.GetY() - 1)
-    {
+    //for (int y = minPosition.GetY(); y <= maxPosition.GetY(); y += maxPosition.GetY() - 1)
+    //{
         for (int z = minPosition.GetZ(); z <= maxPosition.GetZ(); ++z)
         {
             for (int x = minPosition.GetX(); x <= maxPosition.GetX(); ++x)
@@ -126,7 +126,7 @@ bool Map::CreateStage()
                 }
             }
         }
-    // }
+    //}
     // 起爆スポット
     if (!AddDetonationSpot(GridPosition(0, 0, 0)))
         return false;
@@ -171,7 +171,7 @@ bool Map::CreateStage()
     // Pillar
     if (!RegisterStageObject(
         GridObjectType::Pillar,
-        GridPosition(5, 0, 1)))
+        GridPosition(4, 0, 1)))
     {
         return false;
     }
@@ -179,7 +179,7 @@ bool Map::CreateStage()
     // OilCan
     if (!RegisterStageObject(
         GridObjectType::OilCan,
-        GridPosition(7, 0, 1)))
+        GridPosition(-2, 0, 1)))
     {
         return false;
     }

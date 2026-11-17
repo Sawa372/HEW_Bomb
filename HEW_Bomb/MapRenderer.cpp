@@ -90,7 +90,7 @@ bool MapRenderer::Initialize()
     }
 
     m_pFloorModel = new Model();
-    if (!m_pFloorModel->Load("Assets/Model/floor.fbx",0.5, Model::ZFlip))
+    if (!m_pFloorModel->Load("Assets/Model/floor.fbx",0.5f, Model::ZFlip))
     {
         MessageBoxA(nullptr, "Floorƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½B\ntileMedium_forest.fbx", "Error", MB_OK);
         return false;
