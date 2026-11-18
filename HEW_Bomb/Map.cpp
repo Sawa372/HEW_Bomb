@@ -28,13 +28,13 @@ Map::~Map()
 // マップを初期化し、ステージの配置を作成する
 bool Map::Initialize()
 {
-    n_FroorDistance = 6;
+    n_FroorDistance = 3;
 
     // マップの最小座標
     const GridPosition minPosition(-4, -1, -4);
 
     // マップの最大座標
-    const GridPosition maxPosition(4, 10, 4);
+    const GridPosition maxPosition(4, 4, 4);
 
     // 1マスあたりのワールド空間でのサイズを設定
     if (!m_gridManager.SetCellSize(1.0f, 1.0f, 1.0f))
@@ -347,8 +347,17 @@ int Map::GetBombCount() const
 
 //==================================================
 // 爆弾の起爆・連鎖爆発
-bool Map::DetonateBombAt(const GridPosition& position)
+bool Map::DetonateBombAt(
+    const GridPosition& position,
+    std::vector<GridPosition>* outAffectedPositions)
 {
+    // 爆発範囲の記録を初期化
+    if (outAffectedPositions != nullptr)
+    {
+        outAffectedPositions->clear();
+    }
+
+
     // 最初に起爆する爆弾を取得
     Bomb* pFirstBomb = m_bombManager.GetBombAt(position);
 
