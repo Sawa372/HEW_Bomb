@@ -55,6 +55,9 @@ public:
         const std::vector<GridPosition>& dangerousPositions
     ) const;
 
+    // Œ»İ‚Ìc‹@‚ğæ“¾
+    int GetLife() const;
+
 private:
 
     //==================================================

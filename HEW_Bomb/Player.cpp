@@ -372,6 +372,9 @@ void Player::Update(
 
                     if (CheckDeath(dangerousPositions))
                     {
+                        // 残機を1つ減らす
+                        m_nLife--;
+
                         // 起爆直前のMapに戻す
                         if (map.RestoreUndoState())
                         {
@@ -563,4 +566,12 @@ bool Player::CheckDeath(
     }
 
     return false;
+}
+
+//==================================================
+// 残機を取得
+
+int Player::GetLife() const
+{
+    return m_nLife;
 }

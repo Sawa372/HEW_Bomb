@@ -15,6 +15,7 @@
 
 SceneGame::SceneGame()
     : m_pCamera(nullptr)
+    , m_isGameOver(false)
 {
     //==================================================
     // ÉJÉÅÉâÇÃê∂ê¨
@@ -115,11 +116,39 @@ void SceneGame::Update()
 
     GridCollision gridCollision(m_map.GetGridManager());
 
+    int lifeBefore = m_player.GetLife();
+
     m_player.Update(
         m_map,
         m_bombInventory,
         gridCollision
     );
+
+    int lifeAfter = m_player.GetLife();
+
+    if (lifeAfter < lifeBefore)
+    {
+        if (lifeAfter <= 0)
+        {
+            MessageBoxA(
+                nullptr,
+                "GAME OVER",
+                "Game Over",
+                MB_OK
+            );
+
+            m_isGameOver = true;
+        }
+        else
+        {
+            MessageBoxA(
+                nullptr,
+                "écäÓÇ™1å∏ÇËÇ‹ÇµÇΩ",
+                "éÄñS",
+                MB_OK
+            );
+        }
+    }
 
 
     //==================================================
