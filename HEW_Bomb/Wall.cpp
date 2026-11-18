@@ -18,3 +18,10 @@ GridObjectType Wall::GetType() const
 {
     return GridObjectType::Wall;
 }
+
+std::unique_ptr<GridObject> Wall::Clone() const
+{
+    return std::unique_ptr<GridObject>(
+        new Wall(*this)
+    );
+}

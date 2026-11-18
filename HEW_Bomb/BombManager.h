@@ -57,8 +57,24 @@ public:
     int GetBombCount() const;
 
 
+    // Undo用の状態を保存
+    bool SaveUndoState();
+
+    // 保存した状態に戻す
+    bool RestoreUndoState();
+
+    // 保存した状態を破棄
+    void DiscardUndoState();
+
+
 private:
     std::vector<std::unique_ptr<Bomb>> m_bombs;
+
+    // Undo用の爆弾保存データ
+    std::vector<Bomb> m_savedBombs;
+
+    // 保存データが存在するか
+    bool m_hasSavedState;
 };
 
 #endif

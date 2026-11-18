@@ -15,6 +15,7 @@
 
 SceneGame::SceneGame()
     : m_pCamera(nullptr)
+    , m_isGameOver(false)
 {
     //==================================================
     // カメラの生成
@@ -102,7 +103,6 @@ SceneGame::~SceneGame()
 
 //==================================================
 // 更新処理
-
 void SceneGame::Update()
 {
     //==================================================
@@ -110,15 +110,38 @@ void SceneGame::Update()
 
     GridCollision gridCollision(m_map.GetGridManager());
 
+    int lifeBefore = m_player.GetLife();
+
     m_player.Update(
         m_map,
         m_bombInventory,
         gridCollision
     );
 
-    if(m_player.IsDeathPlayer(m_map.GetGridManager()))
+    int lifeAfter = m_player.GetLife();
+
+    if (lifeAfter < lifeBefore)
     {
-        m_player.Initialize(GridPosition(0, 0, 0));
+        if (lifeAfter <= 0)
+        {
+            MessageBoxA(
+                nullptr,
+                "GAME OVER",
+                "Game Over",
+                MB_OK
+            );
+
+            m_isGameOver = true;
+        }
+        else
+        {
+            MessageBoxA(
+                nullptr,
+                "残基が1減りました",
+                "死亡",
+                MB_OK
+            );
+        }
     }
 
 
