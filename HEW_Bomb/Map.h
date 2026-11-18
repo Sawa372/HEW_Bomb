@@ -131,6 +131,7 @@ private:
     // 設置済み爆弾を管理する
     BombManager m_bombManager;
 
+    int n_FroorDistance;
 
     // 起爆スポット
     std::vector<DetonationSpot> m_detonationSpots;

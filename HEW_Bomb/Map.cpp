@@ -11,6 +11,7 @@ Map::Map()
     : m_gridManager()
     , m_gridObjectManager()
     , m_bombManager()
+    , n_FroorDistance(0)
 {
 }
 
@@ -27,11 +28,13 @@ Map::~Map()
 // マップを初期化し、ステージの配置を作成する
 bool Map::Initialize()
 {
+    n_FroorDistance = 6;
+
     // マップの最小座標
     const GridPosition minPosition(-4, -1, -4);
 
     // マップの最大座標
-    const GridPosition maxPosition(4, 5, 4);
+    const GridPosition maxPosition(4, 10, 4);
 
     // 1マスあたりのワールド空間でのサイズを設定
     if (!m_gridManager.SetCellSize(1.0f, 1.0f, 1.0f))
@@ -112,21 +115,21 @@ bool Map::CreateStage()
     }
 
     // マップ全体に床を設置
-    //for (int y = minPosition.GetY(); y <= maxPosition.GetY(); y += maxPosition.GetY() - 1)
-    //{
+    for (int y = minPosition.GetY(); y <= maxPosition.GetY(); y += n_FroorDistance)
+    {
         for (int z = minPosition.GetZ(); z <= maxPosition.GetZ(); ++z)
         {
             for (int x = minPosition.GetX(); x <= maxPosition.GetX(); ++x)
             {
                 if (!RegisterStageObject(
                     GridObjectType::Floor,
-                    GridPosition(x, -1, z)))
+                    GridPosition(x, y, z)))
                 {
                     return false;
                 }
             }
         }
-    //}
+    }
     // 起爆スポット
     if (!AddDetonationSpot(GridPosition(0, 0, 0)))
         return false;
