@@ -10,16 +10,14 @@ public:
     Floor(const GridPosition& position);
     ~Floor() override;
 
-    // 爆発を受けた時の処理
+    // 爆発を受けたときの処理
     void OnExplosion() override;
 
-    // 破壊されたか（階数によって判定を変える）
-    bool IsDestroyed() const;
-
+    // オブジェクトの種類を取得
     GridObjectType GetType() const override;
 
-private:
-    int  m_explosionCount = 0; // 爆発を受けた回数
+    // オブジェクトの状態をコピーする
+    std::unique_ptr<GridObject> Clone() const override;
 };
 
 #endif

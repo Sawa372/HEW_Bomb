@@ -16,6 +16,9 @@ public:
 
     // オブジェクトの種類を取得
     GridObjectType GetType() const override;
+
+    // オブジェクトの状態をコピーする
+    std::unique_ptr<GridObject> Clone() const override;
 };
 
 #endif // __WALL_H__

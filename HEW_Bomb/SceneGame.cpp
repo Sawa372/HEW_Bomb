@@ -15,6 +15,7 @@
 
 SceneGame::SceneGame()
     : m_pCamera(nullptr)
+    , m_isGameOver(false)
 {
     //==================================================
     // カメラの生成
@@ -74,6 +75,9 @@ SceneGame::SceneGame()
 
     m_player.Initialize(GridPosition(0, 0, 0));
 
+    // カメラのセット
+    m_player.SetCamera(m_pCamera);
+
     // マップ側にプレイヤーの位置を登録
     m_map.GetGridManager().SetPlayer(
         m_player.PlayerGetPosition()
@@ -99,26 +103,68 @@ SceneGame::~SceneGame()
 
 //==================================================
 // 更新処理
-
 void SceneGame::Update()
 {
+    //==================================================
+    // プレイヤーの更新
+
+    GridCollision gridCollision(m_map.GetGridManager());
+
+    int lifeBefore = m_player.GetLife();
+
+    m_player.Update(
+        m_map,
+        m_bombInventory,
+        gridCollision
+    );
+
+    int lifeAfter = m_player.GetLife();
+
+    if (lifeAfter < lifeBefore)
+    {
+        if (lifeAfter <= 0)
+        {
+            MessageBoxA(
+                nullptr,
+                "GAME OVER",
+                "Game Over",
+                MB_OK
+            );
+
+            m_isGameOver = true;
+        }
+        else
+        {
+            MessageBoxA(
+                nullptr,
+                "残基が1減りました",
+                "死亡",
+                MB_OK
+            );
+        }
+    }
+
+
+    //==================================================
+    // プレイヤーのワールド座標を取得
+
+    DirectX::XMFLOAT3 playerWorldPos;
+
+    if (m_map.GetGridManager().GridToWorld(
+        m_player.PlayerGetPosition(),
+        playerWorldPos))
+    {
+        CameraDebug* pCamera =
+            static_cast<CameraDebug*>(m_pCamera);
+
+        pCamera->SetTargetY(playerWorldPos.y);
+    }
+
+
     //==================================================
     // カメラの更新
 
     m_pCamera->Update();
-
-
-    //==================================================
-    // プレイヤーの更新
-
-    // マップの情報を使って当たり判定を行う
-    GridCollision gridCollision(m_map.GetGridManager());
-
-    m_player.Update(
-        m_map,
-        m_bombInventory,/////////////////////////////Player.cppを書き換えたら動くはず！(多分！！！)
-        gridCollision
-    );
 
 
     //==================================================

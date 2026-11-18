@@ -178,7 +178,7 @@
       <Filter>ソース ファイル\Bomb</Filter>
     </ClCompile>
     <ClCompile Include="DetonationSpot.cpp">
-      <Filter>ソース ファイル\Bomb</Filter>
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -306,7 +306,7 @@
       <Filter>ヘッダー ファイル\Bomb</Filter>
     </ClInclude>
     <ClInclude Include="DetonationSpot.h">
-      <Filter>ヘッダー ファイル\Bomb</Filter>
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

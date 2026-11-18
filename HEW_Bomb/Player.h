@@ -1,13 +1,17 @@
 #pragma once
 
 #include <DirectXMath.h>
+#include <vector>
 #include "GridPosition.h"
 #include "Camera.h"
 #include "Bomb.h"
+#include "BombRotation.h"
+
 
 class Map;
 class BombInventory;
 class GridCollision;
+class GridManager;
 
 class Player
 {
@@ -43,8 +47,16 @@ public:
         const DirectX::XMFLOAT3& rotation
     );
 
+    void SetCamera(Camera* pCamera);
+
     // プレイヤー死亡判定
-    bool DeathPlayer();
+    // 危険範囲にプレイヤーがいるか確認
+    bool CheckDeath(
+        const std::vector<GridPosition>& dangerousPositions
+    ) const;
+
+    // 現在の残機を取得
+    int GetLife() const;
 
 private:
 
@@ -58,6 +70,8 @@ private:
     // 移動キーの押しっぱなし防止
     bool m_isKeyReleased;
 
+    GridPosition m_startPos;  // プレイヤーの初期位置
+
 
     //==================================================
     // 爆弾の設置情報
@@ -70,7 +84,7 @@ private:
 
 
     //==================================================
-    // 爆弾操作用のキー入力状態　　ここは要らんと思う
+    // 爆弾操作用のキー入力状態　
 
     bool m_isPlaceKeyReleased;          // 設置：Space
     bool m_isRetrieveKeyReleased;       // 回収：R
@@ -82,7 +96,16 @@ private:
     bool m_isBombNextKeyReleased;       // 次の爆弾：1
     bool m_isBombPreviousKeyReleased;   // 前の爆弾：2
 
+    // 爆弾回転
+    bool m_isRotateXKeyReleased;        // X軸回転：3
+    bool m_isRotateYKeyReleased;        // Y軸回転：4
+
+    // 爆弾の回転管理
+    BombRotation m_bombRotation;
+
     // カメラ情報
     Camera* m_pCamera;
+
+    Bomb* m_pBomb;
     
 };

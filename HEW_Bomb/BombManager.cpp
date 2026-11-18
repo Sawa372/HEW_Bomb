@@ -6,6 +6,7 @@
 
 // コンストラクタ
 BombManager::BombManager()
+    : m_hasSavedState(false)
 {
 }
 
@@ -209,10 +210,71 @@ void BombManager::Clear(GridManager& grid)
     }
 
     m_bombs.clear();
+
+    DiscardUndoState();
 }
 
 // 登録されている爆弾の数
 int BombManager::GetBombCount() const
 {
     return static_cast<int>(m_bombs.size());
+}
+
+//==================================================
+// Undo用の状態を保存
+
+bool BombManager::SaveUndoState()
+{
+    // 古い保存データを削除
+    m_savedBombs.clear();
+
+    // 現在の爆弾をすべてコピー
+    for (const std::unique_ptr<Bomb>& bomb : m_bombs)
+    {
+        m_savedBombs.push_back(*bomb);
+    }
+
+    m_hasSavedState = true;
+
+    return true;
+}
+
+
+//==================================================
+// 保存した状態に戻す
+
+bool BombManager::RestoreUndoState()
+{
+    if (!m_hasSavedState)
+    {
+        return false;
+    }
+
+    // 復元用の爆弾リストを作成
+    std::vector<std::unique_ptr<Bomb>> restoredBombs;
+
+    for (const Bomb& bomb : m_savedBombs)
+    {
+        restoredBombs.push_back(
+            std::unique_ptr<Bomb>(new Bomb(bomb))
+        );
+    }
+
+    // 現在の爆弾を保存時の状態に置き換える
+    m_bombs = std::move(restoredBombs);
+
+    // 保存データを破棄
+    DiscardUndoState();
+
+    return true;
+}
+
+
+//==================================================
+// Undo用の保存データを破棄
+
+void BombManager::DiscardUndoState()
+{
+    m_savedBombs.clear();
+    m_hasSavedState = false;
 }

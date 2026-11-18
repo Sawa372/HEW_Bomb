@@ -13,6 +13,13 @@ GridManager::GridManager()
     , m_depth(0)
     , m_cellSize(1.0f, 1.0f, 1.0f)
     , m_gridOrigin(0.0f, 0.0f, 0.0f)
+    , m_savedMinPosition(0, 0, 0)
+    , m_savedWidth(0)
+    , m_savedHeight(0)
+    , m_savedDepth(0)
+    , m_savedCellSize(1.0f, 1.0f, 1.0f)
+    , m_savedGridOrigin(0.0f, 0.0f, 0.0f)
+    , m_hasSavedState(false)
 {
 }
 
@@ -181,6 +188,8 @@ void GridManager::Clear()
     m_width = 0;
     m_height = 0;
     m_depth = 0;
+
+    DiscardUndoState();
 }
 
 
@@ -891,4 +900,71 @@ bool GridManager::WorldToGrid(
     gridPosition = result;
 
     return true;
+}
+
+
+//==================================================
+// Undo用の状態を保存
+
+bool GridManager::SaveUndoState()
+{
+    // 現在のグリッド情報を保存
+    m_savedMinPosition = m_minPosition;
+
+    m_savedWidth = m_width;
+    m_savedHeight = m_height;
+    m_savedDepth = m_depth;
+
+    // セル情報をコピー
+    m_savedCells = m_cells;
+
+    // グリッドの設定も保存
+    m_savedCellSize = m_cellSize;
+    m_savedGridOrigin = m_gridOrigin;
+
+    m_hasSavedState = true;
+
+    return true;
+}
+
+
+//==================================================
+// 保存した状態に戻す
+
+bool GridManager::RestoreUndoState()
+{
+    if (!m_hasSavedState)
+    {
+        return false;
+    }
+
+    // グリッドの基本情報を復元
+    m_minPosition = m_savedMinPosition;
+
+    m_width = m_savedWidth;
+    m_height = m_savedHeight;
+    m_depth = m_savedDepth;
+
+    // セル情報を復元
+    m_cells = m_savedCells;
+
+    // グリッドの設定を復元
+    m_cellSize = m_savedCellSize;
+    m_gridOrigin = m_savedGridOrigin;
+
+    // 保存データを破棄
+    DiscardUndoState();
+
+    return true;
+}
+
+
+//==================================================
+// Undo用の保存データを破棄
+
+void GridManager::DiscardUndoState()
+{
+    m_savedCells.clear();
+
+    m_hasSavedState = false;
 }

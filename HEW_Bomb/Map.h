@@ -84,7 +84,11 @@ public:
     int GetBombCount() const;
 
     // 指定位置の爆弾を起爆する
-    bool DetonateBombAt(const GridPosition& position);
+    // 爆発したすべてのマスを outAffectedPositions に記録する
+    bool DetonateBombAt(
+        const GridPosition& position,
+        std::vector<GridPosition>* outAffectedPositions = nullptr
+    );
 
 
     // 起爆スポットを登録
@@ -92,6 +96,18 @@ public:
 
     // 登録されている起爆スポット一覧を取得
     const std::vector<DetonationSpot>& GetDetonationSpots() const;
+
+    //==================================================
+    // Undo処理
+
+    // マップの状態を保存
+    bool SaveUndoState();
+
+    // 保存した状態に戻す
+    bool RestoreUndoState();
+
+    // 保存データを破棄
+    void DiscardUndoState();
 
 
 private:
@@ -115,6 +131,7 @@ private:
     // 設置済み爆弾を管理する
     BombManager m_bombManager;
 
+    int n_FroorDistance;
 
     // 起爆スポット
     std::vector<DetonationSpot> m_detonationSpots;

@@ -14,6 +14,7 @@
 #include <algorithm>
 
 GridObjectManager::GridObjectManager()
+    : m_hasSavedState(false)
 {
 }
 
@@ -201,4 +202,64 @@ void GridObjectManager::ProcessExplosion(
 void GridObjectManager::Clear()
 {
     m_objects.clear();
+    DiscardUndoState();
+}
+
+
+//==================================================
+// Undo用の状態を保存
+
+bool GridObjectManager::SaveUndoState()
+{
+    // 古い保存データを削除
+    m_savedObjects.clear();
+
+    // 現在のオブジェクトを複製
+    for (const std::unique_ptr<GridObject>& object : m_objects)
+    {
+        std::unique_ptr<GridObject> clone = object->Clone();
+
+        if (clone == nullptr)
+        {
+            m_savedObjects.clear();
+            m_hasSavedState = false;
+            return false;
+        }
+
+        m_savedObjects.push_back(std::move(clone));
+    }
+
+    m_hasSavedState = true;
+
+    return true;
+}
+
+
+//==================================================
+// 保存した状態に戻す
+
+bool GridObjectManager::RestoreUndoState()
+{
+    if (!m_hasSavedState)
+    {
+        return false;
+    }
+
+    // 現在のオブジェクトを保存時の状態に置き換える
+    m_objects = std::move(m_savedObjects);
+
+    m_savedObjects.clear();
+    m_hasSavedState = false;
+
+    return true;
+}
+
+
+//==================================================
+// Undo用の保存データを破棄
+
+void GridObjectManager::DiscardUndoState()
+{
+    m_savedObjects.clear();
+    m_hasSavedState = false;
 }

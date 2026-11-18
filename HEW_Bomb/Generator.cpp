@@ -26,3 +26,10 @@ GridObjectType Generator::GetType() const
 {
     return GridObjectType::Generator;
 }
+
+std::unique_ptr<GridObject> Generator::Clone() const
+{
+    return std::unique_ptr<GridObject>(
+        new Generator(*this)
+    );
+}
