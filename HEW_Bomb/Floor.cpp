@@ -2,7 +2,6 @@
 
 Floor::Floor(const GridPosition& position)
     : GridObject(position)
-    , m_explosionCount(0)
 {
 }
 
@@ -13,22 +12,14 @@ Floor::~Floor()
 // 爆発を受けた時の処理
 void Floor::OnExplosion()
 {
-    // 床の落下処理は後で追加する
-    m_explosionCount++;
-}
-
-// 階数に応じた破壊判定
-bool Floor::IsDestroyed() const
-{
     // 1階（Y座標が0）の床は、何度爆発しても破壊されない（無視する）
-    if (GetPosition().GetY() == 0)
+    if (GetPosition().GetY() <= 0)
     {
-        return false;
+        return;
     }
 
-    // 2階（Y座標が１)以上の床は、爆発を1回受けたら落下する
-    return m_explosionCount >= 1;
-    // return false;
+    Destroy();
+
 }
 
 GridObjectType Floor::GetType() const
