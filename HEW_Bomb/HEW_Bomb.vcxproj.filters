@@ -323,6 +323,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Local.props" />
-    <None Include="Local.props" />
+    <None Include="local.props" />
   </ItemGroup>
 </Project>
