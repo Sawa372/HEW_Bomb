@@ -98,7 +98,7 @@ bool MapRenderer::Initialize()
 
     // プレイヤーモデル
     m_pPlayerModel = new Model();
-    if (!m_pPlayerModel->Load("Assets/Model/charactar.fbx", 0.5f, Model::ZFlip)) // パスは実際のファイル名に合わせる
+    if (!m_pPlayerModel->Load("Assets/Model/character112.fbx", 0.5f, Model::ZFlip)) // パスは実際のファイル名に合わせる 高さ1ブロック"charactar.fbx" 高さ２ブロック"character112.fbx"
     {
         // エラー処理
         Clear();
