@@ -44,6 +44,15 @@ public:
     // グリッドの情報を参照する場合に使用する
     const GridManager& GetGridManager() const;
 
+    // プレイヤーの位置を設定
+    void SetPlayerPosition(const GridPosition& position);
+
+    // 床によってプレイヤーが死亡したか確認
+    bool IsPlayerKilledByFloor() const;
+
+    // 床による死亡判定をリセット
+    void ResetPlayerKilledByFloor();
+
     // 爆発範囲内のオブジェクトに爆発を伝える
     void ProcessExplosion(
         const std::vector<GridPosition>& positions

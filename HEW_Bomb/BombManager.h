@@ -56,6 +56,11 @@ public:
     // “o˜^‚³‚ê‚Ä‚¢‚é”š’e‚Ì”
     int GetBombCount() const;
 
+    // “o˜^‚³‚ê‚Ä‚¢‚é”š’eˆê——‚ğæ“¾‚·‚é
+    const std::vector<std::unique_ptr<Bomb>>& GetBombs() const
+    {
+        return m_bombs;
+    }
 
     // Undo—p‚Ìó‘Ô‚ğ•Û‘¶
     bool SaveUndoState();

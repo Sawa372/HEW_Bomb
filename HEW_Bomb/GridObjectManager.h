@@ -56,6 +56,15 @@ public:
     // 保存した状態を破棄
     void DiscardUndoState();
 
+    // プレイヤーの位置を設定
+    void SetPlayerPosition(const GridPosition& position);
+
+    // 床の破壊によってプレイヤーが死亡したか取得
+    bool IsPlayerKilledByFloor() const;
+
+    // 床による死亡判定をリセット
+    void ResetPlayerKilledByFloor();
+
 
 private:
     // オブジェクトの所有・管理
@@ -66,6 +75,12 @@ private:
 
     // 保存データが存在するか
     bool m_hasSavedState;
+
+    // プレイヤーの位置
+    GridPosition m_playerPosition;
+
+    // 床の破壊による死亡フラグ
+    bool m_isPlayerKilledByFloor;
 };
 
 #endif

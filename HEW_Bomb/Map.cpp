@@ -97,6 +97,23 @@ const GridManager& Map::GetGridManager() const
     return m_gridManager;
 }
 
+// プレイヤーの位置を設定
+void Map::SetPlayerPosition(const GridPosition& position)
+{
+    m_gridObjectManager.SetPlayerPosition(position);
+}
+
+// 床によってプレイヤーが死亡したか確認
+bool Map::IsPlayerKilledByFloor() const
+{
+    return m_gridObjectManager.IsPlayerKilledByFloor();
+}
+
+// 床による死亡判定をリセット
+void Map::ResetPlayerKilledByFloor()
+{
+    m_gridObjectManager.ResetPlayerKilledByFloor();
+}
 
 //==================================================
 // ステージの作成
@@ -345,8 +362,168 @@ int Map::GetBombCount() const
     return m_bombManager.GetBombCount();
 }
 
-//==================================================
-// 爆弾の起爆・連鎖爆発
+////==================================================
+//// 爆弾の起爆・連鎖爆発
+//bool Map::DetonateBombAt(
+//    const GridPosition& position,
+//    std::vector<GridPosition>* outAffectedPositions)
+//{
+//    // 爆発範囲の記録を初期化
+//    if (outAffectedPositions != nullptr)
+//    {
+//        outAffectedPositions->clear();
+//    }
+//
+//
+//    // 最初に起爆する爆弾を取得
+//    Bomb* pFirstBomb = m_bombManager.GetBombAt(position);
+//
+//    // 爆弾が存在しない場合
+//    if (pFirstBomb == nullptr)
+//    {
+//        return false;
+//    }
+//
+//    // 設置されていない爆弾は起爆できない
+//    if (!pFirstBomb->IsPlaced())
+//    {
+//        return false;
+//    }
+//
+//    // すでに爆発している場合
+//    if (pFirstBomb->IsExploded())
+//    {
+//        return false;
+//    }
+//
+//    //==================================================
+//    // 連鎖爆発の待機リスト
+//
+//    std::vector<GridPosition> explosionQueue;
+//
+//    // 最初の爆弾を登録
+//    explosionQueue.push_back(position);
+//
+//    // 次に処理する位置
+//    size_t currentIndex = 0;
+//
+//    //==================================================
+//    // 連鎖爆発の処理
+//
+//    while (currentIndex < explosionQueue.size())
+//    {
+//        // 次の爆弾の位置を取得
+//        GridPosition currentPosition =
+//            explosionQueue[currentIndex];
+//
+//        ++currentIndex;
+//
+//        // 爆弾を取得
+//        Bomb* pBomb =
+//            m_bombManager.GetBombAt(currentPosition);
+//
+//        if (pBomb == nullptr)
+//        {
+//            continue;
+//        }
+//
+//        // 設置されていない爆弾は無視
+//        if (!pBomb->IsPlaced())
+//        {
+//            continue;
+//        }
+//
+//        // 二重起爆を防止
+//        if (!pBomb->TryExplode())
+//        {
+//            continue;
+//        }
+//
+//        //==================================================
+//        // 爆発範囲を取得
+//
+//        std::vector<GridPosition> affectedPositions =
+//            pBomb->GetAffectedPositions(m_gridManager);
+//
+//        //==================================================
+//        // 爆発したマスを記録
+//
+//        if (outAffectedPositions != nullptr)
+//        {
+//            for (const GridPosition& affectedPosition : affectedPositions)
+//            {
+//                // すでに記録されているマスか確認
+//                auto it = std::find(
+//                    outAffectedPositions->begin(),
+//                    outAffectedPositions->end(),
+//                    affectedPosition
+//                );
+//
+//                // 未登録なら追加
+//                if (it == outAffectedPositions->end())
+//                {
+//                    outAffectedPositions->push_back(affectedPosition);
+//                }
+//            }
+//        }
+//
+//        //==================================================
+//        // 爆発範囲内の爆弾を連鎖対象に登録
+//
+//        for (const GridPosition& affectedPosition :
+//            affectedPositions)
+//        {
+//            // 爆弾を取得
+//            Bomb* pChainBomb =
+//                m_bombManager.GetBombAt(affectedPosition);
+//
+//            // 爆弾がなければ無視
+//            if (pChainBomb == nullptr)
+//            {
+//                continue;
+//            }
+//
+//            // 設置されていない爆弾は無視
+//            if (!pChainBomb->IsPlaced())
+//            {
+//                continue;
+//            }
+//
+//            // すでに爆発している爆弾は無視
+//            if (pChainBomb->IsExploded())
+//            {
+//                continue;
+//            }
+//
+//            // すでに待機リストに登録されているか確認
+//            auto it = std::find(
+//                explosionQueue.begin(),
+//                explosionQueue.end(),
+//                affectedPosition
+//            );
+//
+//            // 未登録の場合だけ追加
+//            if (it == explosionQueue.end())
+//            {
+//                explosionQueue.push_back(affectedPosition);
+//            }
+//        }
+//
+//        //==================================================
+//        // 爆発範囲内のオブジェクトを処理
+//
+//        ProcessExplosion(affectedPositions);
+//    }
+//
+//    //==================================================
+//    // すべての連鎖爆発が終わったら爆弾を削除
+//
+//    m_bombManager.RemoveExplodedBombs(m_gridManager);
+//
+//    return true;
+//}
+
+
 bool Map::DetonateBombAt(
     const GridPosition& position,
     std::vector<GridPosition>* outAffectedPositions)
@@ -357,37 +534,24 @@ bool Map::DetonateBombAt(
         outAffectedPositions->clear();
     }
 
-
     // 最初に起爆する爆弾を取得
     Bomb* pFirstBomb = m_bombManager.GetBombAt(position);
 
-    // 爆弾が存在しない場合
     if (pFirstBomb == nullptr)
-    {
         return false;
-    }
 
-    // 設置されていない爆弾は起爆できない
     if (!pFirstBomb->IsPlaced())
-    {
         return false;
-    }
 
-    // すでに爆発している場合
     if (pFirstBomb->IsExploded())
-    {
         return false;
-    }
 
     //==================================================
     // 連鎖爆発の待機リスト
 
     std::vector<GridPosition> explosionQueue;
-
-    // 最初の爆弾を登録
     explosionQueue.push_back(position);
 
-    // 次に処理する位置
     size_t currentIndex = 0;
 
     //==================================================
@@ -395,7 +559,7 @@ bool Map::DetonateBombAt(
 
     while (currentIndex < explosionQueue.size())
     {
-        // 次の爆弾の位置を取得
+        // 次に起爆する爆弾の位置
         GridPosition currentPosition =
             explosionQueue[currentIndex];
 
@@ -406,105 +570,161 @@ bool Map::DetonateBombAt(
             m_bombManager.GetBombAt(currentPosition);
 
         if (pBomb == nullptr)
-        {
             continue;
-        }
 
-        // 設置されていない爆弾は無視
         if (!pBomb->IsPlaced())
-        {
             continue;
-        }
 
         // 二重起爆を防止
         if (!pBomb->TryExplode())
-        {
             continue;
-        }
 
         //==================================================
-        // 爆発範囲を取得
+        // 現在の爆弾の爆破範囲を取得
 
         std::vector<GridPosition> affectedPositions =
             pBomb->GetAffectedPositions(m_gridManager);
 
         //==================================================
-        // 爆発したマスを記録
+        // 爆発範囲を記録（重複座標を除外）
 
         if (outAffectedPositions != nullptr)
         {
-            for (const GridPosition& affectedPosition : affectedPositions)
+            for (const GridPosition& affectedPosition :
+                affectedPositions)
             {
-                // すでに記録されているマスか確認
                 auto it = std::find(
                     outAffectedPositions->begin(),
                     outAffectedPositions->end(),
-                    affectedPosition
-                );
+                    affectedPosition);
 
-                // 未登録なら追加
                 if (it == outAffectedPositions->end())
                 {
-                    outAffectedPositions->push_back(affectedPosition);
+                    outAffectedPositions->push_back(
+                        affectedPosition);
                 }
             }
         }
 
         //==================================================
-        // 爆発範囲内の爆弾を連鎖対象に登録
+        // 2階の床上で爆破範囲が重なる爆弾を探す
+        // BombManagerに登録されているすべての爆弾を取得
 
-        for (const GridPosition& affectedPosition :
-            affectedPositions)
+        const auto& bombs = m_bombManager.GetBombs();
+
+        for (const auto& bombPtr : bombs)
         {
-            // 爆弾を取得
-            Bomb* pChainBomb =
-                m_bombManager.GetBombAt(affectedPosition);
+            Bomb* pChainBomb = bombPtr.get();
 
-            // 爆弾がなければ無視
             if (pChainBomb == nullptr)
-            {
                 continue;
-            }
 
-            // 設置されていない爆弾は無視
+            // 現在起爆中の爆弾は除外
+            if (pChainBomb == pBomb)
+                continue;
+
+            // 設置されていない爆弾は除外
             if (!pChainBomb->IsPlaced())
-            {
                 continue;
-            }
 
-            // すでに爆発している爆弾は無視
+            // 起爆済みの爆弾は除外
             if (pChainBomb->IsExploded())
-            {
                 continue;
+
+            //==================================================
+            // 次の爆弾の爆破範囲を取得
+
+            std::vector<GridPosition> chainAffectedPositions =
+                pChainBomb->GetAffectedPositions(m_gridManager);
+
+            //==================================================
+            // 2階の床（Y=2）上で範囲が重なっているか判定
+
+            bool bOverlap = false;
+
+            // 現在の爆弾の爆破範囲を調べる
+            for (const GridPosition& currentAffected :
+                affectedPositions)
+            {
+                //★★以下は爆破範囲のXとZ座標が一致してる場合連鎖させる処理です★★//
+               /* // 2階の床以外は比較しない
+                if (currentAffected.GetY() != 2)
+                    continue;
+
+                for (const GridPosition& chainAffected :
+                    chainAffectedPositions)
+                {
+                    // 2階の床以外は比較しない
+                    if (chainAffected.GetY() != 2)
+                        continue;
+
+                    // X・Z座標が一致しているか確認
+                    if (currentAffected.GetX() ==
+                        chainAffected.GetX() &&
+                        currentAffected.GetZ() ==
+                        chainAffected.GetZ())
+                    {
+                        bOverlap = true;
+                        break;
+                    }
+                }*/
+
+                //★★以下は爆破範囲のX/Y/Zすべての座標が一致してる場合連鎖させる処理★★//
+                for (const GridPosition& currentAffected :
+                    affectedPositions)
+                {
+                    // 次の爆弾の爆破範囲を調べる
+                    for (const GridPosition& chainAffected :
+                        chainAffectedPositions)
+                    {
+                        // XYZすべての座標が一致しているか判定
+                        if (currentAffected == chainAffected)
+                        {
+                            bOverlap = true;
+                            break;
+                        }
+                    }
+                }
+
+                // 1マスでも重なっていたら比較を終了
+                if (bOverlap)
+                    break;
             }
 
-            // すでに待機リストに登録されているか確認
-            auto it = std::find(
-                explosionQueue.begin(),
-                explosionQueue.end(),
-                affectedPosition
-            );
+            //==================================================
+            // 爆破範囲が重なっていたら連鎖対象に登録
 
-            // 未登録の場合だけ追加
-            if (it == explosionQueue.end())
+            if (bOverlap)
             {
-                explosionQueue.push_back(affectedPosition);
+                // すでに待機リストに登録されているか
+                auto it = std::find(
+                    explosionQueue.begin(),
+                    explosionQueue.end(),
+                    pChainBomb->GetPosition());
+
+                // 未登録の場合だけ追加
+                if (it == explosionQueue.end())
+                {
+                    explosionQueue.push_back(
+                        pChainBomb->GetPosition());
+                }
             }
         }
 
         //==================================================
-        // 爆発範囲内のオブジェクトを処理
+        // 現在の爆発範囲にあるオブジェクト・床を処理
 
         ProcessExplosion(affectedPositions);
     }
 
     //==================================================
-    // すべての連鎖爆発が終わったら爆弾を削除
+    // 連鎖爆発終了後、爆発済み爆弾を削除
 
     m_bombManager.RemoveExplodedBombs(m_gridManager);
 
     return true;
 }
+
 
 // 起爆スポットを登録
 bool Map::AddDetonationSpot(const GridPosition& position)

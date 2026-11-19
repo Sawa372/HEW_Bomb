@@ -15,6 +15,8 @@
 
 GridObjectManager::GridObjectManager()
     : m_hasSavedState(false)
+    , m_playerPosition(0, 0, 0)
+    , m_isPlayerKilledByFloor(false)
 {
 }
 
@@ -159,43 +161,83 @@ GridObject* GridObjectManager::GetFloorAt(
     return nullptr;
 }
 
-// 指定した位置の床オブジェクトを取得（読み取り専用）
-const GridObject* GridObjectManager::GetFloorAt(
-    const GridPosition& position) const
-{
-    for (const std::unique_ptr<GridObject>& object : m_objects)
-    {
-        if (object->GetPosition() == position &&
-            object->GetType() == GridObjectType::Floor)
-        {
-            return object.get();
-        }
-    }
-
-    return nullptr;
-}
+//// 指定した位置の床オブジェクトを取得（読み取り専用）
+//const GridObject* GridObjectManager::GetFloorAt(
+//    const GridPosition& position) const
+//{
+//    for (const std::unique_ptr<GridObject>& object : m_objects)
+//    {
+//        if (object->GetPosition() == position &&
+//            object->GetType() == GridObjectType::Floor)
+//        {
+//            return object.get();
+//        }
+//    }
+//
+//    return nullptr;
+//}
+//
+//void GridObjectManager::ProcessExplosion(
+//    const std::vector<GridPosition>& positions)
+//{
+//    for (const GridPosition& position : positions)
+//    {
+//        GridObject* object = GetObjectAt(position);
+//
+//        if (object != nullptr)
+//        {
+//            object->OnExplosion();
+//        }
+//
+//        GridObject* floor = GetFloorAt(position);
+//
+//        if (floor != nullptr)
+//        {
+//            floor->OnExplosion();
+//        }
+//    }
+//
+//   // RemoveDestroyedObjects();
+//}
 
 void GridObjectManager::ProcessExplosion(
     const std::vector<GridPosition>& positions)
 {
     for (const GridPosition& position : positions)
     {
+        //==================================================
+        // 通常のオブジェクトを取得
+
         GridObject* object = GetObjectAt(position);
 
-        if (object != nullptr)
+        if (object != nullptr &&
+            object->GetType() != GridObjectType::Floor)
         {
             object->OnExplosion();
         }
+
+        //==================================================
+        // 床を取得
 
         GridObject* floor = GetFloorAt(position);
 
         if (floor != nullptr)
         {
-            floor->OnExplosion();
+            Floor* pFloor = static_cast<Floor*>(floor);
+
+            // プレイヤーの位置を渡す
+            pFloor->SetPlayerPosition(m_playerPosition);
+
+            // 床の爆発処理
+            pFloor->OnExplosion();
+
+            // 床の真下にプレイヤーがいるか確認
+            if (pFloor->IsPlayerBelow())
+            {
+                m_isPlayerKilledByFloor = true;
+            }
         }
     }
-
-   // RemoveDestroyedObjects();
 }
 
 // 全オブジェクトを解放
@@ -262,4 +304,24 @@ void GridObjectManager::DiscardUndoState()
 {
     m_savedObjects.clear();
     m_hasSavedState = false;
+}
+
+// プレイヤーの位置を設定
+void GridObjectManager::SetPlayerPosition(
+    const GridPosition& position)
+{
+    m_playerPosition = position;
+}
+
+// ==================================================
+// 床の破壊によってプレイヤーが死亡したか取得
+bool GridObjectManager::IsPlayerKilledByFloor() const
+{
+    return m_isPlayerKilledByFloor;
+}
+
+// 床による死亡判定をリセット
+void GridObjectManager::ResetPlayerKilledByFloor()
+{
+    m_isPlayerKilledByFloor = false;
 }

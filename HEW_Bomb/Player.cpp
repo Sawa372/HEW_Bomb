@@ -336,6 +336,8 @@ void Player::Update(
                 //==================================================
                 // 起爆直前の状態を保存
 
+                map.SetPlayerPosition(m_playerPos);
+
                 if (map.SaveUndoState())
                 {
                     std::vector<GridPosition> dangerousPositions;
@@ -370,7 +372,15 @@ void Player::Update(
                     //==================================================
                     // 死亡判定
 
-                    if (CheckDeath(dangerousPositions))
+                    if (map.IsPlayerKilledByFloor())
+                    {
+                        // 床による即死：残機を0にする
+                        m_nLife = 0;
+
+                        // Undoで爆発前の状態に戻さない
+                        map.DiscardUndoState();
+                    }
+                    else if (CheckDeath(dangerousPositions))
                     {
                         // 残機を1つ減らす
                         m_nLife--;
@@ -390,6 +400,8 @@ void Player::Update(
                         // 生存した場合は保存データを破棄
                         map.DiscardUndoState();
                     }
+
+                    map.ResetPlayerKilledByFloor();
                 }
             }
 
