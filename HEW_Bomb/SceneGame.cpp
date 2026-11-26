@@ -135,9 +135,11 @@ void SceneGame::Update()
         }
         else
         {
+            std::string message = "残り残基：" + std::to_string(lifeAfter);
+
             MessageBoxA(
                 nullptr,
-                "残基が1減りました",
+                message.c_str(),
                 "死亡",
                 MB_OK
             );

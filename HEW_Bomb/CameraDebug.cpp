@@ -3,11 +3,11 @@
 CameraDebug::CameraDebug()
 	:m_radXZ(DirectX::XMConvertToRadians(45.0f))
 	,m_radY(DirectX::XMConvertToRadians(15.0f))
-	,m_radius(METER(10.0f))
+	,m_radius(METER(8.0f))
 	,m_minRadY(DirectX::XMConvertToRadians(10.0f))
 	,m_maxRadY(DirectX::XMConvertToRadians(50.0f))
-	,m_minRadius(METER(5.0f))
-	,m_maxRadius(METER(10.0f))
+	,m_minRadius(METER(8.0f))
+	,m_maxRadius(METER(12.0f))
 {
 	// 注視点：マップ中央
 	m_look = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
