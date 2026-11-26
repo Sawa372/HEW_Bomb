@@ -1,4 +1,5 @@
 #include "Floor.h"
+#include "Player.h"
 
 Floor::Floor(const GridPosition& position)
     : GridObject(position)
@@ -16,6 +17,15 @@ void Floor::OnExplosion()
     {
         return;
     }
+
+    std::vector<GridPosition> dangerousPositions;
+
+    //dangerousPositions.insert(
+    //    dangerousPositions.end(),
+    //    床の危険判定変数.begin(),
+    //    床の危険判定変数.end()
+    //);　// 範囲をセットするときはpush_backよりinsertの方が処理が早い
+
 
     // 床の落下処理は後で追加する
 
