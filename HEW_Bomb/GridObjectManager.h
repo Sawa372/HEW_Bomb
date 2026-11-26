@@ -47,10 +47,25 @@ public:
     // 全オブジェクトを解放
     void Clear();
 
+    // Undo用の状態を保存
+    bool SaveUndoState();
+
+    // 保存した状態に戻す
+    bool RestoreUndoState();
+
+    // 保存した状態を破棄
+    void DiscardUndoState();
+
 
 private:
     // オブジェクトの所有・管理
     std::vector<std::unique_ptr<GridObject>> m_objects;
+
+    // Undo用の保存データ
+    std::vector<std::unique_ptr<GridObject>> m_savedObjects;
+
+    // 保存データが存在するか
+    bool m_hasSavedState;
 };
 
 #endif

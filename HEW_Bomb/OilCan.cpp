@@ -20,3 +20,10 @@ GridObjectType OilCan::GetType() const
 {
     return GridObjectType::OilCan;
 }
+
+std::unique_ptr<GridObject> OilCan::Clone() const
+{
+    return std::unique_ptr<GridObject>(
+        new OilCan(*this)
+    );
+}

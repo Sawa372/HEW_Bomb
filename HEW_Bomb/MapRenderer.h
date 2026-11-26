@@ -115,6 +115,13 @@ private:
         const DirectX::XMFLOAT3& worldPosition
     );
 
+    // 回転を指定してモデルを描画する
+    void DrawModel(
+        Model* pModel,
+        const DirectX::XMFLOAT3& worldPosition,
+        const DirectX::XMFLOAT3& rotation
+    );
+
     // 起爆スポットのワイヤー描画
     void DrawDetonationSpots(
         const Map& map,

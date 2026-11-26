@@ -4,6 +4,7 @@
 
 #include "GridPosition.h"
 #include "GridObjectType.h"
+#include <memory>
 
 // グリッド上に配置されるオブジェクトの基底クラス
 class GridObject
@@ -23,6 +24,9 @@ public:
 
     // 破壊されたか
     bool IsDestroyed() const;
+
+    // オブジェクトの状態をコピーする
+    virtual std::unique_ptr<GridObject> Clone() const = 0;
 
 protected:
     // オブジェクトを破壊済みにする

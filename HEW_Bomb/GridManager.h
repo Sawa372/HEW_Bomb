@@ -208,6 +208,15 @@ public:
     ) const;
 
 
+    // Undo用の状態を保存
+    bool SaveUndoState();
+
+    // 保存した状態に戻す
+    bool RestoreUndoState();
+
+    // 保存した状態を破棄
+    void DiscardUndoState();
+
 private:
     // 内部処理
 
@@ -237,6 +246,22 @@ private:
 
     // グリッドの原点となるワールド座標
     DirectX::XMFLOAT3 m_gridOrigin;
+
+    //==================================================
+    // Undo用の保存データ
+
+    GridPosition m_savedMinPosition;
+
+    int m_savedWidth;
+    int m_savedHeight;
+    int m_savedDepth;
+
+    std::vector<GridCell> m_savedCells;
+
+    DirectX::XMFLOAT3 m_savedCellSize;
+    DirectX::XMFLOAT3 m_savedGridOrigin;
+
+    bool m_hasSavedState;
 };
 
 #endif // __GRID_MANAGER_H__

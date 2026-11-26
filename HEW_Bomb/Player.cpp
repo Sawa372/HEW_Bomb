@@ -5,6 +5,7 @@
 #include "GridCollision.h"
 #include "BombInventory.h"
 #include "BombType.h"
+#include "Explosion.h"
 
 #include <Windows.h>
 
@@ -14,6 +15,8 @@
 
 Player::Player()
     : m_playerPos(0, 0, 0)
+    , m_nLife(3)
+    , m_startPos(0, 0, 0)
     , m_isKeyReleased(true)
     , m_bombPlacementPosition(0, 0, 0)
     , m_bombPlacementRotation(0.0f, 0.0f, 0.0f)
@@ -23,10 +26,13 @@ Player::Player()
     , m_selectedBombIndex(0)
     , m_isBombNextKeyReleased(true)
     , m_isBombPreviousKeyReleased(true)
+    , m_isRotateXKeyReleased(true)
+    , m_isRotateYKeyReleased(true)
     , m_pCamera(nullptr)
+    , m_pBomb(nullptr)
+	, m_bombRotation()
 {
 }
-
 
 //==================================================
 // デストラクタ
@@ -43,8 +49,19 @@ void Player::Initialize(const GridPosition& startPos)
 {
     m_playerPos = startPos;
     m_bombPlacementPosition = startPos;
-}
 
+    // 爆弾の回転を初期化
+    m_bombRotation.Reset();
+
+    // 初期回転角度を取得
+    m_bombPlacementRotation =
+        m_bombRotation.GetEulerAngles();
+
+    m_playerPos = startPos;
+    m_startPos = startPos;
+    m_bombPlacementPosition = startPos;
+
+}
 
 //==================================================
 // 更新
@@ -56,42 +73,147 @@ void Player::Update(
 {
     GridManager& gridManager = map.GetGridManager();
 
-    float nPos[3] = { GetPosition().GetX(), GetPosition().GetY(), GetPosition().GetZ() };
-
-    //// カメラからキャラクターの向きを取得
-    //DirectX::XMFLOAT3 camPos = m_pCamera->GetPos(); // カメラの位置を取得
-    //DirectX::XMVECTOR vCamPos = DirectX::XMLoadFloat3(&camPos); // camPosを計算用のデータに変換
-    //DirectX::XMVECTOR vPos = DirectX::XMLoadFloat3(nPos[0], ); // プレイヤーの位置を計算用のデータに変換
-    //DirectX::XMVECTOR vec = DirectX::XMVectorSubtract(vPos, vCamPos);// カメラからプレイヤーに向かうベクトルを計算
-    //vec = DirectX::XMVector3Normalize(vec); // vecを長さ１のベクトルに変換
-
+    
 
     //==================================================
-    // ① プレイヤーの移動
+    //  プレイヤーの移動
 
     GridPosition nextPos = m_playerPos;
     bool isKeyPressed = false;
 
-    if (GetAsyncKeyState('I') & 0x8000)
+    if (m_pCamera->GetPos().z <= 0.0f && abs(m_pCamera->GetPos().x) <= 2.5f) // Z+が正面
     {
-        nextPos = m_playerPos + GridPosition(0, 0, 1);
-        isKeyPressed = true;
+        if (GetAsyncKeyState('I') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, 0, 1);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('K') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, 0, -1);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('J') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(-1, 0, 0);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('L') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(1, 0, 0);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('7') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, 1, 0);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('8') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, -1, 0);
+            isKeyPressed = true;
+        }
     }
-    else if (GetAsyncKeyState('K') & 0x8000)
+    else if (m_pCamera->GetPos().z >= 0.0f && abs(m_pCamera->GetPos().x) <= 2.5f) // Z-が正面
     {
-        nextPos = m_playerPos + GridPosition(0, 0, -1);
-        isKeyPressed = true;
+        if (GetAsyncKeyState('I') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, 0, -1);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('K') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, 0, 1);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('J') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(1, 0, 0);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('L') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(-1, 0, 0);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('7') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, 1, 0);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('8') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, -1, 0);
+            isKeyPressed = true;
+        }
     }
-    else if (GetAsyncKeyState('J') & 0x8000)
+    else if (abs(m_pCamera->GetPos().z) <= 2.5f && m_pCamera->GetPos().x <= 0.0f) // X+が正面
     {
-        nextPos = m_playerPos + GridPosition(-1, 0, 0);
-        isKeyPressed = true;
+        if (GetAsyncKeyState('I') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(1, 0, 0);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('K') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(-1, 0, 0);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('J') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, 0, 1);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('L') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, 0, -1);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('7') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, 1, 0);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('8') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, -1, 0);
+            isKeyPressed = true;
+        }
     }
-    else if (GetAsyncKeyState('L') & 0x8000)
+    else if (abs(m_pCamera->GetPos().z) <= 2.5f && m_pCamera->GetPos().x >= 0.0f) // X-が正面
     {
-        nextPos = m_playerPos + GridPosition(1, 0, 0);
-        isKeyPressed = true;
+        if (GetAsyncKeyState('I') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(-1, 0, 0);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('K') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(1, 0, 0);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('J') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, 0, -1);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('L') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, 0, 1);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('7') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, 1, 0);
+            isKeyPressed = true;
+        }
+        else if (GetAsyncKeyState('8') & 0x8000)
+        {
+            nextPos = m_playerPos + GridPosition(0, -1, 0);
+            isKeyPressed = true;
+        }
     }
+    
 
     if (isKeyPressed)
     {
@@ -118,7 +240,7 @@ void Player::Update(
 
 
     //==================================================
-    // ② 爆弾の設置予定位置
+    //  爆弾の設置予定位置
 
     // 【現在のテスト処理】
     // 現在はプレイヤーと同じ座標を設置予定位置にしている。
@@ -133,7 +255,7 @@ void Player::Update(
 
 
     //==================================================
-    // ③ 爆弾の設置（Spaceキー）
+    //  爆弾の設置（Spaceキー）
 
     bool isPlaceKeyPressed =
         (GetAsyncKeyState(VK_SPACE) & 0x8000) != 0;
@@ -158,7 +280,7 @@ void Player::Update(
 
 
     //==================================================
-    // ④ 爆弾の回収（Rキー）
+    //  爆弾の回収（Rキー）
 
     bool isRetrieveKeyPressed =
         (GetAsyncKeyState('R') & 0x8000) != 0;
@@ -182,11 +304,7 @@ void Player::Update(
 
 
     //==================================================
-    // ⑤ 爆弾の起爆（Eキー）
-
-    // 登録された起爆スポットをすべて確認する。
-    // 爆弾が置かれているスポットだけ起爆する。
-
+    //  爆弾の起爆（Eキー）
     bool isDetonateKeyPressed =
         (GetAsyncKeyState('E') & 0x8000) != 0;
 
@@ -194,17 +312,85 @@ void Player::Update(
     {
         if (m_isDetonateKeyReleased)
         {
+            // 起爆直前のプレイヤー位置を保存
+            GridPosition playerPositionBefore =
+                m_playerPos;
+
+            GridPosition placementPositionBefore =
+                m_bombPlacementPosition;
+
+            // 起爆スポットに爆弾があるか確認
+            bool hasBomb = false;
+
             for (const auto& spot : map.GetDetonationSpots())
             {
-                const GridPosition& position =
-                    spot.GetPosition();
-
-                if (!map.HasBombAt(position))
+                if (map.HasBombAt(spot.GetPosition()))
                 {
-                    continue;
+                    hasBomb = true;
+                    break;
                 }
+            }
 
-                map.DetonateBombAt(position);
+            if (hasBomb)
+            {
+                //==================================================
+                // 起爆直前の状態を保存
+
+                if (map.SaveUndoState())
+                {
+                    std::vector<GridPosition> dangerousPositions;
+
+                    //==================================================
+                    // 爆発・連鎖爆発
+
+                    for (const auto& spot : map.GetDetonationSpots())
+                    {
+                        const GridPosition& position =
+                            spot.GetPosition();
+
+                        if (!map.HasBombAt(position))
+                        {
+                            continue;
+                        }
+
+                        std::vector<GridPosition> bombAffectedPositions;
+
+                        if (map.DetonateBombAt(
+                            position,
+                            &bombAffectedPositions))
+                        {
+                            dangerousPositions.insert(
+                                dangerousPositions.end(),
+                                bombAffectedPositions.begin(),
+                                bombAffectedPositions.end()
+                            );
+                        }
+                    }
+
+                    //==================================================
+                    // 死亡判定
+
+                    if (CheckDeath(dangerousPositions))
+                    {
+                        // 残機を1つ減らす
+                        m_nLife--;
+
+                        // 起爆直前のMapに戻す
+                        if (map.RestoreUndoState())
+                        {
+                            // プレイヤー自身の座標も戻す
+                            m_playerPos = playerPositionBefore;
+
+                            m_bombPlacementPosition =
+                                placementPositionBefore;
+                        }
+                    }
+                    else
+                    {
+                        // 生存した場合は保存データを破棄
+                        map.DiscardUndoState();
+                    }
+                }
             }
 
             m_isDetonateKeyReleased = false;
@@ -215,9 +401,8 @@ void Player::Update(
         m_isDetonateKeyReleased = true;
     }
 
-
     //==================================================
-    // ⑥ 爆弾の種類切り替え（テスト用）
+    //  爆弾の種類切り替え（テスト用）
 
     // 1キー：次の爆弾
     bool isNextBombPressed =
@@ -273,13 +458,58 @@ void Player::Update(
     {
         m_isBombPreviousKeyReleased = true;
     }
+
+    //==================================================
+    // 爆弾の回転
+
+    // 3キー：ワールドX軸を90度回転
+    bool isRotateXKeyPressed =
+        (GetAsyncKeyState('3') & 0x8000) != 0;
+
+    if (isRotateXKeyPressed)
+    {
+        if (m_isRotateXKeyReleased)
+        {
+            m_bombRotation.RotateWorldX90();
+
+            m_bombPlacementRotation =
+                m_bombRotation.GetEulerAngles();
+
+            m_isRotateXKeyReleased = false;
+        }
+    }
+    else
+    {
+        m_isRotateXKeyReleased = true;
+    }
+
+    // 4キー：ワールドY軸を90度回転
+    bool isRotateYKeyPressed =
+        (GetAsyncKeyState('4') & 0x8000) != 0;
+
+    if (isRotateYKeyPressed)
+    {
+        if (m_isRotateYKeyReleased)
+        {
+            m_bombRotation.RotateWorldY90();
+
+            m_bombPlacementRotation =
+                m_bombRotation.GetEulerAngles();
+
+            m_isRotateYKeyReleased = false;
+        }
+    }
+    else
+    {
+        m_isRotateYKeyReleased = true;
+    }
 }
 
 
 //==================================================
 // プレイヤーの現在位置を取得
 
-GridPosition Player::GetPosition() const
+GridPosition Player::PlayerGetPosition() const
 {
     return m_playerPos;
 }
@@ -310,4 +540,38 @@ void Player::SetBombPlacementRotation(
     const DirectX::XMFLOAT3& rotation)
 {
     m_bombPlacementRotation = rotation;
+}
+
+// カメラ情報を取得
+void Player::SetCamera(Camera* pCamera)
+{
+    m_pCamera = pCamera;
+}
+
+
+
+//==================================================
+// プレイヤーの死亡判定
+
+bool Player::CheckDeath(
+    const std::vector<GridPosition>& dangerousPositions) const
+{
+    // 危険範囲にプレイヤーがいるか確認
+    for (const GridPosition& position : dangerousPositions)
+    {
+        if (position == m_playerPos)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//==================================================
+// 残機を取得
+
+int Player::GetLife() const
+{
+    return m_nLife;
 }
