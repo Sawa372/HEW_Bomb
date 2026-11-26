@@ -10,16 +10,16 @@ enum class GridObjectType
 {
     None,       // オブジェクトなし
 
-    NetworkServer,   
-    Computer,
-    Generator,
-
-    Pillar,
-    OilCan,
-
-    Floor,
-
-    Wall,       
+    NetworkServer,     // ネット
+    Computer,          // コンピュータ
+    Generator,         // 発電機？
+                       //
+    Pillar,            // 柱
+    OilCan,            // オイル缶
+                       //
+    Floor,             // 床
+                       //
+    Wall,              // 壁
 };
 
 #endif // __GRID_OBJECT_TYPE_H__

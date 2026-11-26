@@ -156,6 +156,7 @@
     <ClCompile Include="bomb.cpp" />
     <ClCompile Include="BombInventory.cpp" />
     <ClCompile Include="BombManager.cpp" />
+    <ClCompile Include="BombRotation.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraDebug.cpp" />
     <ClCompile Include="Computer.cpp" />
@@ -204,6 +205,7 @@
     <ClInclude Include="Bomb.h" />
     <ClInclude Include="BombInventory.h" />
     <ClInclude Include="BombManager.h" />
+    <ClInclude Include="BombRotation.h" />
     <ClInclude Include="BombType.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraDebug.h" />

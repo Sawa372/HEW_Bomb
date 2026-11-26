@@ -19,3 +19,10 @@ GridObjectType Computer::GetType() const
 {
     return GridObjectType::Computer;
 }
+
+std::unique_ptr<GridObject> Computer::Clone() const
+{
+    return std::unique_ptr<GridObject>(
+        new Computer(*this)
+    );
+}

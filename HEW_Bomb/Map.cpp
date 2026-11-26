@@ -11,6 +11,7 @@ Map::Map()
     : m_gridManager()
     , m_gridObjectManager()
     , m_bombManager()
+    , n_FroorDistance(0)
 {
 }
 
@@ -27,11 +28,13 @@ Map::~Map()
 // マップを初期化し、ステージの配置を作成する
 bool Map::Initialize()
 {
+    n_FroorDistance = 6;
+
     // マップの最小座標
-    const GridPosition minPosition(-10, 0, -10);
+    const GridPosition minPosition(-4, -1, -4);
 
     // マップの最大座標
-    const GridPosition maxPosition(10, 5, 10);
+    const GridPosition maxPosition(4, 10, 4);
 
     // 1マスあたりのワールド空間でのサイズを設定
     if (!m_gridManager.SetCellSize(1.0f, 1.0f, 1.0f))
@@ -112,7 +115,7 @@ bool Map::CreateStage()
     }
 
     // マップ全体に床を設置
-    for (int y = minPosition.GetY(); y <= maxPosition.GetY(); y += maxPosition.GetY() - 1)
+    for (int y = minPosition.GetY(); y <= maxPosition.GetY(); y += n_FroorDistance)
     {
         for (int z = minPosition.GetZ(); z <= maxPosition.GetZ(); ++z)
         {
@@ -128,7 +131,7 @@ bool Map::CreateStage()
         }
     }
     // 起爆スポット
-    if (!AddDetonationSpot(GridPosition(-5, 0, -5)))
+    if (!AddDetonationSpot(GridPosition(0, 0, 0)))
         return false;
 
 
@@ -139,23 +142,7 @@ bool Map::CreateStage()
     // Wall
     if (!RegisterStageObject(
         GridObjectType::Wall,
-        GridPosition(3, 0, 3)))
-    {
-        return false;
-    }
-
-    // Generator
-    if (!RegisterStageObject(
-        GridObjectType::Generator,
-        GridPosition(4, 0, 3)))
-    {
-        return false;
-    }
-
-    // OilCan
-    if (!RegisterStageObject(
-        GridObjectType::OilCan,
-        GridPosition(8, 0, 8)))
+        GridPosition(1, 0, 1)))
     {
         return false;
     }
@@ -163,15 +150,7 @@ bool Map::CreateStage()
     // NetworkServer
     if (!RegisterStageObject(
         GridObjectType::NetworkServer,
-        GridPosition(2, 0, 3)))
-    {
-        return false;
-    }
-
-    // Pillar
-    if (!RegisterStageObject(
-        GridObjectType::Pillar,
-        GridPosition(6, 0, 3)))
+        GridPosition(2, 0, -2)))
     {
         return false;
     }
@@ -179,7 +158,31 @@ bool Map::CreateStage()
     // Generator
     if (!RegisterStageObject(
         GridObjectType::Generator,
-        GridPosition(7, 0, 4)))
+        GridPosition(3, 0, 2)))
+    {
+        return false;
+    }
+
+    // Computer
+    if (!RegisterStageObject(
+        GridObjectType::Computer,
+        GridPosition(4, 0, 0)))
+    {
+        return false;
+    }
+
+    // Pillar
+    if (!RegisterStageObject(
+        GridObjectType::Pillar,
+        GridPosition(4, 0, 1)))
+    {
+        return false;
+    }
+
+    // OilCan
+    if (!RegisterStageObject(
+        GridObjectType::OilCan,
+        GridPosition(-2, 0, 1)))
     {
         return false;
     }
@@ -344,8 +347,17 @@ int Map::GetBombCount() const
 
 //==================================================
 // 爆弾の起爆・連鎖爆発
-bool Map::DetonateBombAt(const GridPosition& position)
+bool Map::DetonateBombAt(
+    const GridPosition& position,
+    std::vector<GridPosition>* outAffectedPositions)
 {
+    // 爆発範囲の記録を初期化
+    if (outAffectedPositions != nullptr)
+    {
+        outAffectedPositions->clear();
+    }
+
+
     // 最初に起爆する爆弾を取得
     Bomb* pFirstBomb = m_bombManager.GetBombAt(position);
 
@@ -415,6 +427,28 @@ bool Map::DetonateBombAt(const GridPosition& position)
 
         std::vector<GridPosition> affectedPositions =
             pBomb->GetAffectedPositions(m_gridManager);
+
+        //==================================================
+        // 爆発したマスを記録
+
+        if (outAffectedPositions != nullptr)
+        {
+            for (const GridPosition& affectedPosition : affectedPositions)
+            {
+                // すでに記録されているマスか確認
+                auto it = std::find(
+                    outAffectedPositions->begin(),
+                    outAffectedPositions->end(),
+                    affectedPosition
+                );
+
+                // 未登録なら追加
+                if (it == outAffectedPositions->end())
+                {
+                    outAffectedPositions->push_back(affectedPosition);
+                }
+            }
+        }
 
         //==================================================
         // 爆発範囲内の爆弾を連鎖対象に登録
@@ -495,4 +529,73 @@ bool Map::AddDetonationSpot(const GridPosition& position)
 const std::vector<DetonationSpot>& Map::GetDetonationSpots() const
 {
     return m_detonationSpots;
+}
+
+
+//==================================================
+// Undo処理
+
+// マップ全体の状態を保存
+bool Map::SaveUndoState()
+{
+    // グリッドの状態を保存
+    if (!m_gridManager.SaveUndoState())
+    {
+        return false;
+    }
+
+    // オブジェクトの状態を保存
+    if (!m_gridObjectManager.SaveUndoState())
+    {
+        m_gridManager.DiscardUndoState();
+        return false;
+    }
+
+    // 爆弾の状態を保存
+    if (!m_bombManager.SaveUndoState())
+    {
+        m_gridManager.DiscardUndoState();
+        m_gridObjectManager.DiscardUndoState();
+        return false;
+    }
+
+    return true;
+}
+
+
+//==================================================
+// 保存した状態に戻す
+
+bool Map::RestoreUndoState()
+{
+    // グリッドの状態を復元
+    if (!m_gridManager.RestoreUndoState())
+    {
+        return false;
+    }
+
+    // オブジェクトの状態を復元
+    if (!m_gridObjectManager.RestoreUndoState())
+    {
+        return false;
+    }
+
+    // 爆弾の状態を復元
+    if (!m_bombManager.RestoreUndoState())
+    {
+        return false;
+    }
+
+    return true;
+}
+
+
+//==================================================
+// Undo用の保存データを破棄
+
+void Map::DiscardUndoState()
+{
+    m_gridManager.DiscardUndoState();
+    m_gridObjectManager.DiscardUndoState();
+    m_bombManager.DiscardUndoState();
 }

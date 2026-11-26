@@ -48,6 +48,9 @@ private:
 
     // Playerから設置予定位置・回転・選択中の爆弾を取得して更新
     void UpdateBombPreview();
+
+    bool m_isGameOver;
+
 };
 
 #endif

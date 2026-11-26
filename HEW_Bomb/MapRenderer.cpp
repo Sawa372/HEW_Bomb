@@ -48,49 +48,49 @@ bool MapRenderer::Initialize()
     // 既存のモデルを解放して初期状態に戻す
     Clear();
     m_pWallModel = new Model();
-    if (!m_pWallModel->Load("Assets/Model/tree_forest.fbx"))
+    if (!m_pWallModel->Load("Assets/Model/wall.fbx", 0.5f, Model::ZFlip))
     {
         MessageBoxA(nullptr, "Wallモデルの読み込みに失敗しました。\ntree_forest.fbx", "Error", MB_OK);
         return false;
     }
     
     m_pNetworkServerModel = new Model();
-    if (!m_pNetworkServerModel->Load("Assets/Model/plantB_forest.fbx"))
+    if (!m_pNetworkServerModel->Load("Assets/Model/NetworkServer.fbx",0.5f, Model::ZFlip))
     {
         MessageBoxA(nullptr, "NetworkServerモデルの読み込みに失敗しました。\nplantB_forest.fbx", "Error", MB_OK);
         return false;
     }
 
     m_pGeneratorModel = new Model();
-    if (!m_pGeneratorModel->Load("Assets/Model/rocksA_desert.fbx"))
+    if (!m_pGeneratorModel->Load("Assets/Model/Generator.fbx",0.5f, Model::ZFlip))
     {
         MessageBoxA(nullptr, "Generatorモデルの読み込みに失敗しました。\nrocksA_desert.fbx", "Error", MB_OK);
         return false;
     }
 
     m_pComputerModel = new Model();
-    if (!m_pComputerModel->Load("Assets/Model/flag_teamBlue.fbx"))
+    if (!m_pComputerModel->Load("Assets/Model/Computer.fbx",0.5f, Model::ZFlip))
     {
         MessageBoxA(nullptr, "Computerモデルの読み込みに失敗しました。\nflag_teamBlue.fbx", "Error", MB_OK);
         return false;
     }
 
     m_pPillarModel = new Model();
-    if (!m_pPillarModel->Load("Assets/Model/flag_teamRed.fbx"))
+    if (!m_pPillarModel->Load("Assets/Model/pillar.fbx",0.5f, Model::ZFlip))
     {
         MessageBoxA(nullptr, "Pillarモデルの読み込みに失敗しました。\nflag_teamRed.fbx", "Error", MB_OK);
         return false;
     }
 
     m_pOilCanModel = new Model();
-    if (!m_pOilCanModel->Load("Assets/Model/flag_teamYellow.fbx"))
+    if (!m_pOilCanModel->Load("Assets/Model/Oil can.fbx",0.5f, Model::ZFlip))
     {
         MessageBoxA(nullptr, "OilCanモデルの読み込みに失敗しました。\nflag_teamYellow.fbx", "Error", MB_OK);
         return false;
     }
 
     m_pFloorModel = new Model();
-    if (!m_pFloorModel->Load("Assets/Model/tileMedium_forest.fbx",0.5))
+    if (!m_pFloorModel->Load("Assets/Model/floor.fbx",0.5f, Model::ZFlip))
     {
         MessageBoxA(nullptr, "Floorモデルの読み込みに失敗しました。\ntileMedium_forest.fbx", "Error", MB_OK);
         return false;
@@ -98,7 +98,7 @@ bool MapRenderer::Initialize()
 
     // プレイヤーモデル
     m_pPlayerModel = new Model();
-    if (!m_pPlayerModel->Load("Assets/Model/ball.fbx", 0.5f)) // パスは実際のファイル名に合わせる
+    if (!m_pPlayerModel->Load("Assets/Model/character112.fbx", 0.5f, Model::ZFlip)) // パスは実際のファイル名に合わせる 高さ1ブロック"charactar.fbx" 高さ２ブロック"character112.fbx"
     {
         // エラー処理
         Clear();
@@ -108,13 +108,13 @@ bool MapRenderer::Initialize()
     //==================================================
     // 爆弾モデルの読み込み
 
-    if (!LoadBombModel(m_pCubeBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||               // 仮置き
-        !LoadBombModel(m_pWideCubeBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||           // 仮置き
-        !LoadBombModel(m_pCylinderBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||           // 仮置き
-        !LoadBombModel(m_pVShapeBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||             // 仮置き
-        !LoadBombModel(m_pCircleBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||             // 仮置き
-        !LoadBombModel(m_pCrossBombModel, "Assets/Model/bomb_circle/bomb_circle.obj") ||              // 仮置き
-        !LoadBombModel(m_pInvertedPyramidBombModel, "Assets/Model/bomb_circle/bomb_circle.obj"))      // 仮置き
+    if (!LoadBombModel(m_pCubeBombModel, "Assets/Model/Bom_Cube.fbx") ||              
+        !LoadBombModel(m_pWideCubeBombModel, "Assets/Model/Bom_WideCube.fbx") ||          
+        !LoadBombModel(m_pCylinderBombModel, "Assets/Model/Bom_Cylinder.fbx") ||          
+        !LoadBombModel(m_pVShapeBombModel, "Assets/Model/Bom_VShape.fbx") ||            
+        !LoadBombModel(m_pCircleBombModel, "Assets/Model/Bom_Circle.fbx") ||            
+        !LoadBombModel(m_pCrossBombModel, "Assets/Model/Bom_Cross.fbx") ||             
+        !LoadBombModel(m_pInvertedPyramidBombModel, "Assets/Model/Bom_InvertedPyramid.fbx"))     
     {
         MessageBoxA(
             nullptr,
@@ -138,7 +138,7 @@ bool MapRenderer::LoadBombModel(
 {
     pModel = new Model();
 
-    if (!pModel->Load(filePath, 0.3f))
+    if (!pModel->Load(filePath, 0.5f))
     {
         delete pModel;
         pModel = nullptr;
@@ -225,9 +225,6 @@ void MapRenderer::Draw(
         {
             DirectX::XMFLOAT3 floorPosition = worldPosition;
 
-            // 床を少し下げて配置する
-            floorPosition.y -= 0.75f;
-
             
             DrawModel(m_pFloorModel, floorPosition);
         }
@@ -275,11 +272,10 @@ void MapRenderer::Draw(
             DrawModel(pModel, worldPosition);
         }
 
-        // 4. プレイヤーの描画
+        // 4. プレイヤーの描画ww
         if (cell.HasPlayer())
         {
             DirectX::XMFLOAT3 playerPos = worldPosition;
-            playerPos.y += 0.5f;
             DrawModel(m_pPlayerModel, playerPos);
         }
 
@@ -330,9 +326,17 @@ void MapRenderer::Draw(
 
                 // 爆弾の描画位置
                 DirectX::XMFLOAT3 bombPosition = worldPosition;
-                bombPosition.y += 0.5f;
+                
+                // 爆弾の回転を取得
+                const DirectX::XMFLOAT3& rotation =
+                    pBomb->GetRotation();
 
-                DrawModel(pModel, bombPosition);
+                // 回転を適用して描画
+                DrawModel(
+                    pModel,
+                    bombPosition,
+                    rotation
+                );
             }
         }
       
@@ -446,61 +450,135 @@ void MapRenderer::DrawDetonationSpots(
 // 指定したモデルを指定したワールド座標に描画する
 // pModel：描画するモデル
 // worldPosition：モデルを配置するワールド座標
+//==================================================
+// モデルの描画（回転なし）
+
 void MapRenderer::DrawModel(
     Model* pModel,
     const DirectX::XMFLOAT3& worldPosition)
 {
-    // 描画するモデルが存在しない場合は処理を終了する
+    // 回転なしで描画
+    DirectX::XMFLOAT3 rotation(0.0f, 0.0f, 0.0f);
+
+    DrawModel(
+        pModel,
+        worldPosition,
+        rotation
+    );
+}
+
+
+//==================================================
+// モデルの描画（回転あり）
+
+void MapRenderer::DrawModel(
+    Model* pModel,
+    const DirectX::XMFLOAT3& worldPosition,
+    const DirectX::XMFLOAT3& rotation)
+{
     if (pModel == nullptr)
     {
         return;
     }
 
+    //==================================================
+    // 度数法からラジアンに変換
+
+    float pitch = DirectX::XMConvertToRadians(rotation.x);
+    float yaw = DirectX::XMConvertToRadians(rotation.y);
+    float roll = DirectX::XMConvertToRadians(rotation.z);
+
+
+    //==================================================
     // ワールド行列の作成
 
-    // 指定されたワールド座標へモデルを移動させる行列を作成する
-    DirectX::XMMATRIX world =
+    // 回転行列
+    DirectX::XMMATRIX rot =
+        DirectX::XMMatrixRotationRollPitchYaw(
+            pitch,
+            yaw,
+            roll
+        );
+
+    //==================================================
+    // 回転の基準点をモデルの中心にする
+
+    // モデルの中心位置
+    // 高さ1.0のモデル想定
+    DirectX::XMFLOAT3 pivot(
+        0.0f,
+        0.5f,
+        0.0f
+    );
+
+    // 原点を中心位置に移動
+    DirectX::XMMATRIX moveToOrigin =
+        DirectX::XMMatrixTranslation(
+            -pivot.x,
+            -pivot.y,
+            -pivot.z
+        );
+
+    // 中心位置に戻す
+    DirectX::XMMATRIX moveBack =
+        DirectX::XMMatrixTranslation(
+            pivot.x,
+            pivot.y,
+            pivot.z
+        );
+
+    // ワールド座標への移動
+    DirectX::XMMATRIX trans =
         DirectX::XMMatrixTranslation(
             worldPosition.x,
             worldPosition.y,
             worldPosition.z
         );
 
-    // XMMATRIXをシェーダーに渡す形式に変換する
-    DirectX::XMFLOAT4X4 fWorld;
-    DirectX::XMStoreFloat4x4(&fWorld, world);
+    // 中心を基準に回転
+    DirectX::XMMATRIX world =
+        moveToOrigin *
+        rot *
+        moveBack *
+        trans;
 
-    // シェーダーにモデルのワールド行列を設定する
+    //==================================================
+    // ワールド行列の設定
+
+    DirectX::XMFLOAT4X4 fWorld;
+
+    DirectX::XMStoreFloat4x4(
+        &fWorld,
+        world
+    );
+
     ShaderList::SetWorld(fWorld);
 
+
+    //==================================================
     // シェーダーの設定
 
-    // ワールド空間で描画する頂点シェーダーを設定する
     pModel->SetVertexShader(
         ShaderList::GetVS(ShaderList::VS_WORLD)
     );
 
-    // ランバート反射を使用するピクセルシェーダーを設定する
     pModel->SetPixelShader(
         ShaderList::GetPS(ShaderList::PS_LAMBERT)
     );
 
+
+    //==================================================
     // メッシュの描画
 
-    // モデルが持つすべてのメッシュを順番に描画する
     for (int i = 0; i < pModel->GetMeshNum(); ++i)
     {
-        // 描画対象のメッシュ情報を取得する
         const Model::Mesh* mesh = pModel->GetMesh(i);
 
-        // メッシュに対応するマテリアル情報を取得する
         Model::Material material =
             *pModel->GetMaterial(mesh->materialID);
 
-        // シェーダーにマテリアル情報を設定する
         ShaderList::SetMaterial(material);
 
-        // 指定したメッシュを描画する
         pModel->Draw(i);
     }
 }
