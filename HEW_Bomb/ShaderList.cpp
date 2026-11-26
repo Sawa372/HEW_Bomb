@@ -75,19 +75,32 @@ PixelShader* ShaderList::GetPS(PSKind ps)
 
 void ShaderList::SetWorld(const DirectX::XMFLOAT4X4& world)
 {
-	m_wvp[0] = world;
+	// ワールド行列を設定
+	DirectX::XMMATRIX worldMatrix =
+		DirectX::XMLoadFloat4x4(&world);
 
-	// 逆転置行列の計算
-	DirectX::XMMATRIX mat = DirectX::XMLoadFloat4x4(&world);
-	mat = DirectX::XMMatrixTranspose(mat);
-	mat = DirectX::XMMatrixInverse(nullptr, mat);
-	DirectX::XMStoreFloat4x4(&m_wvp[1], mat);
+	worldMatrix = DirectX::XMMatrixTranspose(worldMatrix);
 
+	DirectX::XMStoreFloat4x4(&m_wvp[0], worldMatrix);
+
+	// 逆転置行列を計算
+	DirectX::XMMATRIX inverseWorld =
+		DirectX::XMMatrixInverse(
+			nullptr,
+			DirectX::XMLoadFloat4x4(&world)
+		);
+
+	inverseWorld = DirectX::XMMatrixTranspose(inverseWorld);
+
+	DirectX::XMStoreFloat4x4(&m_wvp[1], inverseWorld);
+
+	// 全頂点シェーダーへ設定
 	for (int i = 0; i < VS_KIND_MAX; ++i)
 	{
 		m_pVS[i]->WriteBuffer(0, m_wvp);
 	}
 }
+
 void ShaderList::SetView(const DirectX::XMFLOAT4X4& view)
 {
 	m_wvp[2] = view;
